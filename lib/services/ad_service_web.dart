@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+import 'ad_service_base.dart';
+
+class AdServicePlatform implements AdServiceBase {
+  @override
+  Future<void> initialize({bool loadAds = true}) async {}
+
+  @override
+  Widget buildBannerAd() => const SizedBox.shrink();
+
+  @override
+  Future<void> loadInterstitialAd() async {}
+
+  @override
+  void showInterstitialAd() {}
+
+  @override
+  Future<bool> shouldShowAd() async => false;
+
+  @override
+  void dispose() {}
+}
