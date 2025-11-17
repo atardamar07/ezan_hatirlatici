@@ -225,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           '${AppLocalizations.of(context)!.appTitle} - $_currentLocation',
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
