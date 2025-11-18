@@ -10,6 +10,9 @@
     <!-- Notification permission (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Exact alarm permission for scheduled notifications (Android 13+) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:label="ezan_hatirlatici"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +21,7 @@
         <!-- AdMob App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1498129057551982~3865121210" />
+            android:value="@string/admob_app_id" />
 
         <!-- Flutter Local Notifications için default notification channel -->
         <meta-data
