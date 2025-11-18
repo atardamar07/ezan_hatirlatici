@@ -23,6 +23,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
 
   late List<Map<String, String>> _zikirler;
 
+  String get _selectedMeaning {
+    final selectedZikirData = _zikirler.firstWhere(
+          (z) => z['name'] == _selectedZikir,
+      orElse: () => {'name': _selectedZikir, 'meaning': ''},
+    );
+    return selectedZikirData['meaning'] ?? '';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -198,11 +206,11 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
             const SizedBox(height: 16),
             Text(AppLocalizations.of(context)!
                 .completedDhikr(_selectedZikir, _targetCount)),
-            if (selectedMeaning.isNotEmpty)
+            if (_selectedMeaning.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  selectedMeaning,
+                  _selectedMeaning,
                   style: const TextStyle(fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center,
                 ),
@@ -236,7 +244,6 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
           (z) => z['name'] == _selectedZikir,
       orElse: () => {'name': _selectedZikir, 'meaning': ''},
     );
-    final selectedMeaning = selectedZikirData['meaning'] ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
