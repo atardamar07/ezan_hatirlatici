@@ -83,6 +83,12 @@
   "failedToLoadPrayerTimes": "Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.",
   "tomorrow": "Morgen",
   "tomorrowFajr": "Morgen Fadschr",
-  "prayerTimeEntered": "Gebetszeit hat begonnen"
+  "prayerTimeEntered": "Gebetszeit hat begonnen",
+  "subhanallahMeaning": "Allah ist frei von Mängeln.",
+  "alhamdulillahMeaning": "Alles Lob gebührt Allah.",
+  "allahuAkbarMeaning": "Allah ist am größten.",
+  "laIlaheIllallahMeaning": "Es gibt keine Gottheit außer Allah.",
+  "astagfirullahMeaning": "Ich bitte Allah um Vergebung.",
+  "hasbunallahMeaning": "Allah genügt uns."
 
 }

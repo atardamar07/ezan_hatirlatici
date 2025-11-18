@@ -193,6 +193,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tapToCount => 'Нажмите на экран, чтобы увеличить количество зикра';
 
   @override
+  String get subhanallahMeaning => 'Аллах свободен от недостатков.';
+
+  @override
+  String get alhamdulillahMeaning => 'Хвала Аллаху.';
+
+  @override
+  String get allahuAkbarMeaning => 'Аллах – величайший.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'Нет божества, кроме Аллаха.';
+
+  @override
+  String get astagfirullahMeaning => 'Прошу прощения у Аллаха.';
+
+  @override
+  String get hasbunallahMeaning => 'Нам достаточно Аллаха.';
+
+  @override
   String get donationsForWeb => 'Пожертвования доступны в мобильном приложении';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import '../l10n/app_localizations.dart';
 import '../services/donation_service.dart';
 
 class DonationScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _DonationScreenState extends State<DonationScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isProcessing = false);
-        _showErrorDialog('Bağış işlemi başarısız oldu: $e');
+        _showErrorDialog(AppLocalizations.of(context)!.donationFailed('$e'));
       }
     }
   }
@@ -67,19 +68,19 @@ class _DonationScreenState extends State<DonationScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: const Row(children: [
-          Icon(Icons.favorite, color: Colors.green),
-          SizedBox(width: 8),
-          Text('Teşekkürler!'),
+        title: Row(children: [
+          const Icon(Icons.favorite, color: Colors.green),
+          const SizedBox(width: 8),
+          Text(AppLocalizations.of(context)!.thankYou),
         ]),
-        content: Column(mainAxisSize: MainAxisSize.min, children: const [
-          Icon(Icons.check_circle, color: Colors.green, size: 64),
-          SizedBox(height: 16),
-          Text('Bağışınız için çok teşekkür ederiz!',
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
-          SizedBox(height: 8),
-          Text('Artık uygulamada reklam görmeyeceksiniz.',
-              textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Icon(Icons.check_circle, color: Colors.green, size: 64),
+          const SizedBox(height: 16),
+          Text(AppLocalizations.of(context)!.donationSuccess,
+              textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+          const SizedBox(height: 8),
+          Text(AppLocalizations.of(context)!.noAds,
+              textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
         ]),
         actions: [
           ElevatedButton(
@@ -87,25 +88,26 @@ class _DonationScreenState extends State<DonationScreen> {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Tamam'),
+            child: Text(AppLocalizations.of(context)!.continueText),
           ),
         ],
       ),
     );
   }
-
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Row(children: [
-          Icon(Icons.error, color: Colors.red),
-          SizedBox(width: 8),
-          Text('Hata'),
+        title: Row(children: [
+          const Icon(Icons.error, color: Colors.red),
+          const SizedBox(width: 8),
+          Text(AppLocalizations.of(context)!.errorTitle),
         ]),
         content: Text(message),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(AppLocalizations.of(context)!.continueText)),
         ],
       ),
     );
@@ -116,18 +118,17 @@ class _DonationScreenState extends State<DonationScreen> {
   Widget build(BuildContext context) {
     if (kIsWeb) return _webBody();
 
-    final products = DonationService.getDonationProducts();
+    final products = DonationService.getDonationProducts(AppLocalizations.of(context)!);
     return _mobileBody(products);
   }
-
   /* ---------- WEB UYARISI ---------- */
   Widget _webBody() {
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
-        title: const Text('Bağış Yap',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.donationTitle,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: Center(
         child: Card(
@@ -135,35 +136,34 @@ class _DonationScreenState extends State<DonationScreen> {
           margin: const EdgeInsets.all(20),
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(mainAxisSize: MainAxisSize.min, children: const [
-              Icon(Icons.mobile_friendly, color: Colors.teal, size: 48),
-              SizedBox(height: 16),
-              Text('Bağış İşlemleri Mobil Uygulamada Mevcut',
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.mobile_friendly, color: Colors.teal, size: 48),
+              const SizedBox(height: 16),
+              Text(AppLocalizations.of(context)!.donationsForWeb,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              Text(
-                  'Uygulamayı Android veya iOS cihazınızdan kullanarak bağış yapabilirsiniz.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey)),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text(
+                      AppLocalizations.of(context)!.donateInfo,
+                      textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.grey)),
             ]),
           ),
         ),
       ),
     );
   }
-
   /* ---------- MOBIL EKRAN ---------- */
   Widget _mobileBody(List<Map<String, dynamic>> products) {
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
-        title: const Text('Bağış Yap',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.donationTitle,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.amber))
@@ -173,8 +173,8 @@ class _DonationScreenState extends State<DonationScreen> {
           children: [
             if (_donationInfo != null) _statusCard(),
             const SizedBox(height: 20),
-            const Text('Destek Seçenekleri',
-                style: TextStyle(
+            Text(AppLocalizations.of(context)!.supportApp,
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
@@ -203,17 +203,17 @@ class _DonationScreenState extends State<DonationScreen> {
             const SizedBox(height: 8),
             Text(
               _donationInfo!['hasDonated']
-                  ? 'Bağış yaptığınız için teşekkürler!'
-                  : 'Uygulamayı desteklemek ister misiniz?',
+                  ? AppLocalizations.of(context)!.hasDonatedThanks
+                  : AppLocalizations.of(context)!.supportApp,
               style: const TextStyle(
                   color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             if (_donationInfo!['hasDonated'] && _donationInfo!['isActive'])
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text('Reklamsız deneyimin keyfini çıkarın',
-                    style: TextStyle(color: Colors.green)),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(AppLocalizations.of(context)!.adFreeExperience,
+                    style: const TextStyle(color: Colors.green)),
               ),
           ],
         ),
@@ -222,23 +222,23 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   Widget _infoCard() {
-    return const Card(
-      color: Color(0xFF2C2C38),
+    return Card(
+      color: const Color(0xFF2C2C38),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Icon(Icons.info, color: Colors.teal),
-            SizedBox(height: 8),
+            const Icon(Icons.info, color: Colors.teal),
+            const SizedBox(height: 8),
             Text(
-              'Bağışlarınız uygulamanın geliştirilmesi ve sunucu masraflarının karşılanmasında kullanılacaktır.',
-              style: TextStyle(color: Colors.white70),
+              AppLocalizations.of(context)!.donationInfoText,
+              style: const TextStyle(color: Colors.white70),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.',
-              style: TextStyle(
+              AppLocalizations.of(context)!.noAdsFor30Days,
+              style: const TextStyle(
                   color: Colors.teal, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -306,8 +306,8 @@ class _DonationScreenState extends State<DonationScreen> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal,
                           minimumSize: const Size(80, 32)),
-                      child: const Text('Bağış Yap',
-                          style: TextStyle(fontSize: 12)),
+                      child: Text(AppLocalizations.of(context)!.donateButton,
+                          style: const TextStyle(fontSize: 12)),
                     ),
                   ],
                 ),

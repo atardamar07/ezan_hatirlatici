@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../l10n/app_localizations.dart';
 import 'donation_service_base.dart';
 
 // Platforma göre mobil/web implementasyonu seçiyoruz
@@ -41,27 +42,27 @@ class DonationService {
   }
 
   /// Ekranda göstereceğimiz bağış seçenekleri
-  static List<Map<String, dynamic>> getDonationProducts() {
+  static List<Map<String, dynamic>> getDonationProducts(AppLocalizations loc) {
     // Buradaki id'ler, mobilde tanımladığımız IAP id'leriyle eşleşiyor
-    return const [
+    return [
       {
         'id': 'coffee_donation',
-        'title': 'Bir Kahve Ismarla',
-        'description': 'Küçük ama değerli bir destek.',
+        'title': loc.coffeeDonation,
+        'description': loc.coffeeDescription,
         'price': '₺20',
         'icon': Icons.local_cafe,
       },
       {
         'id': 'meal_donation',
-        'title': 'Bir Yemek Ismarla',
-        'description': 'Uygulamanın geliştirilmesine katkı sağla.',
+        'title': loc.mealDonation,
+        'description': loc.mealDescription,
         'price': '₺50',
         'icon': Icons.fastfood,
       },
       {
         'id': 'generous_donation',
-        'title': 'Cömert Destek',
-        'description': 'Projeye büyük destek vermek isteyenler için.',
+        'title': loc.generousDonation,
+        'description': loc.generousDescription,
         'price': '₺200',
         'icon': Icons.diamond,
       },

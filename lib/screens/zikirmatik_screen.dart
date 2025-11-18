@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:vibration/vibration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
 
 class ZikirmatikScreen extends StatefulWidget {
   const ZikirmatikScreen({Key? key}) : super(key: key);
@@ -20,18 +21,12 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
-  final List<Map<String, String>> _zikirler = [
-    {'name': 'Subhanallah', 'meaning': 'Allah sübhandır (eksikliklerden münezzehtir)'},
-    {'name': 'Elhamdülillah', 'meaning': 'Allah\'a hamd olsun'},
-    {'name': 'Allahu Ekber', 'meaning': 'Allah en büyüktür'},
-    {'name': 'La İlahe İllallah', 'meaning': 'Allah\'tan başka ilah yoktur'},
-    {'name': 'Astagfirullah', 'meaning': 'Allah\'tan af dilerim'},
-    {'name': 'Hasbünallah', 'meaning': 'Allah bize yeter'},
-  ];
+  late List<Map<String, String>> _zikirler;
 
   @override
   void initState() {
     super.initState();
+    _zikirler = [];
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -44,7 +39,28 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
       ),
     );
 
+    _loadZikirs();
     _loadSettings();
+  }
+
+  void _loadZikirs() {
+    final loc = AppLocalizations.of(context)!;
+    setState(() {
+      _zikirler = [
+        {'name': 'Subhanallah', 'meaning': loc.subhanallahMeaning},
+        {'name': 'Elhamdülillah', 'meaning': loc.alhamdulillahMeaning},
+        {'name': 'Allahu Ekber', 'meaning': loc.allahuAkbarMeaning},
+        {'name': 'La İlahe İllallah', 'meaning': loc.laIlaheIllallahMeaning},
+        {'name': 'Astagfirullah', 'meaning': loc.astagfirullahMeaning},
+        {'name': 'Hasbünallah', 'meaning': loc.hasbunallahMeaning},
+      ];
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadZikirs();
   }
 
   Future<void> _loadSettings() async {
@@ -101,7 +117,7 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Zikirmatik Ayarları'),
+          title: Text(AppLocalizations.of(context)!.dhikrSettings),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -123,9 +139,9 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                 ),
                 const SizedBox(height: 16),
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Hedef Sayı',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.targetCount,
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   controller: TextEditingController(text: _targetCount.toString()),
@@ -136,14 +152,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                 ),
                 const SizedBox(height: 16),
                 SwitchListTile(
-                  title: const Text('Titreşim'),
+                  title: Text(AppLocalizations.of(context)!.vibration),
                   value: _isVibrationEnabled,
                   onChanged: (value) {
                     setState(() => _isVibrationEnabled = value);
                   },
                 ),
                 SwitchListTile(
-                  title: const Text('Ses'),
+                  title: Text(AppLocalizations.of(context)!.sound),
                   value: _isSoundEnabled,
                   onChanged: (value) {
                     setState(() => _isSoundEnabled = value);
@@ -155,14 +171,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('İptal'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
               onPressed: () {
                 _saveSettings();
                 Navigator.pop(context);
               },
-              child: const Text('Kaydet'),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ],
         ),
@@ -175,13 +191,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Tebrikler!'),
+        title: Text(AppLocalizations.of(context)!.congratulations),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.check_circle, color: Colors.green, size: 64),
             const SizedBox(height: 16),
-            Text('$_selectedZikir zikrinizi $_targetCount kez tamamladınız!'),
+            Text(AppLocalizations.of(context)!
+                .completedDhikr(_selectedZikir, _targetCount)),
             if (_zikirler.firstWhere((z) => z['name'] == _selectedZikir)['meaning'] != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -199,14 +216,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
               Navigator.pop(context);
               _resetCounter();
             },
-            child: const Text('Yeniden Başla'),
+            child: Text(AppLocalizations.of(context)!.restart),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               _resetCounter();
             },
-            child: const Text('Devam Et'),
+            child: Text(AppLocalizations.of(context)!.continueText),
           ),
         ],
       ),
@@ -222,9 +239,9 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
-        title: const Text(
-          'Zikirmatik',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          AppLocalizations.of(context)!.dhikrCounter,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -349,7 +366,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                 ElevatedButton.icon(
                   onPressed: _resetCounter,
                   icon: const Icon(Icons.refresh, color: Colors.white),
-                  label: const Text('Sıfırla', style: TextStyle(color: Colors.white)),
+                  label: Text(AppLocalizations.of(context)!.reset,
+                      style: const TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade700,
                     shape: RoundedRectangleBorder(
@@ -360,7 +378,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                 ElevatedButton.icon(
                   onPressed: _incrementCounter,
                   icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text('Say', style: TextStyle(color: Colors.white)),
+                  label: Text(AppLocalizations.of(context)!.count,
+                      style: const TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
                     shape: RoundedRectangleBorder(
@@ -371,9 +390,9 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
               ],
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Ekrana dokunarak zikir sayınızı artırabilirsiniz',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.tapToCount,
+              style: const TextStyle(
                 color: Colors.white54,
                 fontSize: 14,
               ),

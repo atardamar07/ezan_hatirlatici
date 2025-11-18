@@ -193,6 +193,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tapToCount => 'Tippen Sie auf den Bildschirm, um Ihre Dhikr-Anzahl zu erhöhen';
 
   @override
+  String get subhanallahMeaning => 'Allah ist frei von Mängeln.';
+
+  @override
+  String get alhamdulillahMeaning => 'Alles Lob gebührt Allah.';
+
+  @override
+  String get allahuAkbarMeaning => 'Allah ist am größten.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'Es gibt keine Gottheit außer Allah.';
+
+  @override
+  String get astagfirullahMeaning => 'Ich bitte Allah um Vergebung.';
+
+  @override
+  String get hasbunallahMeaning => 'Allah genügt uns.';
+
+  @override
   String get donationsForWeb => 'Spenden sind in der mobilen App verfügbar';
 
   @override

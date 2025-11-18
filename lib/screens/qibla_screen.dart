@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
 import '../services/location_service.dart';
 
 class QiblaScreen extends StatefulWidget {
@@ -152,14 +152,15 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
   }
 
   String _getDirectionText() {
+    final loc = AppLocalizations.of(context)!;
     if (_isQiblaFound) {
-      return 'Kıbleye Yöneldiniz';
+      return loc.qiblaFound;
     } else {
       final difference = _qiblaDirection - _currentHeading;
       if (difference > 0 && difference < 180) {
-        return 'Sağa Dönün';
+        return loc.turnRight;
       } else {
-        return 'Sola Dönün';
+        return loc.turnLeft;
       }
     }
   }
@@ -176,9 +177,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
-        title: const Text(
-          'Kıble Pusulası',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          AppLocalizations.of(context)!.qiblaCompass,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: _isLoading
@@ -280,7 +281,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
                 // Mesafe Bilgisi
                 Text(
-                  'Kâbe\'ye Mesafe: ${_distanceToQibla.toStringAsFixed(0)} km',
+                  AppLocalizations.of(context)!
+                      .distanceToKaaba(_distanceToQibla.toStringAsFixed(0)),
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white70,
@@ -301,14 +303,14 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                   color: Colors.green,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.check_circle, color: Colors.white, size: 30),
-                    SizedBox(width: 10),
+                    const Icon(Icons.check_circle, color: Colors.white, size: 30),
+                    const SizedBox(width: 10),
                     Text(
-                      'Şu anda kıbleye doğru bakıyorsunuz',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.youAreFacingQibla,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

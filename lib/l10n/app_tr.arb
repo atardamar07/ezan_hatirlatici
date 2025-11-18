@@ -92,5 +92,11 @@
   "isha": "Yatsı",
   "tomorrow": "Yarın",
   "tomorrowFajr": "Yarın İmsak",
-  "prayerTimeEntered": "Vakit girdi"
+  "prayerTimeEntered": "Vakit girdi",
+  "subhanallahMeaning": "Allah sübhandır (eksikliklerden münezzehtir)",
+  "alhamdulillahMeaning": "Allah'a hamd olsun",
+  "allahuAkbarMeaning": "Allah en büyüktür",
+  "laIlaheIllallahMeaning": "Allah'tan başka ilah yoktur",
+  "astagfirullahMeaning": "Allah'tan af dilerim",
+  "hasbunallahMeaning": "Allah bize yeter"
 }

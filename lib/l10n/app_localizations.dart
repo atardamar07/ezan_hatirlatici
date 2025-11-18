@@ -11,59 +11,6 @@ import 'app_localizations_en.dart';
 import 'app_localizations_ru.dart';
 import 'app_localizations_tr.dart';
 
-// ignore_for_file: type=lint
-
-/// Callers can lookup localized strings with an instance of AppLocalizations
-/// returned by `AppLocalizations.of(context)`.
-///
-/// Applications need to include `AppLocalizations.delegate()` in their app's
-/// `localizationDelegates` list, and the locales they support in the app's
-/// `supportedLocales` list. For example:
-///
-/// ```dart
-/// import 'l10n/app_localizations.dart';
-///
-/// return MaterialApp(
-///   localizationsDelegates: AppLocalizations.localizationsDelegates,
-///   supportedLocales: AppLocalizations.supportedLocales,
-///   home: MyApplicationHome(),
-/// );
-/// ```
-///
-/// ## Update pubspec.yaml
-///
-/// Please make sure to update your pubspec.yaml to include the following
-/// packages:
-///
-/// ```yaml
-/// dependencies:
-///   # Internationalization support.
-///   flutter_localizations:
-///     sdk: flutter
-///   intl: any # Use the pinned version from flutter_localizations
-///
-///   # Rest of dependencies
-/// ```
-///
-/// ## iOS Applications
-///
-/// iOS applications define key application metadata, including supported
-/// locales, in an Info.plist file that is built into the application bundle.
-/// To configure the locales supported by your app, you’ll need to edit this
-/// file.
-///
-/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
-/// Then, in the Project Navigator, open the Info.plist file under the Runner
-/// project’s Runner folder.
-///
-/// Next, select the Information Property List item, select Add Item from the
-/// Editor menu, then select Localizations from the pop-up menu.
-///
-/// Select and expand the newly-created Localizations item then, for each
-/// locale your application supports, add a new item and select the locale
-/// you wish to add from the pop-up menu in the Value field. This list should
-/// be consistent with the languages listed in the AppLocalizations.supportedLocales
-/// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
@@ -75,16 +22,7 @@ abstract class AppLocalizations {
 
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
-  /// A list of this localizations delegate along with the default localizations
-  /// delegates.
-  ///
-  /// Returns a list of localizations delegates containing this delegate along with
-  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
-  /// and GlobalWidgetsLocalizations.delegate.
-  ///
-  /// Additional delegates can be added by appending to this list in
-  /// MaterialApp. This list does not have to be used at all if a custom list
-  /// of delegates is preferred or required.
+
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
@@ -92,7 +30,7 @@ abstract class AppLocalizations {
     GlobalWidgetsLocalizations.delegate,
   ];
 
-  /// A list of this localizations delegate's supported locales.
+
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
     Locale('de'),
@@ -101,76 +39,31 @@ abstract class AppLocalizations {
     Locale('tr')
   ];
 
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Prayer Reminder'**
   String get appTitle;
 
-  /// No description provided for @selectCity.
-  ///
-  /// In en, this message translates to:
-  /// **'Select City'**
   String get selectCity;
 
-  /// No description provided for @searchCity.
-  ///
-  /// In en, this message translates to:
-  /// **'Search city...'**
   String get searchCity;
 
-  /// No description provided for @useCurrentLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'Use My Current Location'**
+
   String get useCurrentLocation;
 
-  /// No description provided for @popularCities.
-  ///
-  /// In en, this message translates to:
-  /// **'Popular Cities'**
   String get popularCities;
 
-  /// No description provided for @noCityFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No city found'**
+
   String get noCityFound;
 
-  /// No description provided for @cityNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'City not found'**
+
   String get cityNotFound;
 
-  /// No description provided for @locationError.
-  ///
-  /// In en, this message translates to:
-  /// **'Location could not be retrieved. Please check location permissions.'**
   String get locationError;
 
-  /// No description provided for @locationErrorDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Error getting location: {error}'**
   String locationErrorDetails(Object error);
 
-  /// No description provided for @prayerTimesLoadError.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to load prayer times. Please check location settings.'**
   String get prayerTimesLoadError;
 
-  /// No description provided for @error.
-  ///
-  /// In en, this message translates to:
-  /// **'Error: {error}'**
   String error(Object error);
 
-  /// No description provided for @genericError.
-  ///
-  /// In en, this message translates to:
-  /// **'Error:'**
   String get genericError;
 
   /// No description provided for @locationPermissionError.
@@ -436,7 +329,37 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap the screen to increase your dhikr count'**
   String get tapToCount;
+  String get subhanallahMeaning;
 
+  /// No description provided for @alhamdulillahMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Praise be to Allah.'**
+  String get alhamdulillahMeaning;
+
+  /// No description provided for @allahuAkbarMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Allah is the Greatest.'**
+  String get allahuAkbarMeaning;
+
+  /// No description provided for @laIlaheIllallahMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no deity except Allah.'**
+  String get laIlaheIllallahMeaning;
+
+  /// No description provided for @astagfirullahMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'I seek forgiveness from Allah.'**
+  String get astagfirullahMeaning;
+
+  /// No description provided for @hasbunallahMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Allah is sufficient for us.'**
+  String get hasbunallahMeaning;
   /// No description provided for @donationsForWeb.
   ///
   /// In en, this message translates to:

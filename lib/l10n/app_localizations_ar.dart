@@ -193,6 +193,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tapToCount => 'اضغط على الشاشة لزيادة عدد الأذكار';
 
   @override
+  String get subhanallahMeaning => 'الله منزّه عن النقصان.';
+
+  @override
+  String get alhamdulillahMeaning => 'الحمد لله.';
+
+  @override
+  String get allahuAkbarMeaning => 'الله أكبر.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'لا إله إلا الله.';
+
+  @override
+  String get astagfirullahMeaning => 'أستغفر الله.';
+
+  @override
+  String get hasbunallahMeaning => 'حسبنا الله.';
+
+  @override
   String get donationsForWeb => 'التبرعات متاحة في تطبيق الجوال';
 
   @override

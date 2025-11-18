@@ -193,6 +193,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tapToCount => 'Ekrana dokunarak zikir sayınızı artırabilirsiniz';
 
   @override
+  String get subhanallahMeaning => 'Allah sübhandır (eksikliklerden münezzehtir)';
+
+  @override
+  String get alhamdulillahMeaning => 'Allah\'a hamd olsun';
+
+  @override
+  String get allahuAkbarMeaning => 'Allah en büyüktür';
+
+  @override
+  String get laIlaheIllallahMeaning => 'Allah\'tan başka ilah yoktur';
+
+  @override
+  String get astagfirullahMeaning => 'Allah\'tan af dilerim';
+
+  @override
+  String get hasbunallahMeaning => 'Allah bize yeter';
+
+  @override
   String get donationsForWeb => 'Bağış İşlemleri Mobil Uygulamada Mevcut';
 
   @override

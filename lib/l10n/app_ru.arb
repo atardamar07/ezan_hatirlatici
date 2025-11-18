@@ -83,6 +83,12 @@
   "failedToLoadPrayerTimes": "Не удалось загрузить время молитвы. Пожалуйста, проверьте настройки местоположения.",
   "tomorrow": "Завтра",
   "tomorrowFajr": "Завтра Фаджр",
-  "prayerTimeEntered": "Время молитвы началось"
+  "prayerTimeEntered": "Время молитвы началось",
+  "subhanallahMeaning": "Аллах свободен от недостатков.",
+  "alhamdulillahMeaning": "Хвала Аллаху.",
+  "allahuAkbarMeaning": "Аллах – величайший.",
+  "laIlaheIllallahMeaning": "Нет божества, кроме Аллаха.",
+  "astagfirullahMeaning": "Прошу прощения у Аллаха.",
+  "hasbunallahMeaning": "Нам достаточно Аллаха."
 
 }

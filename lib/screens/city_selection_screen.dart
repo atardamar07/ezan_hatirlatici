@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../services/location_service.dart';
 import '../services/prayer_times_api.dart';
 
@@ -87,14 +87,14 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
             'type': 'location',
             'latitude': location.latitude,
             'longitude': location.longitude,
-            'address': address ?? 'Mevcut Konum',
+            'address': address ?? AppLocalizations.of(context)!.currentLocation,
           });
         }
       } else {
-        _showError('Konum alınamadı. Lütfen konum izinlerini kontrol edin.');
+        _showError(AppLocalizations.of(context)!.locationError);
       }
     } catch (e) {
-      _showError('Konum alınırken hata oluştu: $e');
+      _showError(AppLocalizations.of(context)!.locationErrorDetails('$e'));
     } finally {
       if (mounted) {
         setState(() {
@@ -127,7 +127,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Şehir Seçin'),
+        title: Text(AppLocalizations.of(context)!.selectCityTitle),
         backgroundColor: Colors.teal,
         elevation: 0,
       ),
@@ -163,7 +163,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Şehir ara...',
+                    hintText: AppLocalizations.of(context)!.citySearchHint,
                     prefixIcon: const Icon(Icons.search, color: Colors.teal),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -191,9 +191,9 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                   : ElevatedButton.icon(
                 onPressed: _useCurrentLocation,
                 icon: const Icon(Icons.my_location, color: Colors.white),
-                label: const Text(
-                  'Mevcut Konumumu Kullan',
-                  style: TextStyle(color: Colors.white),
+                label: Text(
+                  AppLocalizations.of(context)!.useCurrentLocationButton,
+                  style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
@@ -228,7 +228,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
             Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
             Text(
-              'Şehir bulunamadı',
+              AppLocalizations.of(context)!.noCityFoundMessage,
               style: TextStyle(color: Colors.grey.shade600, fontSize: 18),
             ),
           ],
@@ -243,11 +243,11 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
-            'Popüler Şehirler',
-            style: TextStyle(
+            AppLocalizations.of(context)!.popularCitiesTitle,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.teal,

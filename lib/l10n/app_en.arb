@@ -97,6 +97,11 @@
   "reminderNotificationTitle": "⏰ Prayer Reminder",
   "reminderNotificationBody": "{prayer} in {minutes} minutes",
   "tomorrow": "Tomorrow",
-  "tomorrowFajr": "Tomorrow Fajr"
-
+  "tomorrowFajr": "Tomorrow Fajr",
+  "subhanallahMeaning": "Allah is free from imperfections.",
+  "alhamdulillahMeaning": "Praise be to Allah.",
+  "allahuAkbarMeaning": "Allah is the Greatest.",
+  "laIlaheIllallahMeaning": "There is no deity except Allah.",
+  "astagfirullahMeaning": "I seek forgiveness from Allah.",
+  "hasbunallahMeaning": "Allah is sufficient for us."
 }

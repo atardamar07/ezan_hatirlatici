@@ -83,8 +83,11 @@
   "failedToLoadPrayerTimes": "فشل تحميل أوقات الصلاة. يرجى التحقق من إعدادات الموقع.",
   "tomorrow": "غدًا",
   "tomorrowFajr": "فجر الغد",
-  "prayerTimeEntered": "بدأ وقت الصلاة"
-
-
-
+  "prayerTimeEntered": "بدأ وقت الصلاة",
+  "subhanallahMeaning": "الله منزّه عن النقصان.",
+  "alhamdulillahMeaning": "الحمد لله.",
+  "allahuAkbarMeaning": "الله أكبر.",
+  "laIlaheIllallahMeaning": "لا إله إلا الله.",
+  "astagfirullahMeaning": "أستغفر الله.",
+  "hasbunallahMeaning": "حسبنا الله."
 }
