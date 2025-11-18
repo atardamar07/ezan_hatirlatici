@@ -30,8 +30,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cityNotFound => 'Город не найден';
 
   @override
-  String get locationError =>
-      'Не удалось получить местоположение. Пожалуйста, проверьте разрешения местоположения.';
+  String get locationError => 'Не удалось получить местоположение. Пожалуйста, проверьте разрешения местоположения.';
 
   @override
   String locationErrorDetails(Object error) {
@@ -39,8 +38,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get prayerTimesLoadError =>
-      'Не удалось загрузить время молитвы. Пожалуйста, проверьте настройки местоположения.';
+  String get prayerTimesLoadError => 'Не удалось загрузить время молитвы. Пожалуйста, проверьте настройки местоположения.';
 
   @override
   String error(Object error) {
@@ -48,8 +46,10 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get locationPermissionError =>
-      'Разрешение на местоположение отклонено. Пожалуйста, включите службы местоположения.';
+  String get genericError => 'Ошибка:';
+
+  @override
+  String get locationPermissionError => 'Разрешение на местоположение отклонено. Пожалуйста, включите службы местоположения.';
 
   @override
   String get currentLocation => 'Текущее местоположение';
@@ -58,6 +58,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String nextPrayer(Object prayer) {
     return 'Следующая молитва: $prayer';
   }
+
+  @override
+  String get nextPrayerSimple => 'Следующая молитва';
 
   @override
   String get menu => 'Меню';
@@ -193,8 +196,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get donationsForWeb => 'Пожертвования доступны в мобильном приложении';
 
   @override
-  String get donateInfo =>
-      'Вы можете пожертвовать, используя приложение на устройстве Android или iOS.';
+  String get donateInfo => 'Вы можете пожертвовать, используя приложение на устройстве Android или iOS.';
 
   @override
   String get donationTitle => 'Пожертвовать';
@@ -226,12 +228,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adFreeExperience => 'Наслаждайтесь безрекламным опытом';
 
   @override
-  String get donationInfoText =>
-      'Ваши пожертвования будут использованы для разработки приложения и покрытия расходов на сервер.';
+  String get donationInfoText => 'Ваши пожертвования будут использованы для разработки приложения и покрытия расходов на сервер.';
 
   @override
-  String get noAdsFor30Days =>
-      'Реклама не будет показываться в течение 30 дней после пожертвования.';
+  String get noAdsFor30Days => 'Реклама не будет показываться в течение 30 дней после пожертвования.';
 
   @override
   String get coffeeDonation => '☕ Чашка кофе';
@@ -255,25 +255,71 @@ class AppLocalizationsRu extends AppLocalizations {
   String get donateButton => 'Пожертвовать';
 
   @override
-  String get locationNotDetected =>
-      'Не удалось получить местоположение. Пожалуйста, выберите город вручную.';
+  String get locationNotDetected => 'Не удалось получить местоположение. Пожалуйста, выберите город вручную.';
 
   @override
-  String get failedToLoadPrayerTimes =>
-      'Не удалось загрузить время молитвы. Пожалуйста, проверьте настройки местоположения.';
+  String get failedToLoadPrayerTimes => 'Не удалось загрузить время молитвы. Пожалуйста, проверьте настройки местоположения.';
 
   @override
-  String get genericError => 'Ошибка:';
+  String get prayerTimeEntered => 'Время молитвы началось';
 
   @override
-  String get qibla => 'Компас Киблы';
+  String get selectCityTitle => 'Select City';
 
   @override
-  String get zikirmatik => 'Счетчик зикра';
+  String get popularCitiesTitle => 'Popular Cities';
+
+  @override
+  String get citySearchHint => 'Search city...';
+
+  @override
+  String get noCityFoundMessage => 'No city found';
+
+  @override
+  String get useCurrentLocationButton => 'Use My Current Location';
 
   @override
   String get prayerTimesLoadFailed => 'Не удалось загрузить время молитвы';
 
   @override
-  String get nextPrayerSimple => 'Следующая молитва';
+  String get loadingPrayerTimes => 'Loading prayer times...';
+
+  @override
+  String locationErrorRetry(Object error) {
+    return 'Location error: $error';
+  }
+
+  @override
+  String get invalidTimeInfo => 'Invalid time information';
+
+  @override
+  String get resetCounter => 'Reset';
+
+  @override
+  String get continueCounting => 'Continue';
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+    return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+    return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'Завтра';
+
+  @override
+  String get tomorrowFajr => 'Завтра Фаджр';
 }

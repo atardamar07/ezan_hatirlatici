@@ -30,8 +30,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cityNotFound => 'Şehir bulunamadı';
 
   @override
-  String get locationError =>
-      'Konum alınamadı. Lütfen konum izinlerini kontrol edin.';
+  String get locationError => 'Konum alınamadı. Lütfen konum izinlerini kontrol edin.';
 
   @override
   String locationErrorDetails(Object error) {
@@ -39,8 +38,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get prayerTimesLoadError =>
-      'Namaz vakitleri yüklenemedi. Lütfen konum ayarlarını kontrol edin.';
+  String get prayerTimesLoadError => 'Namaz vakitleri yüklenemedi. Lütfen konum ayarlarını kontrol edin.';
 
   @override
   String error(Object error) {
@@ -48,8 +46,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get locationPermissionError =>
-      'Konum izni verilmedi. Lütfen konum servislerini etkinleştirin.';
+  String get genericError => 'Hata:';
+
+  @override
+  String get locationPermissionError => 'Konum izni verilmedi. Lütfen konum servislerini etkinleştirin.';
 
   @override
   String get currentLocation => 'Mevcut Konum';
@@ -58,6 +58,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String nextPrayer(Object prayer) {
     return 'Sonraki Vakit: $prayer';
   }
+
+  @override
+  String get nextPrayerSimple => 'Sonraki Vakit';
 
   @override
   String get menu => 'Menü';
@@ -193,8 +196,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get donationsForWeb => 'Bağış İşlemleri Mobil Uygulamada Mevcut';
 
   @override
-  String get donateInfo =>
-      'Uygulamayı Android veya iOS cihazınızdan kullanarak bağış yapabilirsiniz.';
+  String get donateInfo => 'Uygulamayı Android veya iOS cihazınızdan kullanarak bağış yapabilirsiniz.';
 
   @override
   String get donationTitle => 'Bağış Yap';
@@ -226,12 +228,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adFreeExperience => 'Reklamsız deneyimin keyfini çıkarın';
 
   @override
-  String get donationInfoText =>
-      'Bağışlarınız uygulamanın geliştirilmesi ve sunucu masraflarının karşılanmasında kullanılacaktır.';
+  String get donationInfoText => 'Bağışlarınız uygulamanın geliştirilmesi ve sunucu masraflarının karşılanmasında kullanılacaktır.';
 
   @override
-  String get noAdsFor30Days =>
-      'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.';
+  String get noAdsFor30Days => 'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.';
 
   @override
   String get coffeeDonation => '☕ Bir Fincan Kahve';
@@ -255,25 +255,71 @@ class AppLocalizationsTr extends AppLocalizations {
   String get donateButton => 'Bağış Yap';
 
   @override
-  String get locationNotDetected =>
-      'Konum alınamadı. Lütfen manuel olarak şehir seçin.';
+  String get locationNotDetected => 'Konum alınamadı. Lütfen manuel olarak şehir seçin.';
 
   @override
-  String get failedToLoadPrayerTimes =>
-      'Namaz vakitleri yüklenemedi. Lütfen konum ayarlarını kontrol edin.';
+  String get failedToLoadPrayerTimes => 'Namaz vakitleri yüklenemedi. Lütfen konum ayarlarını kontrol edin.';
 
   @override
-  String get genericError => 'Hata:';
+  String get prayerTimeEntered => 'Vakit girdi';
 
   @override
-  String get qibla => 'Kıble Pusulası';
+  String get selectCityTitle => 'Şehir Seçin';
 
   @override
-  String get zikirmatik => 'Zikirmatik';
+  String get popularCitiesTitle => 'Popüler Şehirler';
+
+  @override
+  String get citySearchHint => 'Şehir ara...';
+
+  @override
+  String get noCityFoundMessage => 'Şehir bulunamadı';
+
+  @override
+  String get useCurrentLocationButton => 'Mevcut Konumumu Kullan';
 
   @override
   String get prayerTimesLoadFailed => 'Namaz vakitleri yüklenemedi';
 
   @override
-  String get nextPrayerSimple => 'Sonraki Vakit';
+  String get loadingPrayerTimes => 'Namaz vakitleri yükleniyor...';
+
+  @override
+  String locationErrorRetry(Object error) {
+    return 'Konum hatası: $error';
+  }
+
+  @override
+  String get invalidTimeInfo => 'Zaman bilgisi geçersiz';
+
+  @override
+  String get resetCounter => 'Sıfırla';
+
+  @override
+  String get continueCounting => 'Devam Et';
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+    return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+    return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'Yarın';
+
+  @override
+  String get tomorrowFajr => 'Yarın İmsak';
 }

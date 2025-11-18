@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart' show kIsWeb, debugPrint; // ✅ EKLEDİK
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  /// İzin iste ve kontrol et
+  /// Konum izni yönetimi
   Future<bool> requestPermission() async {
     if (kIsWeb) {
       try {
@@ -16,10 +16,7 @@ class LocationService {
       }
     } else {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        debugPrint('Location services disabled');
-        return false;
-      }
+      if (!serviceEnabled) return false;
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -33,36 +30,54 @@ class LocationService {
     }
   }
 
-  /// Mevcut konumu al
+  /// Konumu al
   Future<Position?> getCurrentLocation() async {
     try {
       final hasPermission = await requestPermission();
       if (!hasPermission) return null;
 
       return await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.best,
+      );
     } catch (e) {
       debugPrint('Error getting location: $e');
       return null;
     }
   }
 
-  /// Koordinattan adres çevir
-  Future<String?> getAddressFromLocation(double latitude, double longitude) async {
+  /// MAHALLE + İLÇE + ŞEHİR döndürür
+  Future<String?> getFullAddress(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        return "${place.locality ?? ''}, ${place.country ?? ''}".trim();
-      }
-      return null;
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
+
+      if (placemarks.isEmpty) return null;
+
+      Placemark place = placemarks.first;
+
+      final neighborhood = place.subLocality;          // Mahalle
+      final district = place.subAdministrativeArea;    // İlçe
+      final city = place.administrativeArea;           // Şehir
+
+      // Boş gelmeyenleri sırayla birleştir
+      final parts = <String>[
+        if (neighborhood != null && neighborhood.isNotEmpty) neighborhood,
+        if (district != null && district.isNotEmpty) district,
+        if (city != null && city.isNotEmpty) city,
+      ];
+
+      if (parts.isEmpty) return null;
+
+      return parts.join(", "); // Örn: "Kızılay, Çankaya, Ankara"
     } catch (e) {
       debugPrint('Error getting address: $e');
       return null;
     }
   }
 
-  /// Şehir adından koordinat bul
+  /// Şehir arama (city selection screen için)
   Future<Map<String, double>?> getCityCoordinates(String cityName) async {
     try {
       List<Location> locations = await locationFromAddress(cityName);

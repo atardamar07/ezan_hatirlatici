@@ -78,6 +78,7 @@
   "donateButton": "Donate",
   "locationNotDetected": "Location not detected. Please select a city manually.",
   "failedToLoadPrayerTimes": "Failed to load prayer times. Please check location settings.",
+  "prayerTimeEntered": "Prayer time has started",
 
   "selectCityTitle": "Select City",
   "popularCitiesTitle": "Popular Cities",
@@ -94,5 +95,8 @@
   "prayerNotificationTitle": "🕌 Prayer Time",
   "prayerNotificationBody": "{prayer} time has arrived. Time to pray!",
   "reminderNotificationTitle": "⏰ Prayer Reminder",
-  "reminderNotificationBody": "{prayer} in {minutes} minutes"
+  "reminderNotificationBody": "{prayer} in {minutes} minutes",
+  "tomorrow": "Tomorrow",
+  "tomorrowFajr": "Tomorrow Fajr"
+
 }

@@ -77,7 +77,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
     try {
       final location = await _locationService.getCurrentLocation();
       if (location != null) {
-        final address = await _locationService.getAddressFromLocation(
+        final address = await _locationService.getFullAddress(
             location.latitude!,
             location.longitude!
         );

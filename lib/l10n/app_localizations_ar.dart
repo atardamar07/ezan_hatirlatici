@@ -30,8 +30,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cityNotFound => 'لم يتم العثور على المدينة';
 
   @override
-  String get locationError =>
-      'تعذر الحصول على الموقع. يرجى التحقق من أذونات الموقع.';
+  String get locationError => 'تعذر الحصول على الموقع. يرجى التحقق من أذونات الموقع.';
 
   @override
   String locationErrorDetails(Object error) {
@@ -39,8 +38,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get prayerTimesLoadError =>
-      'فشل تحميل أوقات الصلاة. يرجى التحقق من إعدادات الموقع.';
+  String get prayerTimesLoadError => 'فشل تحميل أوقات الصلاة. يرجى التحقق من إعدادات الموقع.';
 
   @override
   String error(Object error) {
@@ -48,8 +46,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get locationPermissionError =>
-      'تم رفض إذن الموقع. يرجى تمكين خدمات الموقع.';
+  String get genericError => 'خطأ:';
+
+  @override
+  String get locationPermissionError => 'تم رفض إذن الموقع. يرجى تمكين خدمات الموقع.';
 
   @override
   String get currentLocation => 'الموقع الحالي';
@@ -58,6 +58,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String nextPrayer(Object prayer) {
     return 'الصلاة التالية: $prayer';
   }
+
+  @override
+  String get nextPrayerSimple => 'الصلاة التالية';
 
   @override
   String get menu => 'القائمة';
@@ -193,8 +196,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get donationsForWeb => 'التبرعات متاحة في تطبيق الجوال';
 
   @override
-  String get donateInfo =>
-      'يمكنك التبرع باستخدام التطبيق على جهاز Android أو iOS.';
+  String get donateInfo => 'يمكنك التبرع باستخدام التطبيق على جهاز Android أو iOS.';
 
   @override
   String get donationTitle => 'تبرع';
@@ -226,8 +228,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adFreeExperience => 'استمتع بتجربة خالية من الإعلانات';
 
   @override
-  String get donationInfoText =>
-      'ستُستخدم تبرعاتك لتطوير التطبيق وتغطية تكاليف الخادم.';
+  String get donationInfoText => 'ستُستخدم تبرعاتك لتطوير التطبيق وتغطية تكاليف الخادم.';
 
   @override
   String get noAdsFor30Days => 'لن يتم عرض إعلانات لمدة 30 يوماً بعد التبرع.';
@@ -254,25 +255,71 @@ class AppLocalizationsAr extends AppLocalizations {
   String get donateButton => 'تبرع';
 
   @override
-  String get locationNotDetected =>
-      'تعذر الحصول على الموقع. يرجى اختيار المدينة يدوياً.';
+  String get locationNotDetected => 'تعذر الحصول على الموقع. يرجى اختيار المدينة يدوياً.';
 
   @override
-  String get failedToLoadPrayerTimes =>
-      'فشل تحميل أوقات الصلاة. يرجى التحقق من إعدادات الموقع.';
+  String get failedToLoadPrayerTimes => 'فشل تحميل أوقات الصلاة. يرجى التحقق من إعدادات الموقع.';
 
   @override
-  String get genericError => 'خطأ:';
+  String get prayerTimeEntered => 'بدأ وقت الصلاة';
 
   @override
-  String get qibla => 'بوصلة القبلة';
+  String get selectCityTitle => 'Select City';
 
   @override
-  String get zikirmatik => 'عداد الذكر';
+  String get popularCitiesTitle => 'Popular Cities';
+
+  @override
+  String get citySearchHint => 'Search city...';
+
+  @override
+  String get noCityFoundMessage => 'No city found';
+
+  @override
+  String get useCurrentLocationButton => 'Use My Current Location';
 
   @override
   String get prayerTimesLoadFailed => 'تعذر تحميل أوقات الصلاة';
 
   @override
-  String get nextPrayerSimple => 'الصلاة التالية';
+  String get loadingPrayerTimes => 'Loading prayer times...';
+
+  @override
+  String locationErrorRetry(Object error) {
+    return 'Location error: $error';
+  }
+
+  @override
+  String get invalidTimeInfo => 'Invalid time information';
+
+  @override
+  String get resetCounter => 'Reset';
+
+  @override
+  String get continueCounting => 'Continue';
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+    return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+    return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'غدًا';
+
+  @override
+  String get tomorrowFajr => 'فجر الغد';
 }

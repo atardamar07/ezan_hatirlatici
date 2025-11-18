@@ -30,8 +30,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cityNotFound => 'Stadt nicht gefunden';
 
   @override
-  String get locationError =>
-      'Standort konnte nicht abgerufen werden. Bitte überprüfen Sie die Standortberechtigungen.';
+  String get locationError => 'Standort konnte nicht abgerufen werden. Bitte überprüfen Sie die Standortberechtigungen.';
 
   @override
   String locationErrorDetails(Object error) {
@@ -39,8 +38,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get prayerTimesLoadError =>
-      'Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.';
+  String get prayerTimesLoadError => 'Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.';
 
   @override
   String error(Object error) {
@@ -48,8 +46,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get locationPermissionError =>
-      'Standortberechtigung verweigert. Bitte aktivieren Sie die Standortdienste.';
+  String get genericError => 'Fehler:';
+
+  @override
+  String get locationPermissionError => 'Standortberechtigung verweigert. Bitte aktivieren Sie die Standortdienste.';
 
   @override
   String get currentLocation => 'Aktueller Standort';
@@ -58,6 +58,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String nextPrayer(Object prayer) {
     return 'Nächstes Gebet: $prayer';
   }
+
+  @override
+  String get nextPrayerSimple => 'Nächstes Gebet';
 
   @override
   String get menu => 'Menü';
@@ -187,15 +190,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get count => 'Zählen';
 
   @override
-  String get tapToCount =>
-      'Tippen Sie auf den Bildschirm, um Ihre Dhikr-Anzahl zu erhöhen';
+  String get tapToCount => 'Tippen Sie auf den Bildschirm, um Ihre Dhikr-Anzahl zu erhöhen';
 
   @override
   String get donationsForWeb => 'Spenden sind in der mobilen App verfügbar';
 
   @override
-  String get donateInfo =>
-      'Sie können spenden, indem Sie die App auf Ihrem Android- oder iOS-Gerät verwenden.';
+  String get donateInfo => 'Sie können spenden, indem Sie die App auf Ihrem Android- oder iOS-Gerät verwenden.';
 
   @override
   String get donationTitle => 'Spenden';
@@ -227,12 +228,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get adFreeExperience => 'Genießen Sie Ihre werbefreie Erfahrung';
 
   @override
-  String get donationInfoText =>
-      'Ihre Spenden werden für die App-Entwicklung und Serverkosten verwendet.';
+  String get donationInfoText => 'Ihre Spenden werden für die App-Entwicklung und Serverkosten verwendet.';
 
   @override
-  String get noAdsFor30Days =>
-      'Es werden 30 Tage lang keine Anzeigen angezeigt, nachdem Sie gespendet haben.';
+  String get noAdsFor30Days => 'Es werden 30 Tage lang keine Anzeigen angezeigt, nachdem Sie gespendet haben.';
 
   @override
   String get coffeeDonation => '☕ Eine Tasse Kaffee';
@@ -256,26 +255,71 @@ class AppLocalizationsDe extends AppLocalizations {
   String get donateButton => 'Spenden';
 
   @override
-  String get locationNotDetected =>
-      'Standort nicht erkannt. Bitte wählen Sie eine Stadt manuell aus.';
+  String get locationNotDetected => 'Standort nicht erkannt. Bitte wählen Sie eine Stadt manuell aus.';
 
   @override
-  String get failedToLoadPrayerTimes =>
-      'Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.';
+  String get failedToLoadPrayerTimes => 'Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.';
 
   @override
-  String get genericError => 'Fehler:';
+  String get prayerTimeEntered => 'Gebetszeit hat begonnen';
 
   @override
-  String get qibla => 'Qibla-Kompass';
+  String get selectCityTitle => 'Select City';
 
   @override
-  String get zikirmatik => 'Dhikr-Zähler';
+  String get popularCitiesTitle => 'Popular Cities';
 
   @override
-  String get prayerTimesLoadFailed =>
-      'Gebetszeiten konnten nicht geladen werden';
+  String get citySearchHint => 'Search city...';
 
   @override
-  String get nextPrayerSimple => 'Nächstes Gebet';
+  String get noCityFoundMessage => 'No city found';
+
+  @override
+  String get useCurrentLocationButton => 'Use My Current Location';
+
+  @override
+  String get prayerTimesLoadFailed => 'Gebetszeiten konnten nicht geladen werden';
+
+  @override
+  String get loadingPrayerTimes => 'Loading prayer times...';
+
+  @override
+  String locationErrorRetry(Object error) {
+    return 'Location error: $error';
+  }
+
+  @override
+  String get invalidTimeInfo => 'Invalid time information';
+
+  @override
+  String get resetCounter => 'Reset';
+
+  @override
+  String get continueCounting => 'Continue';
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+    return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+    return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'Morgen';
+
+  @override
+  String get tomorrowFajr => 'Morgen Fadschr';
 }

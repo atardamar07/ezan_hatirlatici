@@ -80,6 +80,9 @@
   "generousDonation": "💎 Großzügige Spende",
   "generousDescription": "Unterstützen Sie die Entwicklung der App",
   "locationNotDetected": "Standort nicht erkannt. Bitte wählen Sie eine Stadt manuell aus.",
-  "failedToLoadPrayerTimes": "Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen."
+  "failedToLoadPrayerTimes": "Gebetszeiten konnten nicht geladen werden. Bitte überprüfen Sie die Standorteinstellungen.",
+  "tomorrow": "Morgen",
+  "tomorrowFajr": "Morgen Fadschr",
+  "prayerTimeEntered": "Gebetszeit hat begonnen"
 
 }

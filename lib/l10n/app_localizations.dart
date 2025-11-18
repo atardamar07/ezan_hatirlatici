@@ -65,8 +65,7 @@ import 'app_localizations_tr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -74,8 +73,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -87,13 +85,12 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -101,7 +98,7 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('en'),
     Locale('ru'),
-    Locale('tr'),
+    Locale('tr')
   ];
 
   /// No description provided for @appTitle.
@@ -170,6 +167,12 @@ abstract class AppLocalizations {
   /// **'Error: {error}'**
   String error(Object error);
 
+  /// No description provided for @genericError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error:'**
+  String get genericError;
+
   /// No description provided for @locationPermissionError.
   ///
   /// In en, this message translates to:
@@ -187,6 +190,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next Prayer: {prayer}'**
   String nextPrayer(Object prayer);
+
+  /// No description provided for @nextPrayerSimple.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Prayer'**
+  String get nextPrayerSimple;
 
   /// No description provided for @menu.
   ///
@@ -560,23 +569,41 @@ abstract class AppLocalizations {
   /// **'Failed to load prayer times. Please check location settings.'**
   String get failedToLoadPrayerTimes;
 
-  /// No description provided for @genericError.
+  /// No description provided for @prayerTimeEntered.
   ///
   /// In en, this message translates to:
-  /// **'Error:'**
-  String get genericError;
+  /// **'Prayer time has started'**
+  String get prayerTimeEntered;
 
-  /// No description provided for @qibla.
+  /// No description provided for @selectCityTitle.
   ///
   /// In en, this message translates to:
-  /// **'Qibla Compass'**
-  String get qibla;
+  /// **'Select City'**
+  String get selectCityTitle;
 
-  /// No description provided for @zikirmatik.
+  /// No description provided for @popularCitiesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Dhikr Counter'**
-  String get zikirmatik;
+  /// **'Popular Cities'**
+  String get popularCitiesTitle;
+
+  /// No description provided for @citySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search city...'**
+  String get citySearchHint;
+
+  /// No description provided for @noCityFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No city found'**
+  String get noCityFoundMessage;
+
+  /// No description provided for @useCurrentLocationButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Use My Current Location'**
+  String get useCurrentLocationButton;
 
   /// No description provided for @prayerTimesLoadFailed.
   ///
@@ -584,15 +611,80 @@ abstract class AppLocalizations {
   /// **'Prayer times could not be loaded'**
   String get prayerTimesLoadFailed;
 
-  /// No description provided for @nextPrayerSimple.
+  /// No description provided for @loadingPrayerTimes.
   ///
   /// In en, this message translates to:
-  /// **'Next Prayer'**
-  String get nextPrayerSimple;
+  /// **'Loading prayer times...'**
+  String get loadingPrayerTimes;
+
+  /// No description provided for @locationErrorRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Location error: {error}'**
+  String locationErrorRetry(Object error);
+
+  /// No description provided for @invalidTimeInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid time information'**
+  String get invalidTimeInfo;
+
+  /// No description provided for @resetCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetCounter;
+
+  /// No description provided for @continueCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueCounting;
+
+  /// No description provided for @tapToIncrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to increase count'**
+  String get tapToIncrement;
+
+  /// No description provided for @prayerNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🕌 Prayer Time'**
+  String get prayerNotificationTitle;
+
+  /// No description provided for @prayerNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} time has arrived. Time to pray!'**
+  String prayerNotificationBody(Object prayer);
+
+  /// No description provided for @reminderNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'⏰ Prayer Reminder'**
+  String get reminderNotificationTitle;
+
+  /// No description provided for @reminderNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{prayer} in {minutes} minutes'**
+  String reminderNotificationBody(Object minutes, Object prayer);
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @tomorrowFajr.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow Fajr'**
+  String get tomorrowFajr;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -601,32 +693,28 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'de', 'en', 'ru', 'tr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'de', 'en', 'ru', 'tr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
-    case 'de':
-      return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
-    case 'ru':
-      return AppLocalizationsRu();
-    case 'tr':
-      return AppLocalizationsTr();
+    case 'ar': return AppLocalizationsAr();
+    case 'de': return AppLocalizationsDe();
+    case 'en': return AppLocalizationsEn();
+    case 'ru': return AppLocalizationsRu();
+    case 'tr': return AppLocalizationsTr();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

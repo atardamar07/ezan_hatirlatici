@@ -30,8 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cityNotFound => 'City not found';
 
   @override
-  String get locationError =>
-      'Location could not be retrieved. Please check location permissions.';
+  String get locationError => 'Location could not be retrieved. Please check location permissions.';
 
   @override
   String locationErrorDetails(Object error) {
@@ -39,8 +38,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get prayerTimesLoadError =>
-      'Failed to load prayer times. Please check location settings.';
+  String get prayerTimesLoadError => 'Failed to load prayer times. Please check location settings.';
 
   @override
   String error(Object error) {
@@ -48,8 +46,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get locationPermissionError =>
-      'Location permission denied. Please enable location services.';
+  String get genericError => 'Error:';
+
+  @override
+  String get locationPermissionError => 'Location permission denied. Please enable location services.';
 
   @override
   String get currentLocation => 'Current Location';
@@ -58,6 +58,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String nextPrayer(Object prayer) {
     return 'Next Prayer: $prayer';
   }
+
+  @override
+  String get nextPrayerSimple => 'Next Prayer';
 
   @override
   String get menu => 'Menu';
@@ -193,8 +196,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donationsForWeb => 'Donations Available on Mobile App';
 
   @override
-  String get donateInfo =>
-      'You can make donations by using the app on your Android or iOS device.';
+  String get donateInfo => 'You can make donations by using the app on your Android or iOS device.';
 
   @override
   String get donationTitle => 'Donate';
@@ -226,12 +228,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adFreeExperience => 'Enjoy your ad-free experience';
 
   @override
-  String get donationInfoText =>
-      'Your donations will be used for app development and server costs.';
+  String get donationInfoText => 'Your donations will be used for app development and server costs.';
 
   @override
-  String get noAdsFor30Days =>
-      'No ads will be shown for 30 days after donating.';
+  String get noAdsFor30Days => 'No ads will be shown for 30 days after donating.';
 
   @override
   String get coffeeDonation => '☕ A Cup of Coffee';
@@ -255,25 +255,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donateButton => 'Donate';
 
   @override
-  String get locationNotDetected =>
-      'Location not detected. Please select a city manually.';
+  String get locationNotDetected => 'Location not detected. Please select a city manually.';
 
   @override
-  String get failedToLoadPrayerTimes =>
-      'Failed to load prayer times. Please check location settings.';
+  String get failedToLoadPrayerTimes => 'Failed to load prayer times. Please check location settings.';
 
   @override
-  String get genericError => 'Error:';
+  String get prayerTimeEntered => 'Prayer time has started';
 
   @override
-  String get qibla => 'Qibla Compass';
+  String get selectCityTitle => 'Select City';
 
   @override
-  String get zikirmatik => 'Dhikr Counter';
+  String get popularCitiesTitle => 'Popular Cities';
+
+  @override
+  String get citySearchHint => 'Search city...';
+
+  @override
+  String get noCityFoundMessage => 'No city found';
+
+  @override
+  String get useCurrentLocationButton => 'Use My Current Location';
 
   @override
   String get prayerTimesLoadFailed => 'Prayer times could not be loaded';
 
   @override
-  String get nextPrayerSimple => 'Next Prayer';
+  String get loadingPrayerTimes => 'Loading prayer times...';
+
+  @override
+  String locationErrorRetry(Object error) {
+    return 'Location error: $error';
+  }
+
+  @override
+  String get invalidTimeInfo => 'Invalid time information';
+
+  @override
+  String get resetCounter => 'Reset';
+
+  @override
+  String get continueCounting => 'Continue';
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+    return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+    return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get tomorrowFajr => 'Tomorrow Fajr';
 }

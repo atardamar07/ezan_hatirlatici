@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class PrayerCard extends StatefulWidget {
   final String prayerName;
@@ -19,7 +20,7 @@ class PrayerCard extends StatefulWidget {
 
 class _PrayerCardState extends State<PrayerCard> {
   late Timer _timer;
-  final ValueNotifier<String> _remainingText = ValueNotifier('Hesaplanıyor...');
+  final ValueNotifier<String> _remainingText = ValueNotifier('...');
   final ValueNotifier<bool> _vakitGirdi = ValueNotifier(false);
   bool _ezanPlayed = false;
 
@@ -41,52 +42,71 @@ class _PrayerCardState extends State<PrayerCard> {
     }
   }
 
+  /// 🔥 DİL DESTEKLİ NAMAZ İSMİ
+  String _localizedPrayerName(BuildContext context, String key) {
+    final loc = AppLocalizations.of(context)!;
+
+    switch (key.toLowerCase()) {
+      case "fajr":
+        return loc.fajr;
+      case "dhuhr":
+        return loc.dhuhr;
+      case "asr":
+        return loc.asr;
+      case "maghrib":
+        return loc.maghrib;
+      case "isha":
+        return loc.isha;
+
+    /// YARIN IMSAK
+      case "tomorrow_fajr":
+        return loc.tomorrowFajr;
+
+      default:
+        return key;
+    }
+  }
+
   void _calculateRemaining() {
     try {
       final now = DateTime.now();
       final reg = RegExp(r'(\d{1,2}:\d{2})');
       final match = reg.firstMatch(widget.time);
-      String timePart = match?.group(1) ?? widget.time;
+      final timePart = match?.group(1) ?? widget.time;
 
       final parts = timePart.split(':');
       if (parts.length < 2) {
-        _remainingText.value = "Zaman bilgisi geçersiz";
+        _remainingText.value = "Invalid time";
         return;
       }
 
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
-      final prayerTime = DateTime(now.year, now.month, now.day, hour, minute);
+
+      final prayerTime =
+      DateTime(now.year, now.month, now.day, hour, minute);
 
       Duration diff = prayerTime.difference(now);
-      final isPast = diff.isNegative;
 
-      if (isPast) {
-        _remainingText.value = "🕌 Vakit girdi";
+      if (diff.isNegative) {
+        _remainingText.value = "🕌 ${AppLocalizations.of(context)!.prayerTimeEntered}";
         _vakitGirdi.value = true;
-
-        // Bildirim tetikle (sadece bir kere)
-        if (!_ezanPlayed) {
-          _ezanPlayed = true;
-          // Burada NotificationService.showNotification çağrılabilir
-          // ancak scheduler zaten planladı, burası sadece UI için
-        }
       } else {
         _vakitGirdi.value = false;
-        final hours = diff.inHours;
-        final minutes = diff.inMinutes % 60;
-        final seconds = diff.inSeconds % 60;
+        final h = diff.inHours;
+        final m = diff.inMinutes % 60;
+        final s = diff.inSeconds % 60;
 
-        if (hours > 0) {
-          _remainingText.value = "⏳ $hours sa ${minutes.toString().padLeft(2, '0')} dk kaldı";
-        } else if (minutes > 0) {
-          _remainingText.value = "⏳ $minutes dk ${seconds.toString().padLeft(2, '0')} sn kaldı";
+        if (h > 0) {
+          _remainingText.value = "⏳ $h h ${m.toString().padLeft(2, '0')} m";
+        } else if (m > 0) {
+          _remainingText.value = "⏳ $m m ${s.toString().padLeft(2, '0')} s";
         } else {
-          _remainingText.value = "⏳ $seconds sn kaldı";
+          _remainingText.value = "⏳ $s s";
         }
       }
-    } catch (e) {
-      _remainingText.value = "Zaman bilgisi geçersiz";
+    } catch (_) {
+      _remainingText.value = "Invalid time";
     }
   }
 
@@ -98,21 +118,9 @@ class _PrayerCardState extends State<PrayerCard> {
     super.dispose();
   }
 
-  String _getTurkishPrayerName(String prayerName) {
-    switch (prayerName.toLowerCase()) {
-      case 'fajr': return 'İmsak';
-      case 'sunrise': return 'Güneş';
-      case 'dhuhr': return 'Öğle';
-      case 'asr': return 'İkindi';
-      case 'maghrib': return 'Akşam';
-      case 'isha': return 'Yatsı';
-      default: return prayerName;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final turkishName = _getTurkishPrayerName(widget.prayerName);
+    final name = _localizedPrayerName(context, widget.prayerName);
     final isActive = widget.isNextPrayer && !_vakitGirdi.value;
 
     return ValueListenableBuilder<String>(
@@ -131,13 +139,15 @@ class _PrayerCardState extends State<PrayerCard> {
           elevation: widget.isNextPrayer ? 8 : 4,
           margin: const EdgeInsets.symmetric(vertical: 8),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            contentPadding: const EdgeInsets.symmetric(
+                vertical: 12, horizontal: 20),
             title: Text(
-              turkishName,
+              name,
               style: TextStyle(
                 color: widget.isNextPrayer ? Colors.white : Colors.amber,
                 fontSize: 20,
-                fontWeight: widget.isNextPrayer ? FontWeight.bold : FontWeight.normal,
+                fontWeight:
+                widget.isNextPrayer ? FontWeight.bold : FontWeight.normal,
               ),
             ),
             subtitle: Column(
@@ -157,13 +167,13 @@ class _PrayerCardState extends State<PrayerCard> {
                   style: TextStyle(
                     color: isActive ? Colors.white70 : Colors.grey,
                     fontSize: 14,
-                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ],
             ),
             trailing: widget.isNextPrayer
-                ? const Icon(Icons.access_time, color: Colors.white, size: 24)
+                ? const Icon(Icons.access_time,
+                color: Colors.white, size: 24)
                 : null,
           ),
         );

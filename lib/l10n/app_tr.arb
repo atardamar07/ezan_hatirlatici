@@ -28,10 +28,6 @@
   "selectLocation": "Konum Seçin",
   "fajr": "İmsak",
   "sunrise": "Güneş",
-  "dhuhr": "Öğle",
-  "asr": "İkindi",
-  "maghrib": "Akşam",
-  "isha": "Yatsı",
   "timeRemainingHours": "⏳ {hours} sa {minutes} dk kaldı",
   "timeRemainingMinutes": "⏳ {minutes} dk {seconds} sn kaldı",
   "timeRemainingSeconds": "⏳ {seconds} sn kaldı",
@@ -78,7 +74,6 @@
   "donateButton": "Bağış Yap",
   "locationNotDetected": "Konum alınamadı. Lütfen manuel olarak şehir seçin.",
   "failedToLoadPrayerTimes": "Namaz vakitleri yüklenemedi. Lütfen konum ayarlarını kontrol edin.",
-
   "selectCityTitle": "Şehir Seçin",
   "popularCitiesTitle": "Popüler Şehirler",
   "citySearchHint": "Şehir ara...",
@@ -90,4 +85,12 @@
   "invalidTimeInfo": "Zaman bilgisi geçersiz",
   "resetCounter": "Sıfırla",
   "continueCounting": "Devam Et",
-  "
+
+  "dhuhr": "Öğle",
+  "asr": "İkindi",
+  "maghrib": "Akşam",
+  "isha": "Yatsı",
+  "tomorrow": "Yarın",
+  "tomorrowFajr": "Yarın İmsak",
+  "prayerTimeEntered": "Vakit girdi"
+}

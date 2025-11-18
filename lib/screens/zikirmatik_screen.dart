@@ -67,23 +67,28 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
 
   void _incrementCounter() {
     setState(() {
+      // Eğer sayaç Hedefi geçtiyse hiçbir şey yapmasın
+      if (_counter >= _targetCount) return;
+
       _counter++;
       _animationController.forward().then((_) => _animationController.reverse());
 
-      // Web'de titreşim yok
-      if (!_isVibrationEnabled || kIsWeb) return;
-
-      if (_counter % 33 == 0) {
-        Vibration.vibrate(duration: 500);
-      } else {
-        Vibration.vibrate(duration: 50);
+      // Web'de titreşim olmaz
+      if (_isVibrationEnabled && !kIsWeb) {
+        if (_counter == _targetCount) {
+          Vibration.vibrate(duration: 500);  // hedef titreşimi
+        } else {
+          Vibration.vibrate(duration: 50);   // normal titreşim
+        }
       }
 
+      // ⭐ Hedefe ulaştıysa popup aç ve sayaç artık artmasın
       if (_counter == _targetCount) {
         _showCompletionDialog();
       }
     });
   }
+
 
   void _resetCounter() {
     setState(() {
