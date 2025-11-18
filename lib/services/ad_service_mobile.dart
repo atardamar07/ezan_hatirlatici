@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'ad_ids.dart';
 
 import 'ad_service_base.dart';
 
@@ -8,15 +12,14 @@ class AdServicePlatform implements AdServiceBase {
   BannerAd? _banner;
   InterstitialAd? _interstitial;
 
-  static const testBanner = 'ca-app-pub-3940256099942544/6300978111';
-  static const testInterstitial = 'ca-app-pub-3940256099942544/1033173712';
 
   @override
   Future<void> initialize({bool loadAds = true}) async {
     await MobileAds.instance.initialize();
 
     _banner = BannerAd(
-      adUnitId: testBanner,
+      adUnitId:
+      Platform.isIOS ? AdIds.iosBannerAdUnitId : AdIds.androidBannerAdUnitId,
       size: AdSize.banner,
       listener: BannerAdListener(),
       request: const AdRequest(),
@@ -34,7 +37,9 @@ class AdServicePlatform implements AdServiceBase {
   @override
   Future<void> loadInterstitialAd() async {
     await InterstitialAd.load(
-      adUnitId: testInterstitial,
+      adUnitId: Platform.isIOS
+          ? AdIds.iosInterstitialAdUnitId
+          : AdIds.androidInterstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) => _interstitial = ad,

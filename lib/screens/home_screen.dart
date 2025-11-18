@@ -32,14 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
         return loc.maghrib; // Akşam
       case "Isha":
         return loc.isha;    // Yatsı
-      case "Tomorrow Fajr":
-        return "${loc.tomorrow} ${loc.fajr}";
+
     }
 
     return name;
   }
   Map<String, dynamic>? _todayTimes;
-  Map<String, dynamic>? _tomorrowTimes;
 
   bool _isLoading = true;
   String _currentLocation = '';
@@ -130,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       Map<String, dynamic>? today;
-      Map<String, dynamic>? tomorrow;
 
       final type = _prefs!.getString('locationType');
 
@@ -145,11 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedMethod,
           );
 
-          tomorrow = await _prayerApi.getTomorrowsPrayerTimes(
-            lat,
-            lng,
-            _selectedMethod,
-          );
+
         }
       } else if (type == 'city') {
         final city = _prefs!.getString('selectedCity');
@@ -162,14 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedMethod,
           );
 
-          tomorrow = null;
         }
       }
 
       if (today != null) {
         setState(() {
           _todayTimes = today;
-          _tomorrowTimes = tomorrow;
+
         });
       } else {
         throw Exception("Prayer data is null");
@@ -242,8 +234,6 @@ class _HomeScreenState extends State<HomeScreen> {
       "Maghrib": _todayTimes!["Maghrib"],
       "Isha": _todayTimes!["Isha"],
     };
-
-    final tomorrowFajr = _tomorrowTimes?["Fajr"];
 
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
@@ -335,16 +325,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             }),
-
-            // ⭐ YARIN IMSAK
-            if (tomorrowFajr != null) ...[
-              const SizedBox(height: 12),
-              PrayerCard(
-                prayerName: translatePrayerName(context, "Tomorrow Fajr"),
-                time: tomorrowFajr,
-                isNextPrayer: false,
-              ),
-            ],
 
             if (!kIsWeb) _adService.buildBannerAd(),
           ],

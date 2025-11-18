@@ -7,9 +7,14 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  static const _androidChannelId = 'prayer_channel_id';
+  static const _androidChannelName = 'Namaz Bildirimleri';
+  static const _androidChannelDescription =
+      'Namaz vakitleri ve hatırlatıcıları';
+
   static Future<void> initialize() async {
     const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings iosSettings =
     DarwinInitializationSettings(
@@ -18,10 +23,8 @@ class NotificationService {
       requestSoundPermission: true,
     );
 
-    const InitializationSettings settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+    const InitializationSettings settings =
+      InitializationSettings(android: androidSettings, iOS: iosSettings);
 
     await flutterLocalNotificationsPlugin.initialize(settings);
     tz.initializeTimeZones();
@@ -36,19 +39,7 @@ class NotificationService {
       return;
     }
 
-    const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
-      'prayer_channel_id',
-      'Namaz Bildirimleri',
-      channelDescription: 'Namaz vakitleri ve hatırlatıcıları',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      enableVibration: true,
-      icon: '@mipmap/ic_launcher',
-    );
-
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
+    final details = _buildNotificationDetails();
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 10000,
@@ -70,17 +61,7 @@ class NotificationService {
 
     final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
 
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'prayer_channel_id',
-      'Namaz Bildirimleri',
-      channelDescription: 'Namaz vakitleri ve hatırlatıcıları',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      enableVibration: true,
-    );
-
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
+    final details = _buildNotificationDetails();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       scheduledTime.millisecondsSinceEpoch ~/ 10000,
@@ -96,5 +77,32 @@ class NotificationService {
   static Future<void> cancelAllNotifications() async {
     if (kIsWeb) return;
     await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  static NotificationDetails _buildNotificationDetails() {
+    const androidDetails = AndroidNotificationDetails(
+      _androidChannelId,
+      _androidChannelName,
+      channelDescription: _androidChannelDescription,
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+      icon: '@mipmap/ic_launcher',
+      sound: RawResourceAndroidNotificationSound('ezan'),
+      audioAttributesUsage: AudioAttributesUsage.notification,
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'ezan.mp3',
+    );
+
+    return const NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
   }
 }
