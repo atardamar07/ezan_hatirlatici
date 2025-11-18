@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Timer? _adTimer;
+
   String translatePrayerName(BuildContext context, String name) {
     final loc = AppLocalizations.of(context)!;
 
@@ -67,9 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!kIsWeb) {
       await _adService.initialize();
       await NotificationService.initialize();
+      _startAdTimer();
     }
 
     await _loadSavedLocation();
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+
+    _adTimer = Timer.periodic(const Duration(minutes: 1), (_) async {
+      if (!mounted) return;
+
+      final shouldShow = await _adService.shouldShowAd();
+      if (shouldShow) {
+        _adService.showInterstitialAd();
+      }
+    });
   }
 
   Future<void> _loadSavedLocation() async {
@@ -83,6 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       await _getCurrentLocationAndFetchTimes();
     }
+  }
+
+  @override
+  void dispose() {
+    _adTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _getCurrentLocationAndFetchTimes() async {

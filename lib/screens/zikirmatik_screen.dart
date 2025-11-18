@@ -39,7 +39,6 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
       ),
     );
 
-    _loadZikirs();
     _loadSettings();
   }
 
@@ -199,11 +198,11 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
             const SizedBox(height: 16),
             Text(AppLocalizations.of(context)!
                 .completedDhikr(_selectedZikir, _targetCount)),
-            if (_zikirler.firstWhere((z) => z['name'] == _selectedZikir)['meaning'] != null)
+            if (selectedMeaning.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  _zikirler.firstWhere((z) => z['name'] == _selectedZikir)['meaning']!,
+                  selectedMeaning,
                   style: const TextStyle(fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center,
                 ),
@@ -233,7 +232,11 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final progress = _counter / _targetCount;
-    final selectedZikirData = _zikirler.firstWhere((z) => z['name'] == _selectedZikir);
+    final selectedZikirData = _zikirler.firstWhere(
+          (z) => z['name'] == _selectedZikir,
+      orElse: () => {'name': _selectedZikir, 'meaning': ''},
+    );
+    final selectedMeaning = selectedZikirData['meaning'] ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),

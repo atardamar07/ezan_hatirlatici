@@ -58,10 +58,13 @@ class AdServicePlatform implements AdServiceBase {
   @override
   Future<bool> shouldShowAd() async {
     final prefs = await SharedPreferences.getInstance();
+    final isAdFree = prefs.getBool('isAdFree') ?? false;
+    if (isAdFree) return false;
+
     final last = prefs.getInt("lastAdTime") ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    if (now - last > 3 * 60 * 1000) {
+    if (now - last > 1 * 60 * 1000) {
       prefs.setInt("lastAdTime", now);
       return true;
     }
