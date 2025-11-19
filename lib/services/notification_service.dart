@@ -38,9 +38,9 @@ class NotificationService {
       await androidPlugin.requestNotificationsPermission();
 
       final canScheduleExact =
-      await androidPlugin.canScheduleExactNotifications();
+        await androidPlugin.canScheduleExactNotifications();
 
-      if (!canScheduleExact) {
+      if (canScheduleExact != true) {
         await androidPlugin.requestExactAlarmsPermission();
       }
     }
