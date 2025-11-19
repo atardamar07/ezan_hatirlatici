@@ -21,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Timer? _adTimer;
+  Map<String, String> _filteredTodayTimes = {};
+  String? _nextPrayer;
 
   String translatePrayerName(BuildContext context, String name) {
     final loc = AppLocalizations.of(context)!;
@@ -185,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (today != null) {
         setState(() {
           _todayTimes = today;
-
+          _updatePrayerDisplayData();
         });
       } else {
         throw Exception("Prayer data is null");
@@ -208,6 +210,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  void _updatePrayerDisplayData() {
+    if (_todayTimes == null) {
+      _filteredTodayTimes = {};
+      _nextPrayer = null;
+      return;
+    }
+
+    _filteredTodayTimes = {
+      "Fajr": _todayTimes!["Fajr"],
+      "Dhuhr": _todayTimes!["Dhuhr"],
+      "Asr": _todayTimes!["Asr"],
+      "Maghrib": _todayTimes!["Maghrib"],
+      "Isha": _todayTimes!["Isha"],
+    };
+
+    _nextPrayer = _prayerApi.getNextPrayer(_todayTimes!);
   }
 
   Future<void> _selectLocation() async {
@@ -246,20 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final nextPrayer =
-    _todayTimes != null ? _prayerApi.getNextPrayer(_todayTimes!) : null;
-
-    final filteredTodayTimes = _todayTimes == null
-        ? {}
-        : {
-      "Fajr": _todayTimes!["Fajr"],
-      "Dhuhr": _todayTimes!["Dhuhr"],
-      "Asr": _todayTimes!["Asr"],
-      "Maghrib": _todayTimes!["Maghrib"],
-      "Isha": _todayTimes!["Isha"],
-    };
-
-    return Scaffold(
+      return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
 
       appBar: AppBar(
@@ -336,8 +343,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // ⭐ BUGÜNÜN 5 VAKTİ
-            ...filteredTodayTimes.entries.map((entry) {
-              final isNext = entry.key == nextPrayer;
+            ..._filteredTodayTimes.entries.map((entry) {
+              final isNext = entry.key == _nextPrayer;
               return Column(
                 children: [
                   PrayerCard(
