@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
+import '../services/geocoding_service.dart';
 import '../services/location_service.dart';
-import '../services/prayer_times_api.dart';
 
 class CitySelectionScreen extends StatefulWidget {
   const CitySelectionScreen({Key? key}) : super(key: key);
@@ -13,7 +13,9 @@ class CitySelectionScreen extends StatefulWidget {
 class _CitySelectionScreenState extends State<CitySelectionScreen> {
   final TextEditingController _searchController = TextEditingController();
   final LocationService _locationService = LocationService();
-  final PrayerTimesApi _prayerApi = PrayerTimesApi();
+  final GeocodingService _geocodingService = GeocodingService();
+
+  Timer? _debounce;
 
   bool _isLoading = false;
   bool _isGettingLocation = false;
@@ -50,6 +52,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -57,16 +60,31 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text;
-      if (_searchQuery.isEmpty) {
-        _searchResults = [];
+    });
+
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (_searchQuery.length < 2) {
+        setState(() => _searchResults = []);
       } else {
-        _searchResults = _popularCities
-            .where((city) => city['name']!
-            .toLowerCase()
-            .contains(_searchQuery.toLowerCase()))
-            .toList();
+        _searchCities(_searchQuery);
       }
     });
+  }
+
+  Future<void> _searchCities(String query) async {
+    setState(() => _isLoading = true);
+
+    try {
+      final results = await _geocodingService.searchCities(query);
+      if (mounted) {
+        setState(() => _searchResults = results);
+      }
+    } catch (e) {
+      _showError(AppLocalizations.of(context)!.locationErrorDetails('$e'));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _useCurrentLocation() async {
@@ -109,6 +127,8 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
       'type': 'city',
       'city': city['name'],
       'country': city['country'],
+      'latitude': city['latitude'],
+      'longitude': city['longitude'],
     });
   }
 
@@ -220,6 +240,10 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   }
 
   Widget _buildSearchResults() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     if (_searchResults.isEmpty) {
       return Center(
         child: Column(
@@ -278,7 +302,12 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                 city['name']!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(city['country']!),
+              subtitle: Text(
+                [
+                  if (city['admin1'] != null) city['admin1'],
+                  if (city['country'] != null) city['country'],
+                ].join(', '),
+              ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () => _selectCity(city),
             ),
