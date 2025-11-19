@@ -69,7 +69,9 @@ class _PrayerCardState extends State<PrayerCard> {
 
   void _calculateRemaining() {
     try {
-      final now = DateTime.now();
+      final nowUtc = DateTime.now().toUtc();
+      final locationOffset = _extractOffset(widget.time);
+      final nowAtLocation = nowUtc.add(locationOffset);
       final reg = RegExp(r'(\d{1,2}:\d{2})');
       final match = reg.firstMatch(widget.time);
       final timePart = match?.group(1) ?? widget.time;
@@ -83,10 +85,15 @@ class _PrayerCardState extends State<PrayerCard> {
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
 
-      final prayerTime =
-      DateTime(now.year, now.month, now.day, hour, minute);
+      final prayerTime = DateTime(
+        nowAtLocation.year,
+        nowAtLocation.month,
+        nowAtLocation.day,
+        hour,
+        minute,
+      );
 
-      Duration diff = prayerTime.difference(now);
+      Duration diff = prayerTime.difference(nowAtLocation);
 
       if (diff.isNegative) {
         _remainingText.value = "🕌 ${AppLocalizations.of(context)!.prayerTimeEntered}";
@@ -108,6 +115,20 @@ class _PrayerCardState extends State<PrayerCard> {
     } catch (_) {
       _remainingText.value = "Invalid time";
     }
+  }
+
+  Duration _extractOffset(String rawTime) {
+    final match = RegExp(r'([+-])(\d{1,2}):?(\d{2})?').firstMatch(rawTime);
+
+    if (match != null) {
+      final sign = match.group(1) == '-' ? -1 : 1;
+      final hours = int.tryParse(match.group(2) ?? '') ?? 0;
+      final minutes = int.tryParse(match.group(3) ?? '') ?? 0;
+
+      return Duration(minutes: sign * (hours * 60 + minutes));
+    }
+
+    return DateTime.now().timeZoneOffset;
   }
 
   @override
