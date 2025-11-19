@@ -28,6 +28,22 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(settings);
     tz.initializeTimeZones();
+
+    final androidPlugin = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    // Android 13 (API 33) ve üzeri için hem bildirim hem de exact alarm izinlerini iste
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+
+      final canScheduleExact =
+      await androidPlugin.canScheduleExactNotifications();
+
+      if (!canScheduleExact) {
+        await androidPlugin.requestExactAlarmsPermission();
+      }
+    }
   }
 
   static Future<void> showNotification({
