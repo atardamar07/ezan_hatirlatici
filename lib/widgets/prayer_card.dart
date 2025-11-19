@@ -85,15 +85,16 @@ class _PrayerCardState extends State<PrayerCard> {
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
 
-      final prayerTime = DateTime(
+      // Zamana konum saat dilimi farkını da uygulayarak UTC tabanlı hesapla
+      final prayerTimeUtc = DateTime.utc(
         nowAtLocation.year,
         nowAtLocation.month,
         nowAtLocation.day,
         hour,
         minute,
-      );
+      ).subtract(locationOffset);
 
-      Duration diff = prayerTime.difference(nowAtLocation);
+      Duration diff = prayerTimeUtc.difference(nowUtc);
 
       if (diff.isNegative) {
         _remainingText.value = "🕌 ${AppLocalizations.of(context)!.prayerTimeEntered}";
