@@ -69,9 +69,7 @@ class _PrayerCardState extends State<PrayerCard> {
 
   void _calculateRemaining() {
     try {
-      final nowUtc = DateTime.now().toUtc();
-      final locationOffset = _extractOffset(widget.time);
-      final nowAtLocation = nowUtc.add(locationOffset);
+      final now = DateTime.now();
       final reg = RegExp(r'(\d{1,2}:\d{2})');
       final match = reg.firstMatch(widget.time);
       final timePart = match?.group(1) ?? widget.time;
@@ -85,16 +83,15 @@ class _PrayerCardState extends State<PrayerCard> {
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
 
-      // Zamana konum saat dilimi farkını da uygulayarak UTC tabanlı hesapla
-      final prayerTimeUtc = DateTime.utc(
-        nowAtLocation.year,
-        nowAtLocation.month,
-        nowAtLocation.day,
-        hour,
-        minute,
-      ).subtract(locationOffset);
+      DateTime prayerTime = DateTime(now.year, now.month, now.day, hour, minute);
 
-      Duration diff = prayerTimeUtc.difference(nowUtc);
+      final offset = _extractExplicitOffset(widget.time);
+      if (offset != null) {
+        final localOffset = now.timeZoneOffset;
+        prayerTime = prayerTime.subtract(offset).add(localOffset);
+      }
+
+      final diff = prayerTime.difference(now);
 
       if (diff.isNegative) {
         _remainingText.value = "🕌 ${AppLocalizations.of(context)!.prayerTimeEntered}";
@@ -118,7 +115,7 @@ class _PrayerCardState extends State<PrayerCard> {
     }
   }
 
-  Duration _extractOffset(String rawTime) {
+  Duration? _extractExplicitOffset(String rawTime) {
     final match = RegExp(r'([+-])(\d{1,2}):?(\d{2})?').firstMatch(rawTime);
 
     if (match != null) {
@@ -129,7 +126,7 @@ class _PrayerCardState extends State<PrayerCard> {
       return Duration(minutes: sign * (hours * 60 + minutes));
     }
 
-    return DateTime.now().timeZoneOffset;
+    return null;
   }
 
   @override
