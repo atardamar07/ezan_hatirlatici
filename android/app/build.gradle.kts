@@ -6,6 +6,11 @@ plugins {
     // Ancak bu eklenti burada tanımlı olmak zorunda değil. Yine de zararı yok.
     id("com.android.library") apply false
 }
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     namespace = "com.example.ezan_hatirlatici"
@@ -52,6 +57,20 @@ android {
     // Bu satır artık gerekli olmayabilir, Gradle bunu otomatik yönetir.
     // İsterseniz silebilirsiniz, sorun çıkarırsa geri eklersiniz.
     buildToolsVersion = "36.1.0"
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+                    minifyEnabled false
+            shrinkResources false
+        }
 }
 
 flutter {
