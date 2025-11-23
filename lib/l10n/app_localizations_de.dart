@@ -9,7 +9,7 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'Gebetszeiten-Erinnerung';
+  String get appTitle => 'Gebetserinnerung';
 
   @override
   String get selectCity => 'Stadt auswählen';

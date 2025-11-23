@@ -1,11 +1,11 @@
 {
-    "name": "ezan_hatirlatici",
-    "short_name": "ezan_hatirlatici",
+  "name": "Prayer Reminder",
+  "short_name": "PrayerReminder",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Ezan Hatırlatıcı – Namaz Vakitleri ve Hatırlatıcı",
+  "description": "Prayer Reminder – Namaz vakitleri ve hatırlatıcı",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
