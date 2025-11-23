@@ -13,7 +13,9 @@ import '../widgets/prayer_card.dart';
 import 'city_selection_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onOpenSettings;
+
+  const HomeScreen({super.key, this.onOpenSettings});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -266,35 +268,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-      backgroundColor: const Color(0xFF1C1C27),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C27),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: colorScheme.surface,
+        iconTheme: IconThemeData(color: colorScheme.onSurface),
         title: Text(
           AppLocalizations.of(context)!.appTitle,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              if (widget.onOpenSettings != null) {
+                widget.onOpenSettings!();
+              } else {
+                _showCalculationMethods();
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.tune),
             onPressed: _showCalculationMethods,
           ),
         ],
       ),
 
       drawer: Drawer(
-        backgroundColor: const Color(0xFF2C2C38),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: Color(0xFF1C1C27)),
+              decoration:
+              BoxDecoration(color: Theme.of(context).colorScheme.primary),
               child: Center(
                 child: Text(
                   AppLocalizations.of(context)!.menu,
-                  style: const TextStyle(color: Colors.white, fontSize: 22),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary),
                 ),
               ),
             ),
@@ -306,6 +325,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     () => Navigator.pushNamed(context, '/zikirmatik')),
             _buildDrawerItem(Icons.payment, AppLocalizations.of(context)!.donate,
                     () => Navigator.pushNamed(context, '/donate')),
+            _buildDrawerItem(
+                Icons.settings,
+                AppLocalizations.of(context)!.settings,
+                    () => widget.onOpenSettings?.call()),
           ],
         ),
       ),
@@ -324,18 +347,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.location_on,
-                      color: Colors.teal, size: 22),
+                  Icon(Icons.location_on,
+                      color: Theme.of(context).colorScheme.primary, size: 22),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       _currentLocation,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   )
                 ],
@@ -369,9 +388,10 @@ class _HomeScreenState extends State<HomeScreen> {
       String title,
       VoidCallback onTap,
       ) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
+      leading: Icon(icon, color: onSurface),
+      title: Text(title, style: Theme.of(context).textTheme.bodyLarge),
       onTap: () {
         Navigator.pop(context);
         onTap();

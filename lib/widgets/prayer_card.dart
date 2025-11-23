@@ -141,6 +141,7 @@ class _PrayerCardState extends State<PrayerCard> {
   Widget build(BuildContext context) {
     final name = _localizedPrayerName(context, widget.prayerName);
     final isActive = widget.isNextPrayer && !_vakitGirdi.value;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return ValueListenableBuilder<String>(
       valueListenable: _remainingText,
@@ -154,8 +155,11 @@ class _PrayerCardState extends State<PrayerCard> {
         decoration: BoxDecoration(
         gradient: LinearGradient(
         colors: widget.isNextPrayer
-        ? [Colors.teal.shade700, Colors.teal.shade400]
-            : [const Color(0xFF1F1F2C), const Color(0xFF161623)],
+            ? [colorScheme.primary, colorScheme.secondary]
+            : [
+          colorScheme.surface,
+          Color.alphaBlend(Colors.black26, colorScheme.surface),
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         ),
@@ -163,15 +167,15 @@ class _PrayerCardState extends State<PrayerCard> {
         boxShadow: [
         BoxShadow(
         color: widget.isNextPrayer
-        ? Colors.teal.shade900.withOpacity(0.4)
-            : Colors.black.withOpacity(0.35),
+            ? colorScheme.primary.withOpacity(0.35)
+            : Colors.black.withOpacity(0.18),
         blurRadius: 12,
         offset: const Offset(0, 8),
         ),
         ],
         border: widget.isNextPrayer
         ? Border.all(
-        color: Colors.tealAccent.withOpacity(0.6),
+          color: colorScheme.secondary.withOpacity(0.6),
         width: 1.5,
         )
             : null,
@@ -182,9 +186,12 @@ class _PrayerCardState extends State<PrayerCard> {
         Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.15),
+          color: (widget.isNextPrayer
+              ? colorScheme.onPrimary
+              : colorScheme.onSurface)
+              .withOpacity(0.08),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white12),
+          border: Border.all(color: colorScheme.onSurface.withOpacity(0.12)),
         ),
         child: Icon(
         _prayerIcon(context),
@@ -201,8 +208,8 @@ class _PrayerCardState extends State<PrayerCard> {
         name,
         style: TextStyle(
         color: widget.isNextPrayer
-        ? Colors.white
-            : Colors.amber.shade200,
+            ? colorScheme.onPrimary
+            : colorScheme.onSurface,
         fontSize: 20,
         fontWeight: widget.isNextPrayer
         ? FontWeight.bold
@@ -212,18 +219,22 @@ class _PrayerCardState extends State<PrayerCard> {
         const SizedBox(height: 6),
         Text(
         widget.time,
-        style: const TextStyle(
-        color: Colors.white,
-        fontSize: 26,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 0.4,
+          style: TextStyle(
+            color: widget.isNextPrayer
+                ? colorScheme.onPrimary
+                : colorScheme.onSurface,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.4,
         ),
         ),
         const SizedBox(height: 8),
         Text(
         remainingText,
         style: TextStyle(
-        color: isActive ? Colors.white : Colors.white70,
+          color: isActive
+              ? colorScheme.onPrimary
+              : colorScheme.onSurface.withOpacity(0.7),
         fontSize: 15,
         fontWeight: FontWeight.w500,
         ),
@@ -232,7 +243,7 @@ class _PrayerCardState extends State<PrayerCard> {
         ),
         ),
         if (widget.isNextPrayer)
-        const Icon(Icons.chevron_right, color: Colors.white70),
+          Icon(Icons.chevron_right, color: colorScheme.onPrimary.withOpacity(0.7)),
         ],
               ),
             ),
@@ -244,11 +255,11 @@ class _PrayerCardState extends State<PrayerCard> {
         padding:
         const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
-        color: Colors.tealAccent.withOpacity(0.9),
+          color: colorScheme.secondary,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
         BoxShadow(
-        color: Colors.tealAccent.withOpacity(0.35),
+          color: colorScheme.secondary.withOpacity(0.35),
         blurRadius: 8,
         offset: const Offset(0, 3),
         )
@@ -257,7 +268,7 @@ class _PrayerCardState extends State<PrayerCard> {
         child: Text(
         'Bir sonraki vakte kalan süre',
         style: TextStyle(
-        color: Colors.teal.shade900,
+          color: colorScheme.onSecondary,
         fontSize: 12,
         fontWeight: FontWeight.bold,
         ),

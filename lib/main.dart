@@ -1,18 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/home_screen.dart';
 import 'screens/qibla_screen.dart';
+import 'screens/settings_screen.dart';
 import 'screens/zikirmatik_screen.dart';
 import 'screens/donation_screen.dart';
 import 'screens/city_selection_screen.dart';
+import 'theme/app_theme.dart';
+import 'screens/weekly_view_screen.dart';
+import 'screens/notification_status_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemeMode();
+  }
+
+  Future<void> _loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedMode = prefs.getString('themeMode');
+
+    setState(() {
+      switch (storedMode) {
+        case 'light':
+          _themeMode = ThemeMode.light;
+          break;
+        case 'dark':
+          _themeMode = ThemeMode.dark;
+          break;
+        default:
+          _themeMode = ThemeMode.system;
+      }
+    });
+  }
+
+  Future<void> _setThemeMode(ThemeMode mode) async {
+    setState(() => _themeMode = mode);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('themeMode', mode.name);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,30 +97,29 @@ class MyApp extends StatelessWidget {
         return const Locale('en');
       },
 
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0E0E17),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-          brightness: Brightness.dark,
-        ).copyWith(
-          surface: const Color(0xFF1B1B27),
-          secondary: const Color(0xFF1DE9B6),
-        ),
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.white70),
-        ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: _themeMode,
 
       initialRoute: '/home',
       routes: {
-        '/home': (context) => const HomeScreen(),
+        '/home': (context) => HomeScreen(onOpenSettings: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SettingsScreen(
+                currentMode: _themeMode,
+                onThemeModeChanged: _setThemeMode,
+              ),
+            ),
+          );
+        }),
         '/qibla': (context) => const QiblaScreen(),
         '/zikirmatik': (context) => const ZikirmatikScreen(),
         '/donate': (context) => const DonationScreen(),
         '/city_selection': (context) => const CitySelectionScreen(),
+        '/weekly_view': (context) => const WeeklyViewScreen(),
+        '/notifications': (context) => const NotificationStatusScreen(),
       },
     );
   }
