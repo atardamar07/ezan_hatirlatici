@@ -11,6 +11,9 @@ import '../services/notification_scheduler.dart';
 import '../services/notification_service.dart';
 import '../widgets/prayer_card.dart';
 import 'city_selection_screen.dart';
+import 'notification_status_screen.dart';
+import 'qibla_screen.dart';
+import 'weekly_view_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onOpenSettings;
@@ -50,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   String _currentLocation = '';
   int _selectedMethod = PrayerTimesApi.diyanetMethodId;
+  bool _notificationsReady = false;
+  bool _locationPermissionGranted = false;
+  String _statusMessage = '';
 
   final LocationService _locationService = LocationService();
   final PrayerTimesApi _prayerApi = PrayerTimesApi();
@@ -75,6 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!kIsWeb) {
       await _adService.initialize();
       await NotificationService.initialize();
+      if (mounted) {
+        setState(() => _notificationsReady = true);
+      }
       _startAdTimer();
     }
 
@@ -101,8 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (locationType != null) {
       _currentLocation = _prefs!.getString('currentLocation') ?? "";
+      _locationPermissionGranted = true;
+      _statusMessage = 'Kaydedilen konum: $_currentLocation';
       await _fetchPrayerTimes();
     } else {
+      setState(() {
+        _statusMessage = 'Konum tespiti yapılıyor...';
+      });
       await _getCurrentLocationAndFetchTimes();
     }
   }
@@ -115,6 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _getCurrentLocationAndFetchTimes() async {
     final position = await _locationService.getCurrentLocation();
+
+    setState(() => _locationPermissionGranted = position != null);
 
     if (position != null && mounted) {
       final fullAddress = await _locationService.getFullAddress(
@@ -132,10 +148,14 @@ class _HomeScreenState extends State<HomeScreen> {
       await _prefs!.setString('currentLocation', locationName);
 
       setState(() => _currentLocation = locationName);
+      setState(() => _statusMessage = 'Konum izni aktif: $locationName');
 
       await _fetchPrayerTimes();
     } else {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _statusMessage = 'Konum izni kapalı. Bildirimler sınırlı çalışabilir.';
+      });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -251,6 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await _prefs!.setString('currentLocation', name);
 
         setState(() => _currentLocation = name);
+        setState(() => _statusMessage = 'Konum güncellendi: $name');
       } else if (result['type'] == 'city') {
         final locationName = "${result['city']}, ${result['country']}";
 
@@ -260,6 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await _prefs!.setString('currentLocation', locationName);
 
         setState(() => _currentLocation = locationName);
+        setState(() => _statusMessage = 'Şehir seçildi: $locationName');
       }
 
       await _fetchPrayerTimes();
@@ -341,6 +363,10 @@ class _HomeScreenState extends State<HomeScreen> {
         )
             : ListView(
           children: [
+            _buildQuickActions(context),
+            const SizedBox(height: 12),
+            _buildInfoBanner(),
+            const SizedBox(height: 12),
             // ⭐ KONUM GÖSTERİMİ (İMSAK ÜSTÜNE)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -379,6 +405,130 @@ class _HomeScreenState extends State<HomeScreen> {
             if (!kIsWeb) _adService.buildBannerAd(),
           ],
         ),
+      ),
+    );
+  }
+  Widget _buildQuickActions(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _buildActionChip(
+            label: 'Bugün',
+            icon: Icons.calendar_today,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            ),
+          ),
+          _buildActionChip(
+            label: 'Haftalık görünüm',
+            icon: Icons.date_range,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const WeeklyViewScreen()),
+            ),
+          ),
+          _buildActionChip(
+            label: 'Bildirimler',
+            icon: Icons.notifications_active,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationStatusScreen()),
+            ),
+          ),
+          _buildActionChip(
+            label: 'Kıble',
+            icon: Icons.explore,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QiblaScreen()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionChip({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF242433),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ActionChip(
+        avatar: Icon(icon, size: 18, color: Colors.white),
+        label: Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  Widget _buildInfoBanner() {
+    final String message = _statusMessage.isNotEmpty
+        ? _statusMessage
+        : _locationPermissionGranted
+        ? 'Konum izni aktif'
+        : 'Konum izni bekleniyor';
+
+    final notificationText = _notificationsReady
+        ? 'Bildirimler hazır'
+        : 'Bildirim izni bekleniyor';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF242433),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _locationPermissionGranted ? Icons.check_circle : Icons.info_outline,
+            color: _locationPermissionGranted ? Colors.tealAccent : Colors.orangeAccent,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  notificationText,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
