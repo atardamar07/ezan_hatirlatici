@@ -193,24 +193,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tapToCount => 'Ekrana dokunarak zikir sayınızı artırabilirsiniz';
 
   @override
-  String get subhanallahMeaning => 'Allah sübhandır (eksikliklerden münezzehtir)';
-
-  @override
-  String get alhamdulillahMeaning => 'Allah\'a hamd olsun';
-
-  @override
-  String get allahuAkbarMeaning => 'Allah en büyüktür';
-
-  @override
-  String get laIlaheIllallahMeaning => 'Allah\'tan başka ilah yoktur';
-
-  @override
-  String get astagfirullahMeaning => 'Allah\'tan af dilerim';
-
-  @override
-  String get hasbunallahMeaning => 'Allah bize yeter';
-
-  @override
   String get donationsForWeb => 'Bağış İşlemleri Mobil Uygulamada Mevcut';
 
   @override
@@ -340,6 +322,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Yarın İmsak';
+
+  @override
+  String get subhanallahMeaning => 'Allah sübhandır (eksikliklerden münezzehtir)';
+
+  @override
+  String get alhamdulillahMeaning => 'Allah\'a hamd olsun';
+
+  @override
+  String get allahuAkbarMeaning => 'Allah en büyüktür';
+
+  @override
+  String get laIlaheIllallahMeaning => 'Allah\'tan başka ilah yoktur';
+
+  @override
+  String get astagfirullahMeaning => 'Allah\'tan af dilerim';
+
+  @override
+  String get hasbunallahMeaning => 'Allah bize yeter';
 
   @override
   String savedLocation(Object location) {
@@ -530,12 +530,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quietHoursLabel => 'Sessiz saatler';
 
   @override
-  String quietHoursShort(Object hours) {
+  String quietHoursShort(int hours) {
     return '$hours sa';
   }
 
   @override
-  String quietHoursLong(Object hours) {
+  String quietHoursLong(int hours) {
     return '$hours saat';
   }
 
@@ -546,7 +546,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get preAlertOff => 'Kapalı';
 
   @override
-  String preAlertMinutes(Object minutes) {
+  String preAlertMinutes(int minutes) {
     return '$minutes dakika önce';
   }
 

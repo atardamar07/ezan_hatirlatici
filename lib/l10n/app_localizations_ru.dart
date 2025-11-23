@@ -193,24 +193,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tapToCount => 'Нажмите на экран, чтобы увеличить количество зикра';
 
   @override
-  String get subhanallahMeaning => 'Аллах свободен от недостатков.';
-
-  @override
-  String get alhamdulillahMeaning => 'Хвала Аллаху.';
-
-  @override
-  String get allahuAkbarMeaning => 'Аллах – величайший.';
-
-  @override
-  String get laIlaheIllallahMeaning => 'Нет божества, кроме Аллаха.';
-
-  @override
-  String get astagfirullahMeaning => 'Прошу прощения у Аллаха.';
-
-  @override
-  String get hasbunallahMeaning => 'Нам достаточно Аллаха.';
-
-  @override
   String get donationsForWeb => 'Пожертвования доступны в мобильном приложении';
 
   @override
@@ -340,6 +322,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Завтра Фаджр';
+
+  @override
+  String get subhanallahMeaning => 'Аллах свободен от недостатков.';
+
+  @override
+  String get alhamdulillahMeaning => 'Хвала Аллаху.';
+
+  @override
+  String get allahuAkbarMeaning => 'Аллах – величайший.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'Нет божества, кроме Аллаха.';
+
+  @override
+  String get astagfirullahMeaning => 'Прошу прощения у Аллаха.';
+
+  @override
+  String get hasbunallahMeaning => 'Нам достаточно Аллаха.';
 
   @override
   String savedLocation(Object location) {
@@ -530,12 +530,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get quietHoursLabel => 'Тихие часы';
 
   @override
-  String quietHoursShort(Object hours) {
+  String quietHoursShort(int hours) {
     return '$hours ч';
   }
 
   @override
-  String quietHoursLong(Object hours) {
+  String quietHoursLong(int hours) {
     return '$hours часов';
   }
 
@@ -546,7 +546,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get preAlertOff => 'Выкл.';
 
   @override
-  String preAlertMinutes(Object minutes) {
+  String preAlertMinutes(int minutes) {
     return 'За $minutes мин.';
   }
 

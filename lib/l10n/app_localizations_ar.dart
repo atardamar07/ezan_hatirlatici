@@ -193,24 +193,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tapToCount => 'اضغط على الشاشة لزيادة عدد الأذكار';
 
   @override
-  String get subhanallahMeaning => 'الله منزّه عن النقصان.';
-
-  @override
-  String get alhamdulillahMeaning => 'الحمد لله.';
-
-  @override
-  String get allahuAkbarMeaning => 'الله أكبر.';
-
-  @override
-  String get laIlaheIllallahMeaning => 'لا إله إلا الله.';
-
-  @override
-  String get astagfirullahMeaning => 'أستغفر الله.';
-
-  @override
-  String get hasbunallahMeaning => 'حسبنا الله.';
-
-  @override
   String get donationsForWeb => 'التبرعات متاحة في تطبيق الجوال';
 
   @override
@@ -340,6 +322,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'فجر الغد';
+
+  @override
+  String get subhanallahMeaning => 'الله منزّه عن النقصان.';
+
+  @override
+  String get alhamdulillahMeaning => 'الحمد لله.';
+
+  @override
+  String get allahuAkbarMeaning => 'الله أكبر.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'لا إله إلا الله.';
+
+  @override
+  String get astagfirullahMeaning => 'أستغفر الله.';
+
+  @override
+  String get hasbunallahMeaning => 'حسبنا الله.';
 
   @override
   String savedLocation(Object location) {
@@ -530,12 +530,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quietHoursLabel => 'أوقات الصمت';
 
   @override
-  String quietHoursShort(Object hours) {
+  String quietHoursShort(int hours) {
     return '$hours س';
   }
 
   @override
-  String quietHoursLong(Object hours) {
+  String quietHoursLong(int hours) {
     return '$hours ساعة';
   }
 
@@ -546,7 +546,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get preAlertOff => 'متوقف';
 
   @override
-  String preAlertMinutes(Object minutes) {
+  String preAlertMinutes(int minutes) {
     return '$minutes دقيقة قبل';
   }
 

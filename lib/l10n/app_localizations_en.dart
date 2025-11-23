@@ -193,24 +193,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToCount => 'Tap the screen to increase your dhikr count';
 
   @override
-  String get subhanallahMeaning => 'Allah is free from imperfections.';
-
-  @override
-  String get alhamdulillahMeaning => 'Praise be to Allah.';
-
-  @override
-  String get allahuAkbarMeaning => 'Allah is the Greatest.';
-
-  @override
-  String get laIlaheIllallahMeaning => 'There is no deity except Allah.';
-
-  @override
-  String get astagfirullahMeaning => 'I seek forgiveness from Allah.';
-
-  @override
-  String get hasbunallahMeaning => 'Allah is sufficient for us.';
-
-  @override
   String get donationsForWeb => 'Donations Available on Mobile App';
 
   @override
@@ -340,6 +322,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Tomorrow Fajr';
+
+  @override
+  String get subhanallahMeaning => 'Allah is free from imperfections.';
+
+  @override
+  String get alhamdulillahMeaning => 'Praise be to Allah.';
+
+  @override
+  String get allahuAkbarMeaning => 'Allah is the Greatest.';
+
+  @override
+  String get laIlaheIllallahMeaning => 'There is no deity except Allah.';
+
+  @override
+  String get astagfirullahMeaning => 'I seek forgiveness from Allah.';
+
+  @override
+  String get hasbunallahMeaning => 'Allah is sufficient for us.';
 
   @override
   String savedLocation(Object location) {
@@ -530,12 +530,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quietHoursLabel => 'Quiet hours';
 
   @override
-  String quietHoursShort(Object hours) {
+  String quietHoursShort(int hours) {
     return '$hours h';
   }
 
   @override
-  String quietHoursLong(Object hours) {
+  String quietHoursLong(int hours) {
     return '$hours hours';
   }
 
@@ -546,7 +546,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preAlertOff => 'Off';
 
   @override
-  String preAlertMinutes(Object minutes) {
+  String preAlertMinutes(int minutes) {
     return '$minutes minutes before';
   }
 

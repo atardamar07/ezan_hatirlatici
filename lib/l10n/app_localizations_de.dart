@@ -193,24 +193,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tapToCount => 'Tippen Sie auf den Bildschirm, um Ihre Dhikr-Anzahl zu erhöhen';
 
   @override
-  String get subhanallahMeaning => 'Allah ist frei von Mängeln.';
-
-  @override
-  String get alhamdulillahMeaning => 'Alles Lob gebührt Allah.';
-
-  @override
-  String get allahuAkbarMeaning => 'Allah ist am größten.';
-
-  @override
-  String get laIlaheIllallahMeaning => 'Es gibt keine Gottheit außer Allah.';
-
-  @override
-  String get astagfirullahMeaning => 'Ich bitte Allah um Vergebung.';
-
-  @override
-  String get hasbunallahMeaning => 'Allah genügt uns.';
-
-  @override
   String get donationsForWeb => 'Spenden sind in der mobilen App verfügbar';
 
   @override
@@ -340,36 +322,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Morgen Fadschr';
-  @@ -318,26 +318,253 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
-  String get tapToIncrement => 'Tap to increase count';
+  String get subhanallahMeaning => 'Allah ist frei von Mängeln.';
 
   @override
-  String get prayerNotificationTitle => '🕌 Prayer Time';
+  String get alhamdulillahMeaning => 'Alles Lob gebührt Allah.';
 
   @override
-  String prayerNotificationBody(Object prayer) {
-  return '$prayer time has arrived. Time to pray!';
-  }
+  String get allahuAkbarMeaning => 'Allah ist am größten.';
 
   @override
-  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+  String get laIlaheIllallahMeaning => 'Es gibt keine Gottheit außer Allah.';
 
   @override
-  String reminderNotificationBody(Object minutes, Object prayer) {
-  return '$prayer in $minutes minutes';
-  }
+  String get astagfirullahMeaning => 'Ich bitte Allah um Vergebung.';
 
   @override
-  String get tomorrow => 'Morgen';
-
-  @override
-  String get tomorrowFajr => 'Morgen Fadschr';
+  String get hasbunallahMeaning => 'Allah genügt uns.';
 
   @override
   String savedLocation(Object location) {
-  return 'Gespeicherter Ort: $location';
+    return 'Gespeicherter Ort: $location';
   }
 
   @override
@@ -377,7 +351,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String locationPermissionActive(Object location) {
-  return 'Standortfreigabe aktiv: $location';
+    return 'Standortfreigabe aktiv: $location';
   }
 
   @override
@@ -385,12 +359,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String locationUpdated(Object location) {
-  return 'Standort aktualisiert: $location';
+    return 'Standort aktualisiert: $location';
   }
 
   @override
   String citySelected(Object location) {
-  return 'Stadt gewählt: $location';
+    return 'Stadt gewählt: $location';
   }
 
   @override
@@ -556,13 +530,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quietHoursLabel => 'Ruhezeiten';
 
   @override
-  String quietHoursShort(Object hours) {
-  return '$hours Std';
+  String quietHoursShort(int hours) {
+    return '$hours Std';
   }
 
   @override
-  String quietHoursLong(Object hours) {
-  return '$hours Stunden';
+  String quietHoursLong(int hours) {
+    return '$hours Stunden';
   }
 
   @override
@@ -572,8 +546,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get preAlertOff => 'Aus';
 
   @override
-  String preAlertMinutes(Object minutes) {
-  return '$minutes Minuten vorher';
+  String preAlertMinutes(int minutes) {
+    return '$minutes Minuten vorher';
   }
 
   @override
