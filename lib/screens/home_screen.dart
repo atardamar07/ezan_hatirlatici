@@ -125,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _adTimer?.cancel();
+    _adService.dispose();
     super.dispose();
   }
 

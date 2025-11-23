@@ -95,6 +95,31 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
+  static Future<NotificationStatus> getStatus() async {
+    if (kIsWeb) {
+      return const NotificationStatus(
+        notificationsEnabled: true,
+        exactAlarmsEnabled: true,
+        soundEnabled: true,
+      );
+    }
+
+    final androidPlugin = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    final notificationsEnabled =
+        await androidPlugin?.areNotificationsEnabled() ?? true;
+    final exactAlarms = await androidPlugin?.canScheduleExactNotifications() ??
+        true;
+
+    return NotificationStatus(
+      notificationsEnabled: notificationsEnabled,
+      exactAlarmsEnabled: exactAlarms,
+      soundEnabled: notificationsEnabled,
+    );
+  }
+
   static NotificationDetails _buildNotificationDetails() {
     const androidDetails = AndroidNotificationDetails(
       _androidChannelId,
@@ -121,4 +146,16 @@ class NotificationService {
       iOS: iosDetails,
     );
   }
+}
+
+class NotificationStatus {
+  final bool notificationsEnabled;
+  final bool exactAlarmsEnabled;
+  final bool soundEnabled;
+
+  const NotificationStatus({
+    required this.notificationsEnabled,
+    required this.exactAlarmsEnabled,
+    required this.soundEnabled,
+  });
 }

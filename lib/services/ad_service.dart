@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'ad_service_base.dart';
 
@@ -20,13 +19,15 @@ AdService._internal() : _impl = AdServicePlatform();
 Future<void> initialize({bool loadAds = true}) =>
 _impl.initialize(loadAds: loadAds);
 
-Widget buildBannerAd() => _impl.buildBannerAd();
+  Widget buildBannerAd() => _impl.buildBannerAd();
 
-Future<void> loadInterstitialAd() => _impl.loadInterstitialAd();
+  Future<void> loadInterstitialAd() => _impl.loadInterstitialAd();
 
-void showInterstitialAd() => _impl.showInterstitialAd();
+  void showInterstitialAd() => _impl.showInterstitialAd();
 
-Future<bool> shouldShowAd() => _impl.shouldShowAd();
+  Future<bool> shouldShowAd() => _impl.shouldShowAd();
+
+Future<AdStatus> getStatus() => _impl.getStatus();
 
 void dispose() => _impl.dispose();
 }

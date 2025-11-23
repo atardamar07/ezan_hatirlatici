@@ -14,10 +14,12 @@ class AdServicePlatform implements AdServiceBase {
   BannerAd? _banner;
   InterstitialAd? _interstitial;
   bool _isInterstitialShowing = false;
+  bool _initialized = false;
 
   @override
   Future<void> initialize({bool loadAds = true}) async {
     await MobileAds.instance.initialize();
+    _initialized = true;
     if (!loadAds) return;
 
     _banner = BannerAd(
@@ -91,6 +93,16 @@ class AdServicePlatform implements AdServiceBase {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     return now - last > _adInterval.inMilliseconds;
+  }
+
+  @override
+  Future<AdStatus> getStatus() async {
+    return AdStatus(
+      initialized: _initialized,
+      bannerReady: _banner != null,
+      interstitialReady: _interstitial != null,
+      interstitialShowing: _isInterstitialShowing,
+    );
   }
 
   @override
