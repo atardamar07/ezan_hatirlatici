@@ -43,9 +43,7 @@ class NotificationScheduler {
     for (final entry in timings.entries) {
       if (entry.key == 'Sunrise') continue; // Güneş için bildirim yok
 
-      final time = _parseTime(entry.value as String);
-      final prayerTime = DateTime(
-          today.year, today.month, today.day, time.hour, time.minute);
+      final prayerTime = _parseTime(entry.value as String, today);
 
       // Hatırlatıcı bildirimi
       final reminderTime = prayerTime.subtract(Duration(minutes: minutesBefore));
@@ -68,9 +66,15 @@ class NotificationScheduler {
     }
   }
 
-  DateTime _parseTime(String timeStr) {
+  DateTime _parseTime(String timeStr, DateTime baseDate) {
     final parts = timeStr.split(':');
-    return DateTime(0, 0, 0, int.parse(parts[0]), int.parse(parts[1]));
+    return DateTime(
+      baseDate.year,
+      baseDate.month,
+      baseDate.day,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+    );
   }
 
   String _getTurkishPrayerName(String key) {
