@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       setState(() {
         _isLoading = false;
-        setState(() => _statusMessage = loc.locationPermissionActive(locationName));
+        _statusMessage = loc.locationPermissionLimited;
       });
 
       if (mounted) {

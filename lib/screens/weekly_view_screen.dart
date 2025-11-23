@@ -76,6 +76,8 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
   }
 
   Future<void> _fetchWeeklyTimes() async {
+    final loc = AppLocalizations.of(context)!;
+
     setState(() {
       _isLoading = true;
       _statusMessage = null;

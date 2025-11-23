@@ -82,8 +82,7 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        okText: loc.schedulingActive,
-                        failText: loc.exactAlarmDisabled,
+                        loc.soundNotification,
                         status?.soundEnabled ?? false,
                         okText: loc.soundOn,
                         failText: loc.soundOff,
@@ -115,7 +114,8 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
                       _buildStatusRow(
                         loc.sdkInitialized,
                         status?.initialized ?? false,
-                        loc.sdkInitialized,
+                        okText: loc.sdkInitialized,
+                        failText: loc.notReady,
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
