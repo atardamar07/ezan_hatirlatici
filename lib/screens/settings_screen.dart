@@ -32,6 +32,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _locationReady = false;
   bool _internetReady = true;
 
+  String _localizedPrayerTitle(AppLocalizations loc, String key) {
+    switch (key) {
+      case 'imsak':
+        return loc.fajr;
+      case 'sabah':
+        return loc.sunrise;
+      case 'ogle':
+        return loc.dhuhr;
+      case 'ikindi':
+        return loc.asr;
+      case 'aksam':
+        return loc.maghrib;
+      case 'yatsi':
+        return loc.isha;
+      default:
+        return key;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -242,13 +261,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: _locationReady
                       ? Icons.my_location_rounded
                       : Icons.location_off,
-                  label: _locationReady ? 'Konum açık' : 'Konum pasif',
+                  label: _locationReady
+                      ? loc.locationStatusOn
+                      : loc.locationStatusOff,
                   isActive: _locationReady,
                   colorScheme: colorScheme,
                 ),
                 StatusBadge(
                   icon: _internetReady ? Icons.wifi_tethering : Icons.wifi_off,
-                  label: _internetReady ? 'İnternet aktif' : 'İnternet yok',
+                  label:
+                  _internetReady ? loc.internetStatusOn : loc.internetStatusOff,
                   isActive: _internetReady,
                   colorScheme: colorScheme,
                 ),
@@ -260,10 +282,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 ListTile(
-                  title: const Text('Vakit bildirimleri'),
-                  subtitle: const Text(
-                    'Her vakit için bildirim saatini ve durumu yönetin.',
-                  ),
+                  title: Text(loc.prayerNotificationsTitle),
+                  subtitle: Text(loc.prayerNotificationsSubtitle),
                   leading: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -280,6 +300,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     setting: _prayerSettings[i],
                     onToggle: (value) => _toggleNotification(i, value),
                     onTimeTap: () => _pickTime(i),
+                    enabledLabel: loc.notificationEnabled,
+                    disabledLabel: loc.notificationDisabled,
+                    titleOverride: _localizedPrayerTitle(
+                      loc,
+                      _prayerSettings[i].key,
+                    ),
                   ),
                   if (i != _prayerSettings.length - 1)
                     const Divider(height: 1),
@@ -292,9 +318,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 ListTile(
-                  title: const Text('Bildirim seçenekleri'),
-                  subtitle:
-                  const Text('Sessiz saatler ve önceden uyar tercihleri'),
+                  title: Text(loc.notificationOptionsTitle),
+                  subtitle: Text(loc.notificationOptionsSubtitle),
                   leading: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -313,13 +338,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Sessiz saatler',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              loc.quietHoursLabel,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
-                          _buildValueBadge('${_quietHoursDuration.round()} sa'),
+                          _buildValueBadge(
+                            loc.quietHoursShort(_quietHoursDuration.round()),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -328,7 +355,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         min: 0,
                         max: 12,
                         divisions: 12,
-                        label: '${_quietHoursDuration.round()} saat',
+                        label: loc.quietHoursLong(_quietHoursDuration.round()),
                         onChanged: (value) => _updateQuietHours(value),
                         activeColor: colorScheme.primary,
                         inactiveColor: colorScheme.primary.withOpacity(0.2),
@@ -336,16 +363,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Önceden uyar',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              loc.preAlert,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           _buildValueBadge(
                             _preAlertMinutes == 0
-                                ? 'Kapalı'
-                                : '${_preAlertMinutes} dk önce',
+                                ? loc.preAlertOff
+                                : loc.preAlertMinutes(_preAlertMinutes),
                           ),
                         ],
                       ),
@@ -370,8 +397,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             value: minutes,
                             child: Text(
                               minutes == 0
-                                  ? 'Kapalı'
-                                  : '$minutes dakika önce',
+                                  ? loc.preAlertOff
+                                  : loc.preAlertMinutes(minutes),
                             ),
                           ),
                         )
@@ -389,22 +416,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 _buildThemeTile(
-                  title: 'Sistem Teması',
-                  subtitle: 'Cihaz ayarlarına göre',
+                  title: loc.systemTheme,
+                  subtitle: loc.systemThemeSubtitle,
                   mode: ThemeMode.system,
                   icon: Icons.brightness_auto,
                 ),
                 const Divider(height: 1),
                 _buildThemeTile(
-                  title: 'Açık Tema',
-                  subtitle: 'Gündüz görünümü',
+                  title: loc.lightTheme,
+                  subtitle: loc.lightThemeSubtitle,
                   mode: ThemeMode.light,
                   icon: Icons.light_mode,
                 ),
                 const Divider(height: 1),
                 _buildThemeTile(
-                  title: 'Koyu Tema',
-                  subtitle: 'Gece görünümü',
+                  title: loc.darkTheme,
+                  subtitle: loc.darkThemeSubtitle,
                   mode: ThemeMode.dark,
                   icon: Icons.dark_mode,
                 ),

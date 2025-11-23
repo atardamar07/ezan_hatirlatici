@@ -39,6 +39,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final savedMethod = await _prayerApi.getSavedMethodOrDefault();
 
     setState(() => _selectedMethod = savedMethod);
+    final loc = AppLocalizations.of(context)!;
 
     final locationType = prefs.getString('locationType');
 
@@ -48,7 +49,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
       if (_latitude == null || _longitude == null) {
         setState(() {
-          _statusMessage = 'Konum bilgisi bulunamadı.';
+          _statusMessage = loc.locationInfoMissing;
           _isLoading = false;
         });
         return;
@@ -59,14 +60,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
       if (_city == null || _country == null) {
         setState(() {
-          _statusMessage = 'Şehir bilgisi bulunamadı.';
+          _statusMessage = loc.cityInfoMissing;
           _isLoading = false;
         });
         return;
       }
     } else {
       setState(() {
-        _statusMessage = 'Lütfen önce konum veya şehir seçin.';
+        _statusMessage = loc.selectLocationOrCity;
         _isLoading = false;
       });
       return;
@@ -104,17 +105,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     switch (name) {
       case "Fajr":
-        return loc?.fajr ?? 'İmsak';
+        return loc?.fajr ?? 'Fajr';
       case "Sunrise":
-        return loc?.sunrise ?? 'Güneş';
+        return loc?.sunrise ?? 'Sunrise';
       case "Dhuhr":
-        return loc?.dhuhr ?? 'Öğle';
+        return loc?.dhuhr ?? 'Dhuhr';
       case "Asr":
-        return loc?.asr ?? 'İkindi';
+        return loc?.asr ?? 'Asr';
       case "Maghrib":
-        return loc?.maghrib ?? 'Akşam';
+        return loc?.maghrib ?? 'Maghrib';
       case "Isha":
-        return loc?.isha ?? 'Yatsı';
+        return loc?.isha ?? 'Isha';
     }
 
     return name;
@@ -126,7 +127,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         Padding(
           padding: const EdgeInsets.only(top: 24),
           child: Text(
-            _statusMessage ?? 'Seçilen güne ait veri bulunamadı.',
+            _statusMessage ?? AppLocalizations.of(context)!.noDataForDay,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
@@ -155,9 +156,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Takvim'),
+        title: Text(loc.calendarTitle),
       ),
       bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.calendar),
       body: Padding(
@@ -166,16 +168,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SegmentedButton<CalendarFormat>(
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: CalendarFormat.week,
                   icon: Icon(Icons.view_week),
-                  label: Text('Haftalık'),
+                  label: Text(loc.weeklyLabel),
                 ),
                 ButtonSegment(
                   value: CalendarFormat.month,
                   icon: Icon(Icons.calendar_view_month),
-                  label: Text('Aylık'),
+                  label: Text(loc.monthlyLabel),
                 ),
               ],
               selected: {_calendarFormat},
@@ -191,9 +193,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
               calendarFormat: _calendarFormat,
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               headerStyle: const HeaderStyle(formatButtonVisible: false),
-              availableCalendarFormats: const {
-                CalendarFormat.month: 'Aylık',
-                CalendarFormat.week: 'Haftalık',
+              availableCalendarFormats: {
+                CalendarFormat.month: loc.monthlyLabel,
+                CalendarFormat.week: loc.weeklyLabel,
               },
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
@@ -208,7 +210,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Seçilen gün vakitleri',
+              loc.selectedDayTimes,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),

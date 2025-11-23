@@ -6,12 +6,18 @@ class NotificationTile extends StatelessWidget {
   final PrayerNotificationSetting setting;
   final ValueChanged<bool> onToggle;
   final VoidCallback onTimeTap;
+  final String enabledLabel;
+  final String disabledLabel;
+  final String? titleOverride;
 
   const NotificationTile({
     super.key,
     required this.setting,
     required this.onToggle,
     required this.onTimeTap,
+    required this.enabledLabel,
+    required this.disabledLabel,
+    this.titleOverride,
   });
 
   String _formatTime(TimeOfDay time) {
@@ -33,14 +39,12 @@ class NotificationTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  setting.title,
+                  titleOverride ?? setting.title,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  setting.isEnabled
-                      ? 'Bildirim açık'
-                      : 'Bildirim kapalı',
+                  setting.isEnabled ? enabledLabel : disabledLabel,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium

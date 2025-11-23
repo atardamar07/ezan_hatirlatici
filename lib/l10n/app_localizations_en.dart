@@ -340,4 +340,231 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Tomorrow Fajr';
+
+  @override
+  String savedLocation(Object location) {
+    return 'Saved location: $location';
+  }
+
+  @override
+  String get detectingLocation => 'Detecting location...';
+
+  @override
+  String locationPermissionActive(Object location) {
+    return 'Location permission active: $location';
+  }
+
+  @override
+  String get locationPermissionLimited => 'Location permission is off. Notifications may be limited.';
+
+  @override
+  String locationUpdated(Object location) {
+    return 'Location updated: $location';
+  }
+
+  @override
+  String citySelected(Object location) {
+    return 'City selected: $location';
+  }
+
+  @override
+  String get locationPermissionGranted => 'Location permission active';
+
+  @override
+  String get locationPermissionPending => 'Waiting for location permission';
+
+  @override
+  String get notificationsReady => 'Notifications ready';
+
+  @override
+  String get notificationsPending => 'Waiting for notification permission';
+
+  @override
+  String get quickActionToday => 'Today';
+
+  @override
+  String get quickActionWeekly => 'Weekly view';
+
+  @override
+  String get quickActionNotifications => 'Notifications';
+
+  @override
+  String get locationInfoMissing => 'Location information not found.';
+
+  @override
+  String get cityInfoMissing => 'City information not found.';
+
+  @override
+  String get selectLocationOrCity => 'Please select a location or city first.';
+
+  @override
+  String get weeklyTimesUnavailable => 'Weekly prayer times could not be retrieved.';
+
+  @override
+  String get dataUnavailable => 'Data unavailable';
+
+  @override
+  String get weeklyViewTitle => 'Weekly View';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get weeklyDataMissing => 'Weekly data not found.';
+
+  @override
+  String get noDataForDay => 'No data available for the selected day.';
+
+  @override
+  String get calendarTitle => 'Calendar';
+
+  @override
+  String get monthlyLabel => 'Monthly';
+
+  @override
+  String get weeklyLabel => 'Weekly';
+
+  @override
+  String get selectedDayTimes => 'Selected day times';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationInfoLine1 => 'Prayer reminders arrive on time when you enable them.';
+
+  @override
+  String get notificationInfoLine2 => 'Manage notification permissions from device settings and enable adhan sounds.';
+
+  @override
+  String get notificationStatus => 'Notification status';
+
+  @override
+  String get notificationPermission => 'Notification permission';
+
+  @override
+  String get permissionGranted => 'Permission granted';
+
+  @override
+  String get permissionDenied => 'Permission denied';
+
+  @override
+  String get exactAlarmPermission => 'Exact alarm permission';
+
+  @override
+  String get schedulingActive => 'Scheduling active';
+
+  @override
+  String get exactAlarmDisabled => 'Exact alarm disabled';
+
+  @override
+  String get soundNotification => 'Sound notification';
+
+  @override
+  String get soundOn => 'Adhan sound on';
+
+  @override
+  String get soundOff => 'Sound off';
+
+  @override
+  String get adControl => 'Ad control';
+
+  @override
+  String get sdkInitialized => 'SDK initialized';
+
+  @override
+  String get statusReady => 'Ready';
+
+  @override
+  String get statusWaiting => 'Initialization pending';
+
+  @override
+  String get bannerAd => 'Banner';
+
+  @override
+  String get loaded => 'Loaded';
+
+  @override
+  String get notLoaded => 'Not loaded';
+
+  @override
+  String get interstitialAd => 'Interstitial';
+
+  @override
+  String get showing => 'Showing';
+
+  @override
+  String get notReady => 'Not ready';
+
+  @override
+  String get locationStatusOn => 'Location enabled';
+
+  @override
+  String get locationStatusOff => 'Location disabled';
+
+  @override
+  String get internetStatusOn => 'Internet active';
+
+  @override
+  String get internetStatusOff => 'No internet';
+
+  @override
+  String get prayerNotificationsTitle => 'Prayer notifications';
+
+  @override
+  String get prayerNotificationsSubtitle => 'Manage notification time and status for each prayer.';
+
+  @override
+  String get notificationEnabled => 'Notification on';
+
+  @override
+  String get notificationDisabled => 'Notification off';
+
+  @override
+  String get notificationOptionsTitle => 'Notification options';
+
+  @override
+  String get notificationOptionsSubtitle => 'Quiet hours and pre-alert preferences';
+
+  @override
+  String get quietHoursLabel => 'Quiet hours';
+
+  @override
+  String quietHoursShort(Object hours) {
+    return '$hours h';
+  }
+
+  @override
+  String quietHoursLong(Object hours) {
+    return '$hours hours';
+  }
+
+  @override
+  String get preAlert => 'Pre-alert';
+
+  @override
+  String get preAlertOff => 'Off';
+
+  @override
+  String preAlertMinutes(Object minutes) {
+    return '$minutes minutes before';
+  }
+
+  @override
+  String get systemTheme => 'System theme';
+
+  @override
+  String get systemThemeSubtitle => 'Follows device settings';
+
+  @override
+  String get lightTheme => 'Light theme';
+
+  @override
+  String get lightThemeSubtitle => 'Daytime look';
+
+  @override
+  String get darkTheme => 'Dark theme';
+
+  @override
+  String get darkThemeSubtitle => 'Nighttime look';
 }

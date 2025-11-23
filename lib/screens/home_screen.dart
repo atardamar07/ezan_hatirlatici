@@ -106,17 +106,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadSavedLocation() async {
     setState(() => _isLoading = true);
+    final loc = AppLocalizations.of(context)!;
 
     final locationType = _prefs!.getString('locationType');
 
     if (locationType != null) {
       _currentLocation = _prefs!.getString('currentLocation') ?? "";
       _locationPermissionGranted = true;
-      _statusMessage = 'Kaydedilen konum: $_currentLocation';
+      _statusMessage = loc.savedLocation(_currentLocation);
       await _fetchPrayerTimes();
     } else {
       setState(() {
-        _statusMessage = 'Konum tespiti yapılıyor...';
+        _statusMessage = loc.savedLocation(_currentLocation);
       });
       await _getCurrentLocationAndFetchTimes();
     }
@@ -131,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _getCurrentLocationAndFetchTimes() async {
     final position = await _locationService.getCurrentLocation();
+    final loc = AppLocalizations.of(context)!;
 
     setState(() => _locationPermissionGranted = position != null);
 
@@ -150,13 +152,13 @@ class _HomeScreenState extends State<HomeScreen> {
       await _prefs!.setString('currentLocation', locationName);
 
       setState(() => _currentLocation = locationName);
-      setState(() => _statusMessage = 'Konum izni aktif: $locationName');
+      setState(() => _statusMessage = loc.locationPermissionActive(locationName));
 
       await _fetchPrayerTimes();
     } else {
       setState(() {
         _isLoading = false;
-        _statusMessage = 'Konum izni kapalı. Bildirimler sınırlı çalışabilir.';
+        setState(() => _statusMessage = loc.locationPermissionActive(locationName));
       });
 
       if (mounted) {
@@ -175,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
 
     setState(() => _isLoading = true);
+    final loc = AppLocalizations.of(context)!;
 
     try {
       Map<String, dynamic>? today;
@@ -226,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.prayerTimesLoadError),
+            content: Text(loc.prayerTimesLoadError),
             backgroundColor: Colors.red,
           ),
         );
@@ -260,6 +263,8 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => const CitySelectionScreen()),
     );
 
+    final loc = AppLocalizations.of(context)!;
+
     if (result != null && mounted) {
       if (result['type'] == 'location') {
         final fullAddress =
@@ -273,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await _prefs!.setString('currentLocation', name);
 
         setState(() => _currentLocation = name);
-        setState(() => _statusMessage = 'Konum güncellendi: $name');
+        setState(() => _statusMessage = loc.locationUpdated(name));
       } else if (result['type'] == 'city') {
         final locationName = "${result['city']}, ${result['country']}";
 
@@ -283,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await _prefs!.setString('currentLocation', locationName);
 
         setState(() => _currentLocation = locationName);
-        setState(() => _statusMessage = 'Şehir seçildi: $locationName');
+        setState(() => _statusMessage = loc.citySelected(locationName));
       }
 
       await _fetchPrayerTimes();
@@ -413,12 +418,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget _buildQuickActions(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           _buildActionChip(
-            label: 'Bugün',
+            label: loc.quickActionToday,
             icon: Icons.calendar_today,
             onTap: () => Navigator.push(
               context,
@@ -426,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           _buildActionChip(
-            label: 'Haftalık görünüm',
+            label: loc.quickActionWeekly,
             icon: Icons.date_range,
             onTap: () => Navigator.push(
               context,
@@ -434,7 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           _buildActionChip(
-            label: 'Bildirimler',
+            label: loc.quickActionNotifications,
             icon: Icons.notifications_active,
             onTap: () => Navigator.push(
               context,
@@ -442,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           _buildActionChip(
-            label: 'Kıble',
+            label: loc.qiblaCompass,
             icon: Icons.explore,
             onTap: () => Navigator.push(
               context,
@@ -486,15 +492,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildInfoBanner() {
+    final loc = AppLocalizations.of(context)!;
     final String message = _statusMessage.isNotEmpty
         ? _statusMessage
         : _locationPermissionGranted
-        ? 'Konum izni aktif'
-        : 'Konum izni bekleniyor';
+        ? loc.locationPermissionGranted
+        : loc.locationPermissionPending;
 
     final notificationText = _notificationsReady
-        ? 'Bildirimler hazır'
-        : 'Bildirim izni bekleniyor';
+        ? loc.locationPermissionGranted
+        : loc.locationPermissionPending;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

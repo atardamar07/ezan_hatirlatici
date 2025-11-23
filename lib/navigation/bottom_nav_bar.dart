@@ -37,15 +37,15 @@ class MainBottomNavBar extends StatelessWidget {
           selectedIcon: const Icon(Icons.home),
           label: loc?.home ?? 'Ana Sayfa',
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.calendar_today_outlined),
-          selectedIcon: Icon(Icons.calendar_month),
-          label: 'Takvim',
+        NavigationDestination(
+          icon: const Icon(Icons.calendar_today_outlined),
+          selectedIcon: const Icon(Icons.calendar_month),
+          label: loc?.calendarTitle ?? 'Takvim',
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.view_week_outlined),
-          selectedIcon: Icon(Icons.view_week),
-          label: 'Haftalık',
+        NavigationDestination(
+          icon: const Icon(Icons.view_week_outlined),
+          selectedIcon: const Icon(Icons.view_week),
+          label: loc?.weeklyLabel ?? 'Haftalık',
         ),
       ],
     );

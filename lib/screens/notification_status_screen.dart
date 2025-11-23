@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/ad_service.dart';
 import '../services/ad_service_base.dart';
 import '../services/notification_service.dart';
+import '../l10n/app_localizations.dart';
 
 class NotificationStatusScreen extends StatefulWidget {
   const NotificationStatusScreen({super.key});
@@ -25,30 +26,31 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C27),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C1C27),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Bildirimler', style: TextStyle(color: Colors.white)),
+        title: Text(loc.notificationsTitle, style: const TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
             const SizedBox(height: 12),
-            const Text(
-              'Namaz hatırlatıcılarını etkinleştirdiğinizde uyarılar zamanında gelir.',
-              style: TextStyle(color: Colors.white70, fontSize: 16),
+            Text(
+              loc.notificationInfoLine1,
+              style: const TextStyle(color: Colors.white70, fontSize: 16),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Bildirim izinlerini cihaz ayarlarınızdan yönetebilir, sesli ezan bildirimlerini açabilirsiniz.',
-              style: TextStyle(color: Colors.white70),
+            Text(
+              loc.notificationInfoLine2,
+              style: const TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 24),
             _buildCard(
-              title: 'Bildirim durumu',
+              title: loc.notificationStatus,
               child: FutureBuilder<NotificationStatus>(
                 future: _notificationStatusFuture,
                 builder: (context, snapshot) {
@@ -66,24 +68,25 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildStatusRow(
-                        'Bildirim izni',
+                        loc.notificationPermission,
                         status?.notificationsEnabled ?? false,
-                        okText: 'İzin verildi',
-                        failText: 'İzin kapalı',
+                        okText: loc.permissionGranted,
+                        failText: loc.permissionDenied,
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        'Exact alarm izni',
+                        loc.exactAlarmPermission,
                         status?.exactAlarmsEnabled ?? false,
-                        okText: 'Planlama aktif',
-                        failText: 'Exact alarm kapalı',
+                        okText: loc.schedulingActive,
+                        failText: loc.exactAlarmDisabled,
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        'Sesli bildirim',
+                        okText: loc.schedulingActive,
+                        failText: loc.exactAlarmDisabled,
                         status?.soundEnabled ?? false,
-                        okText: 'Ezan sesi açık',
-                        failText: 'Ses kapalı',
+                        okText: loc.soundOn,
+                        failText: loc.soundOff,
                       ),
                     ],
                   );
@@ -92,7 +95,7 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
             ),
             const SizedBox(height: 16),
             _buildCard(
-              title: 'Reklam kontrolü',
+              title: loc.adControl,
               child: FutureBuilder<AdStatus>(
                 future: _adStatusFuture,
                 builder: (context, snapshot) {
@@ -110,26 +113,25 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildStatusRow(
-                        'SDK başlatıldı',
+                        loc.sdkInitialized,
                         status?.initialized ?? false,
-                        okText: 'Hazır',
-                        failText: 'Başlatma bekleniyor',
+                        loc.sdkInitialized,
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        'Banner',
+                        loc.bannerAd,
                         status?.bannerReady ?? false,
-                        okText: 'Yüklendi',
-                        failText: 'Yüklenmedi',
+                        okText: loc.loaded,
+                        failText: loc.notLoaded,
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        'Geçiş reklamı',
+                        loc.interstitialAd,
                         status?.interstitialReady ?? false,
                         okText: status?.interstitialShowing == true
-                            ? 'Gösteriliyor'
-                            : 'Hazır',
-                        failText: 'Hazır değil',
+                            ? loc.showing
+                            : loc.statusReady,
+                        failText: loc.notReady,
                         isActive: status?.interstitialShowing ?? false,
                       ),
                     ],

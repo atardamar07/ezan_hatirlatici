@@ -340,4 +340,231 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'فجر الغد';
+
+  @override
+  String savedLocation(Object location) {
+    return 'الموقع المحفوظ: $location';
+  }
+
+  @override
+  String get detectingLocation => 'جارٍ تحديد الموقع...';
+
+  @override
+  String locationPermissionActive(Object location) {
+    return 'إذن الموقع مفعّل: $location';
+  }
+
+  @override
+  String get locationPermissionLimited => 'إذن الموقع مغلق. قد تكون الإشعارات محدودة.';
+
+  @override
+  String locationUpdated(Object location) {
+    return 'تم تحديث الموقع: $location';
+  }
+
+  @override
+  String citySelected(Object location) {
+    return 'تم اختيار المدينة: $location';
+  }
+
+  @override
+  String get locationPermissionGranted => 'إذن الموقع مفعّل';
+
+  @override
+  String get locationPermissionPending => 'بانتظار إذن الموقع';
+
+  @override
+  String get notificationsReady => 'الإشعارات جاهزة';
+
+  @override
+  String get notificationsPending => 'بانتظار إذن الإشعارات';
+
+  @override
+  String get quickActionToday => 'اليوم';
+
+  @override
+  String get quickActionWeekly => 'عرض أسبوعي';
+
+  @override
+  String get quickActionNotifications => 'الإشعارات';
+
+  @override
+  String get locationInfoMissing => 'معلومات الموقع غير موجودة.';
+
+  @override
+  String get cityInfoMissing => 'معلومات المدينة غير موجودة.';
+
+  @override
+  String get selectLocationOrCity => 'يرجى اختيار موقع أو مدينة أولاً.';
+
+  @override
+  String get weeklyTimesUnavailable => 'تعذر جلب أوقات الصلاة الأسبوعية.';
+
+  @override
+  String get dataUnavailable => 'البيانات غير متاحة';
+
+  @override
+  String get weeklyViewTitle => 'عرض أسبوعي';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get weeklyDataMissing => 'لا توجد بيانات أسبوعية.';
+
+  @override
+  String get noDataForDay => 'لا تتوفر بيانات لليوم المحدد.';
+
+  @override
+  String get calendarTitle => 'التقويم';
+
+  @override
+  String get monthlyLabel => 'شهري';
+
+  @override
+  String get weeklyLabel => 'أسبوعي';
+
+  @override
+  String get selectedDayTimes => 'أوقات اليوم المحدد';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationInfoLine1 => 'تصل تذكيرات الصلاة في وقتها عند تفعيلها.';
+
+  @override
+  String get notificationInfoLine2 => 'يمكنك إدارة أذونات الإشعارات من إعدادات الجهاز وتفعيل أذان الصوت.';
+
+  @override
+  String get notificationStatus => 'حالة الإشعارات';
+
+  @override
+  String get notificationPermission => 'إذن الإشعارات';
+
+  @override
+  String get permissionGranted => 'تم منح الإذن';
+
+  @override
+  String get permissionDenied => 'الإذن مرفوض';
+
+  @override
+  String get exactAlarmPermission => 'إذن التنبيه الدقيق';
+
+  @override
+  String get schedulingActive => 'الجدولة مفعّلة';
+
+  @override
+  String get exactAlarmDisabled => 'التنبيه الدقيق معطّل';
+
+  @override
+  String get soundNotification => 'إشعار صوتي';
+
+  @override
+  String get soundOn => 'صوت الأذان مفعّل';
+
+  @override
+  String get soundOff => 'الصوت معطّل';
+
+  @override
+  String get adControl => 'التحكم بالإعلانات';
+
+  @override
+  String get sdkInitialized => 'تم تهيئة الـSDK';
+
+  @override
+  String get statusReady => 'جاهز';
+
+  @override
+  String get statusWaiting => 'بانتظار التهيئة';
+
+  @override
+  String get bannerAd => 'لافتة';
+
+  @override
+  String get loaded => 'تم التحميل';
+
+  @override
+  String get notLoaded => 'غير محمّل';
+
+  @override
+  String get interstitialAd => 'إعلان انتقالي';
+
+  @override
+  String get showing => 'قيد العرض';
+
+  @override
+  String get notReady => 'غير جاهز';
+
+  @override
+  String get locationStatusOn => 'الموقع مفعّل';
+
+  @override
+  String get locationStatusOff => 'الموقع معطّل';
+
+  @override
+  String get internetStatusOn => 'الاتصال نشط';
+
+  @override
+  String get internetStatusOff => 'لا يوجد إنترنت';
+
+  @override
+  String get prayerNotificationsTitle => 'إشعارات الصلاة';
+
+  @override
+  String get prayerNotificationsSubtitle => 'إدارة وقت وحالة كل إشعار.';
+
+  @override
+  String get notificationEnabled => 'الإشعار مفعّل';
+
+  @override
+  String get notificationDisabled => 'الإشعار معطّل';
+
+  @override
+  String get notificationOptionsTitle => 'خيارات الإشعارات';
+
+  @override
+  String get notificationOptionsSubtitle => 'أوقات الصمت والتنبيه المسبق';
+
+  @override
+  String get quietHoursLabel => 'أوقات الصمت';
+
+  @override
+  String quietHoursShort(Object hours) {
+    return '$hours س';
+  }
+
+  @override
+  String quietHoursLong(Object hours) {
+    return '$hours ساعة';
+  }
+
+  @override
+  String get preAlert => 'تنبيه مسبق';
+
+  @override
+  String get preAlertOff => 'متوقف';
+
+  @override
+  String preAlertMinutes(Object minutes) {
+    return '$minutes دقيقة قبل';
+  }
+
+  @override
+  String get systemTheme => 'سمة النظام';
+
+  @override
+  String get systemThemeSubtitle => 'يتبع إعدادات الجهاز';
+
+  @override
+  String get lightTheme => 'سمة فاتحة';
+
+  @override
+  String get lightThemeSubtitle => 'مظهر النهار';
+
+  @override
+  String get darkTheme => 'سمة داكنة';
+
+  @override
+  String get darkThemeSubtitle => 'مظهر الليل';
 }

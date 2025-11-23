@@ -605,6 +605,148 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tomorrow Fajr'**
   String get tomorrowFajr;
+
+  String savedLocation(Object location);
+
+  String get detectingLocation;
+
+  String locationPermissionActive(Object location);
+
+  String get locationPermissionLimited;
+
+  String locationUpdated(Object location);
+
+  String citySelected(Object location);
+
+  String get locationPermissionGranted;
+
+  String get locationPermissionPending;
+
+  String get notificationsReady;
+
+  String get notificationsPending;
+
+  String get quickActionToday;
+
+  String get quickActionWeekly;
+
+  String get quickActionNotifications;
+
+  String get locationInfoMissing;
+
+  String get cityInfoMissing;
+
+  String get selectLocationOrCity;
+
+  String get weeklyTimesUnavailable;
+
+  String get dataUnavailable;
+
+  String get weeklyViewTitle;
+
+  String get refresh;
+
+  String get weeklyDataMissing;
+
+  String get noDataForDay;
+
+  String get calendarTitle;
+
+  String get monthlyLabel;
+
+  String get weeklyLabel;
+
+  String get selectedDayTimes;
+
+  String get notificationsTitle;
+
+  String get notificationInfoLine1;
+
+  String get notificationInfoLine2;
+
+  String get notificationStatus;
+
+  String get notificationPermission;
+
+  String get permissionGranted;
+
+  String get permissionDenied;
+
+  String get exactAlarmPermission;
+
+  String get schedulingActive;
+
+  String get exactAlarmDisabled;
+
+  String get soundNotification;
+
+  String get soundOn;
+
+  String get soundOff;
+
+  String get adControl;
+
+  String get sdkInitialized;
+
+  String get statusReady;
+
+  String get statusWaiting;
+
+  String get bannerAd;
+
+  String get loaded;
+
+  String get notLoaded;
+
+  String get interstitialAd;
+
+  String get showing;
+
+  String get notReady;
+
+  String get locationStatusOn;
+
+  String get locationStatusOff;
+
+  String get internetStatusOn;
+
+  String get internetStatusOff;
+
+  String get prayerNotificationsTitle;
+
+  String get prayerNotificationsSubtitle;
+
+  String get notificationEnabled;
+
+  String get notificationDisabled;
+
+  String get notificationOptionsTitle;
+
+  String get notificationOptionsSubtitle;
+
+  String get quietHoursLabel;
+
+  String quietHoursShort(Object hours);
+
+  String quietHoursLong(Object hours);
+
+  String get preAlert;
+
+  String get preAlertOff;
+
+  String preAlertMinutes(Object minutes);
+
+  String get systemTheme;
+
+  String get systemThemeSubtitle;
+
+  String get lightTheme;
+
+  String get lightThemeSubtitle;
+
+  String get darkTheme;
+
+  String get darkThemeSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

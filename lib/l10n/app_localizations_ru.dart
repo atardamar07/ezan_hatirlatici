@@ -340,4 +340,231 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Завтра Фаджр';
+
+  @override
+  String savedLocation(Object location) {
+    return 'Сохранённое местоположение: $location';
+  }
+
+  @override
+  String get detectingLocation => 'Определение местоположения...';
+
+  @override
+  String locationPermissionActive(Object location) {
+    return 'Доступ к геоданным разрешён: $location';
+  }
+
+  @override
+  String get locationPermissionLimited => 'Доступ к геоданным выключен. Уведомления могут быть ограничены.';
+
+  @override
+  String locationUpdated(Object location) {
+    return 'Местоположение обновлено: $location';
+  }
+
+  @override
+  String citySelected(Object location) {
+    return 'Город выбран: $location';
+  }
+
+  @override
+  String get locationPermissionGranted => 'Разрешение на местоположение активно';
+
+  @override
+  String get locationPermissionPending => 'Ожидание разрешения на местоположение';
+
+  @override
+  String get notificationsReady => 'Уведомления готовы';
+
+  @override
+  String get notificationsPending => 'Ожидается разрешение на уведомления';
+
+  @override
+  String get quickActionToday => 'Сегодня';
+
+  @override
+  String get quickActionWeekly => 'Неделя';
+
+  @override
+  String get quickActionNotifications => 'Уведомления';
+
+  @override
+  String get locationInfoMissing => 'Информация о местоположении не найдена.';
+
+  @override
+  String get cityInfoMissing => 'Информация о городе не найдена.';
+
+  @override
+  String get selectLocationOrCity => 'Сначала выберите местоположение или город.';
+
+  @override
+  String get weeklyTimesUnavailable => 'Не удалось получить недельные времена молитв.';
+
+  @override
+  String get dataUnavailable => 'Данные недоступны';
+
+  @override
+  String get weeklyViewTitle => 'Недельный вид';
+
+  @override
+  String get refresh => 'Обновить';
+
+  @override
+  String get weeklyDataMissing => 'Недельные данные не найдены.';
+
+  @override
+  String get noDataForDay => 'Нет данных для выбранного дня.';
+
+  @override
+  String get calendarTitle => 'Календарь';
+
+  @override
+  String get monthlyLabel => 'Месяц';
+
+  @override
+  String get weeklyLabel => 'Неделя';
+
+  @override
+  String get selectedDayTimes => 'Времена выбранного дня';
+
+  @override
+  String get notificationsTitle => 'Уведомления';
+
+  @override
+  String get notificationInfoLine1 => 'Напоминания о намазе приходят вовремя, когда они включены.';
+
+  @override
+  String get notificationInfoLine2 => 'Управляйте разрешениями в настройках устройства и включайте звук азана.';
+
+  @override
+  String get notificationStatus => 'Статус уведомлений';
+
+  @override
+  String get notificationPermission => 'Разрешение на уведомления';
+
+  @override
+  String get permissionGranted => 'Разрешено';
+
+  @override
+  String get permissionDenied => 'Запрещено';
+
+  @override
+  String get exactAlarmPermission => 'Разрешение на точные будильники';
+
+  @override
+  String get schedulingActive => 'Планирование активно';
+
+  @override
+  String get exactAlarmDisabled => 'Точные будильники выключены';
+
+  @override
+  String get soundNotification => 'Звуковое уведомление';
+
+  @override
+  String get soundOn => 'Звук азана включён';
+
+  @override
+  String get soundOff => 'Звук выключен';
+
+  @override
+  String get adControl => 'Контроль рекламы';
+
+  @override
+  String get sdkInitialized => 'SDK инициализирован';
+
+  @override
+  String get statusReady => 'Готово';
+
+  @override
+  String get statusWaiting => 'Ожидание инициализации';
+
+  @override
+  String get bannerAd => 'Баннер';
+
+  @override
+  String get loaded => 'Загружено';
+
+  @override
+  String get notLoaded => 'Не загружено';
+
+  @override
+  String get interstitialAd => 'Межстраничная реклама';
+
+  @override
+  String get showing => 'Показывается';
+
+  @override
+  String get notReady => 'Не готово';
+
+  @override
+  String get locationStatusOn => 'Геолокация включена';
+
+  @override
+  String get locationStatusOff => 'Геолокация выключена';
+
+  @override
+  String get internetStatusOn => 'Интернет активен';
+
+  @override
+  String get internetStatusOff => 'Нет интернета';
+
+  @override
+  String get prayerNotificationsTitle => 'Уведомления о молитве';
+
+  @override
+  String get prayerNotificationsSubtitle => 'Управляйте временем и статусом каждого уведомления.';
+
+  @override
+  String get notificationEnabled => 'Уведомление включено';
+
+  @override
+  String get notificationDisabled => 'Уведомление выключено';
+
+  @override
+  String get notificationOptionsTitle => 'Параметры уведомлений';
+
+  @override
+  String get notificationOptionsSubtitle => 'Тихие часы и предварительные оповещения';
+
+  @override
+  String get quietHoursLabel => 'Тихие часы';
+
+  @override
+  String quietHoursShort(Object hours) {
+    return '$hours ч';
+  }
+
+  @override
+  String quietHoursLong(Object hours) {
+    return '$hours часов';
+  }
+
+  @override
+  String get preAlert => 'Предварительное оповещение';
+
+  @override
+  String get preAlertOff => 'Выкл.';
+
+  @override
+  String preAlertMinutes(Object minutes) {
+    return 'За $minutes мин.';
+  }
+
+  @override
+  String get systemTheme => 'Тема системы';
+
+  @override
+  String get systemThemeSubtitle => 'Следовать настройкам устройства';
+
+  @override
+  String get lightTheme => 'Светлая тема';
+
+  @override
+  String get lightThemeSubtitle => 'Дневной вид';
+
+  @override
+  String get darkTheme => 'Тёмная тема';
+
+  @override
+  String get darkThemeSubtitle => 'Ночной вид';
 }

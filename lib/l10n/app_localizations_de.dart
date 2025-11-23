@@ -340,4 +340,257 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Morgen Fadschr';
+  @@ -318,26 +318,253 @@ class AppLocalizationsDe extends AppLocalizations {
+
+  @override
+  String get tapToIncrement => 'Tap to increase count';
+
+  @override
+  String get prayerNotificationTitle => '🕌 Prayer Time';
+
+  @override
+  String prayerNotificationBody(Object prayer) {
+  return '$prayer time has arrived. Time to pray!';
+  }
+
+  @override
+  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+
+  @override
+  String reminderNotificationBody(Object minutes, Object prayer) {
+  return '$prayer in $minutes minutes';
+  }
+
+  @override
+  String get tomorrow => 'Morgen';
+
+  @override
+  String get tomorrowFajr => 'Morgen Fadschr';
+
+  @override
+  String savedLocation(Object location) {
+  return 'Gespeicherter Ort: $location';
+  }
+
+  @override
+  String get detectingLocation => 'Standort wird ermittelt...';
+
+  @override
+  String locationPermissionActive(Object location) {
+  return 'Standortfreigabe aktiv: $location';
+  }
+
+  @override
+  String get locationPermissionLimited => 'Standortfreigabe deaktiviert. Benachrichtigungen sind ggf. eingeschränkt.';
+
+  @override
+  String locationUpdated(Object location) {
+  return 'Standort aktualisiert: $location';
+  }
+
+  @override
+  String citySelected(Object location) {
+  return 'Stadt gewählt: $location';
+  }
+
+  @override
+  String get locationPermissionGranted => 'Standortberechtigung aktiv';
+
+  @override
+  String get locationPermissionPending => 'Warten auf Standortberechtigung';
+
+  @override
+  String get notificationsReady => 'Benachrichtigungen bereit';
+
+  @override
+  String get notificationsPending => 'Benachrichtigungsberechtigung ausstehend';
+
+  @override
+  String get quickActionToday => 'Heute';
+
+  @override
+  String get quickActionWeekly => 'Wochenansicht';
+
+  @override
+  String get quickActionNotifications => 'Benachrichtigungen';
+
+  @override
+  String get locationInfoMissing => 'Standortinformationen nicht gefunden.';
+
+  @override
+  String get cityInfoMissing => 'Stadtinformationen nicht gefunden.';
+
+  @override
+  String get selectLocationOrCity => 'Bitte zuerst einen Standort oder eine Stadt wählen.';
+
+  @override
+  String get weeklyTimesUnavailable => 'Wöchentliche Gebetszeiten konnten nicht abgerufen werden.';
+
+  @override
+  String get dataUnavailable => 'Keine Daten verfügbar';
+
+  @override
+  String get weeklyViewTitle => 'Wochenansicht';
+
+  @override
+  String get refresh => 'Aktualisieren';
+
+  @override
+  String get weeklyDataMissing => 'Wöchentliche Daten nicht gefunden.';
+
+  @override
+  String get noDataForDay => 'Keine Daten für den ausgewählten Tag.';
+
+  @override
+  String get calendarTitle => 'Kalender';
+
+  @override
+  String get monthlyLabel => 'Monatlich';
+
+  @override
+  String get weeklyLabel => 'Wöchentlich';
+
+  @override
+  String get selectedDayTimes => 'Zeiten für den gewählten Tag';
+
+  @override
+  String get notificationsTitle => 'Benachrichtigungen';
+
+  @override
+  String get notificationInfoLine1 => 'Gebets-Erinnerungen kommen rechtzeitig an, wenn sie aktiviert sind.';
+
+  @override
+  String get notificationInfoLine2 => 'Verwalte die Berechtigungen in den Geräteeinstellungen und aktiviere Adhan-Töne.';
+
+  @override
+  String get notificationStatus => 'Benachrichtigungsstatus';
+
+  @override
+  String get notificationPermission => 'Benachrichtigungsberechtigung';
+
+  @override
+  String get permissionGranted => 'Berechtigung erteilt';
+
+  @override
+  String get permissionDenied => 'Berechtigung verweigert';
+
+  @override
+  String get exactAlarmPermission => 'Exact-Alarm-Berechtigung';
+
+  @override
+  String get schedulingActive => 'Planung aktiv';
+
+  @override
+  String get exactAlarmDisabled => 'Exact-Alarm deaktiviert';
+
+  @override
+  String get soundNotification => 'Tonbenachrichtigung';
+
+  @override
+  String get soundOn => 'Adhan-Ton an';
+
+  @override
+  String get soundOff => 'Ton aus';
+
+  @override
+  String get adControl => 'Werbekontrolle';
+
+  @override
+  String get sdkInitialized => 'SDK initialisiert';
+
+  @override
+  String get statusReady => 'Bereit';
+
+  @override
+  String get statusWaiting => 'Initialisierung ausstehend';
+
+  @override
+  String get bannerAd => 'Banner';
+
+  @override
+  String get loaded => 'Geladen';
+
+  @override
+  String get notLoaded => 'Nicht geladen';
+
+  @override
+  String get interstitialAd => 'Interstitial';
+
+  @override
+  String get showing => 'Wird angezeigt';
+
+  @override
+  String get notReady => 'Nicht bereit';
+
+  @override
+  String get locationStatusOn => 'Standort aktiv';
+
+  @override
+  String get locationStatusOff => 'Standort deaktiviert';
+
+  @override
+  String get internetStatusOn => 'Internet aktiv';
+
+  @override
+  String get internetStatusOff => 'Kein Internet';
+
+  @override
+  String get prayerNotificationsTitle => 'Gebets-Benachrichtigungen';
+
+  @override
+  String get prayerNotificationsSubtitle => 'Verwalte Uhrzeit und Status jeder Benachrichtigung.';
+
+  @override
+  String get notificationEnabled => 'Benachrichtigung an';
+
+  @override
+  String get notificationDisabled => 'Benachrichtigung aus';
+
+  @override
+  String get notificationOptionsTitle => 'Benachrichtigungsoptionen';
+
+  @override
+  String get notificationOptionsSubtitle => 'Ruhezeiten und Vorab-Warnungen';
+
+  @override
+  String get quietHoursLabel => 'Ruhezeiten';
+
+  @override
+  String quietHoursShort(Object hours) {
+  return '$hours Std';
+  }
+
+  @override
+  String quietHoursLong(Object hours) {
+  return '$hours Stunden';
+  }
+
+  @override
+  String get preAlert => 'Vorab-Warnung';
+
+  @override
+  String get preAlertOff => 'Aus';
+
+  @override
+  String preAlertMinutes(Object minutes) {
+  return '$minutes Minuten vorher';
+  }
+
+  @override
+  String get systemTheme => 'Systemdesign';
+
+  @override
+  String get systemThemeSubtitle => 'Folgt den Geräteeinstellungen';
+
+  @override
+  String get lightTheme => 'Hell';
+
+  @override
+  String get lightThemeSubtitle => 'Tagesansicht';
+
+  @override
+  String get darkTheme => 'Dunkel';
+
+  @override
+  String get darkThemeSubtitle => 'Nachtansicht';
 }

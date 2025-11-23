@@ -340,4 +340,231 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tomorrowFajr => 'Yarın İmsak';
+
+  @override
+  String savedLocation(Object location) {
+    return 'Kaydedilen konum: $location';
+  }
+
+  @override
+  String get detectingLocation => 'Konum tespiti yapılıyor...';
+
+  @override
+  String locationPermissionActive(Object location) {
+    return 'Konum izni aktif: $location';
+  }
+
+  @override
+  String get locationPermissionLimited => 'Konum izni kapalı. Bildirimler sınırlı çalışabilir.';
+
+  @override
+  String locationUpdated(Object location) {
+    return 'Konum güncellendi: $location';
+  }
+
+  @override
+  String citySelected(Object location) {
+    return 'Şehir seçildi: $location';
+  }
+
+  @override
+  String get locationPermissionGranted => 'Konum izni aktif';
+
+  @override
+  String get locationPermissionPending => 'Konum izni bekleniyor';
+
+  @override
+  String get notificationsReady => 'Bildirimler hazır';
+
+  @override
+  String get notificationsPending => 'Bildirim izni bekleniyor';
+
+  @override
+  String get quickActionToday => 'Bugün';
+
+  @override
+  String get quickActionWeekly => 'Haftalık görünüm';
+
+  @override
+  String get quickActionNotifications => 'Bildirimler';
+
+  @override
+  String get locationInfoMissing => 'Konum bilgisi bulunamadı.';
+
+  @override
+  String get cityInfoMissing => 'Şehir bilgisi bulunamadı.';
+
+  @override
+  String get selectLocationOrCity => 'Lütfen önce konum veya şehir seçin.';
+
+  @override
+  String get weeklyTimesUnavailable => 'Haftalık vakitler getirilemedi.';
+
+  @override
+  String get dataUnavailable => 'Veri alınamadı';
+
+  @override
+  String get weeklyViewTitle => 'Haftalık Görünüm';
+
+  @override
+  String get refresh => 'Yenile';
+
+  @override
+  String get weeklyDataMissing => 'Haftalık veriler bulunamadı.';
+
+  @override
+  String get noDataForDay => 'Seçilen güne ait veri bulunamadı.';
+
+  @override
+  String get calendarTitle => 'Takvim';
+
+  @override
+  String get monthlyLabel => 'Aylık';
+
+  @override
+  String get weeklyLabel => 'Haftalık';
+
+  @override
+  String get selectedDayTimes => 'Seçilen gün vakitleri';
+
+  @override
+  String get notificationsTitle => 'Bildirimler';
+
+  @override
+  String get notificationInfoLine1 => 'Namaz hatırlatıcılarını etkinleştirdiğinizde uyarılar zamanında gelir.';
+
+  @override
+  String get notificationInfoLine2 => 'Bildirim izinlerini cihaz ayarlarınızdan yönetebilir, sesli ezan bildirimlerini açabilirsiniz.';
+
+  @override
+  String get notificationStatus => 'Bildirim durumu';
+
+  @override
+  String get notificationPermission => 'Bildirim izni';
+
+  @override
+  String get permissionGranted => 'İzin verildi';
+
+  @override
+  String get permissionDenied => 'İzin kapalı';
+
+  @override
+  String get exactAlarmPermission => 'Exact alarm izni';
+
+  @override
+  String get schedulingActive => 'Planlama aktif';
+
+  @override
+  String get exactAlarmDisabled => 'Exact alarm kapalı';
+
+  @override
+  String get soundNotification => 'Sesli bildirim';
+
+  @override
+  String get soundOn => 'Ezan sesi açık';
+
+  @override
+  String get soundOff => 'Ses kapalı';
+
+  @override
+  String get adControl => 'Reklam kontrolü';
+
+  @override
+  String get sdkInitialized => 'SDK başlatıldı';
+
+  @override
+  String get statusReady => 'Hazır';
+
+  @override
+  String get statusWaiting => 'Başlatma bekleniyor';
+
+  @override
+  String get bannerAd => 'Banner';
+
+  @override
+  String get loaded => 'Yüklendi';
+
+  @override
+  String get notLoaded => 'Yüklenmedi';
+
+  @override
+  String get interstitialAd => 'Geçiş reklamı';
+
+  @override
+  String get showing => 'Gösteriliyor';
+
+  @override
+  String get notReady => 'Hazır değil';
+
+  @override
+  String get locationStatusOn => 'Konum açık';
+
+  @override
+  String get locationStatusOff => 'Konum kapalı';
+
+  @override
+  String get internetStatusOn => 'İnternet aktif';
+
+  @override
+  String get internetStatusOff => 'İnternet yok';
+
+  @override
+  String get prayerNotificationsTitle => 'Vakit bildirimleri';
+
+  @override
+  String get prayerNotificationsSubtitle => 'Her vakit için bildirim saatini ve durumu yönetin.';
+
+  @override
+  String get notificationEnabled => 'Bildirim açık';
+
+  @override
+  String get notificationDisabled => 'Bildirim kapalı';
+
+  @override
+  String get notificationOptionsTitle => 'Bildirim seçenekleri';
+
+  @override
+  String get notificationOptionsSubtitle => 'Sessiz saatler ve önceden uyar tercihleri';
+
+  @override
+  String get quietHoursLabel => 'Sessiz saatler';
+
+  @override
+  String quietHoursShort(Object hours) {
+    return '$hours sa';
+  }
+
+  @override
+  String quietHoursLong(Object hours) {
+    return '$hours saat';
+  }
+
+  @override
+  String get preAlert => 'Önceden uyar';
+
+  @override
+  String get preAlertOff => 'Kapalı';
+
+  @override
+  String preAlertMinutes(Object minutes) {
+    return '$minutes dakika önce';
+  }
+
+  @override
+  String get systemTheme => 'Sistem Teması';
+
+  @override
+  String get systemThemeSubtitle => 'Cihaz ayarlarına göre';
+
+  @override
+  String get lightTheme => 'Açık Tema';
+
+  @override
+  String get lightThemeSubtitle => 'Gündüz görünümü';
+
+  @override
+  String get darkTheme => 'Koyu Tema';
+
+  @override
+  String get darkThemeSubtitle => 'Gece görünümü';
 }

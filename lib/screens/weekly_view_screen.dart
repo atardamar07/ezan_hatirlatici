@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../navigation/bottom_nav_bar.dart';
 import '../services/prayer_times_api.dart';
+import '../l10n/app_localizations.dart';
 
 class WeeklyViewScreen extends StatefulWidget {
   const WeeklyViewScreen({super.key});
@@ -37,6 +38,7 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
     final savedMethod = await _prayerApi.getSavedMethodOrDefault();
 
     setState(() => _selectedMethod = savedMethod);
+    final loc = AppLocalizations.of(context)!;
 
     final locationType = prefs.getString('locationType');
 
@@ -46,7 +48,7 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
 
       if (_latitude == null || _longitude == null) {
         setState(() {
-          _statusMessage = 'Konum bilgisi bulunamadı.';
+          _statusMessage = loc.locationInfoMissing;
           _isLoading = false;
         });
         return;
@@ -57,14 +59,14 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
 
       if (_city == null || _country == null) {
         setState(() {
-          _statusMessage = 'Şehir bilgisi bulunamadı.';
+          _statusMessage = loc.cityInfoMissing;
           _isLoading = false;
         });
         return;
       }
     } else {
       setState(() {
-        _statusMessage = 'Lütfen önce konum veya şehir seçin.';
+        _statusMessage = loc.selectLocationOrCity;
         _isLoading = false;
       });
       return;
@@ -101,32 +103,34 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
       _weeklyTimes.addAll(results);
       _isLoading = false;
       if (_weeklyTimes.every((day) => day.timings == null)) {
-        _statusMessage = 'Haftalık vakitler getirilemedi.';
+        _statusMessage = loc.weeklyTimesUnavailable;
       }
     });
   }
 
   String _translatePrayerName(String name) {
+    final loc = AppLocalizations.of(context);
     switch (name) {
       case "Fajr":
-        return 'İmsak';
+        return loc?.fajr ?? 'Fajr';
       case "Sunrise":
-        return 'Güneş';
+        return loc?.sunrise ?? 'Sunrise';
       case "Dhuhr":
-        return 'Öğle';
+        return loc?.dhuhr ?? 'Dhuhr';
       case "Asr":
-        return 'İkindi';
+        return loc?.asr ?? 'Asr';
       case "Maghrib":
-        return 'Akşam';
+        return loc?.maghrib ?? 'Maghrib';
       case "Isha":
-        return 'Yatsı';
+        return loc?.isha ?? 'Isha';
     }
 
     return name;
   }
 
   Widget _buildDayCard(_DailyPrayerTimes day) {
-    final dateText = DateFormat('EEEE, d MMMM', 'tr_TR').format(day.date);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final dateText = DateFormat('EEEE, d MMMM', locale).format(day.date);
     final order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
     return Card(
@@ -142,9 +146,9 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
             ),
             const Divider(),
             if (day.timings == null)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('Veri alınamadı'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(AppLocalizations.of(context)!.dataUnavailable),
               )
             else
               ...order
@@ -168,10 +172,10 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Haftalık Görünüm'),
+        title: Text(AppLocalizations.of(context)!.weeklyViewTitle),
         actions: [
           IconButton(
-            tooltip: 'Yenile',
+            tooltip: AppLocalizations.of(context)!.refresh,
             icon: const Icon(Icons.refresh),
             onPressed: _isLoading ? null : _fetchWeeklyTimes,
           ),
@@ -195,7 +199,7 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
               ),
             Expanded(
               child: _weeklyTimes.isEmpty
-                  ? const Center(child: Text('Haftalık veriler bulunamadı.'))
+                  ? Center(child: Text(AppLocalizations.of(context)!.weeklyDataMissing))
                   : ListView.builder(
                 itemCount: _weeklyTimes.length,
                 itemBuilder: (context, index) => _buildDayCard(
