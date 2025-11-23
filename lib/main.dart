@@ -55,8 +55,20 @@ class MyApp extends StatelessWidget {
       },
 
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0E0E17),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.dark,
+        ).copyWith(
+          surface: const Color(0xFF1B1B27),
+          secondary: const Color(0xFF1DE9B6),
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        useMaterial3: true,
       ),
 
       initialRoute: '/home',

@@ -145,58 +145,152 @@ class _PrayerCardState extends State<PrayerCard> {
     return ValueListenableBuilder<String>(
       valueListenable: _remainingText,
       builder: (context, remainingText, _) {
-        return Card(
-          color: widget.isNextPrayer
-              ? Colors.teal.shade800
-              : const Color(0xFF2C2C38),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: widget.isNextPrayer
-                ? BorderSide(color: Colors.teal.shade400, width: 2)
-                : BorderSide.none,
-          ),
-          elevation: widget.isNextPrayer ? 8 : 4,
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-                vertical: 12, horizontal: 20),
-            title: Text(
-              name,
-              style: TextStyle(
-                color: widget.isNextPrayer ? Colors.white : Colors.amber,
-                fontSize: 20,
-                fontWeight:
-                widget.isNextPrayer ? FontWeight.bold : FontWeight.normal,
+        return Stack(
+            clipBehavior: Clip.none,
+            children: [
+        Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+        decoration: BoxDecoration(
+        gradient: LinearGradient(
+        colors: widget.isNextPrayer
+        ? [Colors.teal.shade700, Colors.teal.shade400]
+            : [const Color(0xFF1F1F2C), const Color(0xFF161623)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+        BoxShadow(
+        color: widget.isNextPrayer
+        ? Colors.teal.shade900.withOpacity(0.4)
+            : Colors.black.withOpacity(0.35),
+        blurRadius: 12,
+        offset: const Offset(0, 8),
+        ),
+        ],
+        border: widget.isNextPrayer
+        ? Border.all(
+        color: Colors.tealAccent.withOpacity(0.6),
+        width: 1.5,
+        )
+            : null,
+        ),
+        child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+        Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.15),
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white12),
+        ),
+        child: Icon(
+        _prayerIcon(context),
+        color: Colors.white,
+        size: 28,
+        ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+        child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Text(
+        name,
+        style: TextStyle(
+        color: widget.isNextPrayer
+        ? Colors.white
+            : Colors.amber.shade200,
+        fontSize: 20,
+        fontWeight: widget.isNextPrayer
+        ? FontWeight.bold
+            : FontWeight.w600,
+        ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+        widget.time,
+        style: const TextStyle(
+        color: Colors.white,
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.4,
+        ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+        remainingText,
+        style: TextStyle(
+        color: isActive ? Colors.white : Colors.white70,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        ),
+        ),
+        ],
+        ),
+        ),
+        if (widget.isNextPrayer)
+        const Icon(Icons.chevron_right, color: Colors.white70),
+        ],
               ),
             ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.time,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+        if (widget.isNextPrayer)
+        Positioned(
+        top: 6,
+        right: 18,
+        child: Container(
+        padding:
+        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        decoration: BoxDecoration(
+        color: Colors.tealAccent.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+        BoxShadow(
+        color: Colors.tealAccent.withOpacity(0.35),
+        blurRadius: 8,
+        offset: const Offset(0, 3),
+        )
+        ],
+                  ),
+        child: Text(
+        'Bir sonraki vakte kalan süre',
+        style: TextStyle(
+        color: Colors.teal.shade900,
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        ),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  remainingText,
-                  style: TextStyle(
-                    color: isActive ? Colors.white70 : Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            trailing: widget.isNextPrayer
-                ? const Icon(Icons.access_time,
-                color: Colors.white, size: 24)
-                : null,
-          ),
+        ),
+            ],
         );
       },
     );
   }
+  IconData _prayerIcon(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final key = widget.prayerName.toLowerCase();
+
+    if (key == loc.fajr.toLowerCase() || key.contains('fajr') || key.contains('imsak')) {
+      return Icons.nightlight_round;
+    }
+    if (key == loc.dhuhr.toLowerCase() || key.contains('dhuhr') || key.contains('öğle')) {
+      return Icons.wb_sunny_outlined;
+    }
+    if (key == loc.asr.toLowerCase() || key.contains('asr') || key.contains('ikindi')) {
+      return Icons.sunny_snowing;
+    }
+    if (key == loc.maghrib.toLowerCase() || key.contains('maghrib') || key.contains('akşam')) {
+      return Icons.nightlight_outlined;
+    }
+    if (key == loc.isha.toLowerCase() || key.contains('isha') || key.contains('yatsı')) {
+      return Icons.dark_mode_rounded;
+    }
+
+    return Icons.access_time_rounded;
+  }
 }
+
+

@@ -100,6 +100,24 @@ Bu, dünya genelinde tüm şehirlerde namaz vakitlerini gösteren, kıble yönü
    flutter run
    ```
 
+## 🧹 Windows'ta Flutter Clean Hatasını Giderme
+
+`flutter clean` komutu sırasında "Failed to remove build" hatası alıyorsanız, muhtemelen Windows'ta açık kalan bir süreç (Flutter, Dart, Gradle veya ADB) `build` klasörünü kilitliyordur. Bu durumda şu adımları izleyebilirsiniz:
+
+1. Çalışan uygulamaları ve emülatörü kapatın.
+2. PowerShell'de proje kök dizininde aşağıdaki komutu çalıştırın:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\scripts\windows_force_clean.ps1 -KillGradle -KillJava
+   ```
+    - Gerekirse `-KillGradle` ve `-KillJava` bayraklarını kaldırarak yalnızca Flutter/Dart/ADB süreçlerini sonlandırabilirsiniz.
+3. Ardından temiz bir kurulum için şu adımları izleyin:
+   ```powershell
+   flutter pub get
+   flutter clean
+   ```
+
+Bu script, kilitli klasörleri zorla kaldırarak temizlik işlemini yeniden denenebilir hale getirir.
+
 ## 📦 Paket Yönetimi
 
 ### Pubspec.yaml Özeti
