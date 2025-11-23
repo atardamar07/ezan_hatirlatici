@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../navigation/bottom_nav_bar.dart';
+
 class WeeklyViewScreen extends StatelessWidget {
   const WeeklyViewScreen({super.key});
 
@@ -12,6 +14,7 @@ class WeeklyViewScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Haftalık Görünüm', style: TextStyle(color: Colors.white)),
       ),
+      bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.weekly),
       body: const Center(
         child: Padding(
           padding: EdgeInsets.all(16),

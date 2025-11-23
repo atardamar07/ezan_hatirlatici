@@ -11,6 +11,7 @@ import 'screens/city_selection_screen.dart';
 import 'theme/app_theme.dart';
 import 'screens/weekly_view_screen.dart';
 import 'screens/notification_status_screen.dart';
+import 'screens/calendar_screen.dart';
 
 
 void main() {
@@ -119,6 +120,7 @@ class _MyAppState extends State<MyApp> {
         '/donate': (context) => const DonationScreen(),
         '/city_selection': (context) => const CitySelectionScreen(),
         '/weekly_view': (context) => const WeeklyViewScreen(),
+        '/calendar': (context) => const CalendarScreen(),
         '/notifications': (context) => const NotificationStatusScreen(),
       },
     );

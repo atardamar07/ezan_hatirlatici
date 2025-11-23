@@ -14,6 +14,7 @@ import 'city_selection_screen.dart';
 import 'notification_status_screen.dart';
 import 'qibla_screen.dart';
 import 'weekly_view_screen.dart';
+import '../navigation/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onOpenSettings;
@@ -354,6 +355,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+
+      bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.home),
 
       body: Padding(
         padding: const EdgeInsets.all(16),

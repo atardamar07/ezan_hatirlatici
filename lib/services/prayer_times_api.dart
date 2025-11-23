@@ -98,6 +98,47 @@ class PrayerTimesApi {
     return null;
   }
 
+  /// 🔥 Belirli bir tarihe ait namaz vakitleri
+  Future<Map<String, dynamic>?> getPrayerTimesForDate({
+    required DateTime date,
+    double? lat,
+    double? lng,
+    String? city,
+    String? country,
+    required int method,
+  }) async {
+    final formatted = "${date.day}-${date.month}-${date.year}";
+    Uri? url;
+
+    if (lat != null && lng != null) {
+      url = Uri.parse(
+        "$baseUrl/timings/$formatted?latitude=$lat&longitude=$lng&method=$method",
+      );
+    } else if (city != null && country != null) {
+      url = Uri.parse(
+        "$baseUrl/timingsByCity/$formatted?city=$city&country=$country&method=$method",
+      );
+    }
+
+    if (url == null) return null;
+
+    try {
+      final res = await http.get(url);
+
+      if (res.statusCode == 200) {
+        final json = jsonDecode(res.body);
+        return Map<String, dynamic>.from(json["data"]["timings"]);
+      } else {
+        debugPrint(
+            "getPrayerTimesForDate failed: ${res.statusCode} → ${res.body}");
+      }
+    } catch (e) {
+      debugPrint("getPrayerTimesForDate error: $e");
+    }
+
+    return null;
+  }
+
   /// 🔥 Hesaplama metodları listesi
   List<Map<String, dynamic>> getCalculationMethods() {
     return [
