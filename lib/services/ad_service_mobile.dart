@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -20,6 +21,28 @@ class AdServicePlatform implements AdServiceBase {
   bool _canLoadAds = true;
   bool _isLoadingInterstitial = false;
   final bool _useTestAds = kDebugMode;
+
+  Future<void> _loadBannerAd() async {
+    if (!_canLoadAds || !_initialized) return;
+
+    _banner?.dispose();
+    _banner = BannerAd(
+      adUnitId: _bannerAdUnitId,
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('Banner failed to load: ${error.message}');
+          ad.dispose();
+          _banner = null;
+
+          Future.delayed(_retryDelay, () {
+            if (_canLoadAds) _loadBannerAd();
+          });
+        },
+      ),
+      request: const AdRequest(),
+    )..load();
+  }
 
   String get _bannerAdUnitId {
     if (_useTestAds) {
@@ -58,21 +81,20 @@ class AdServicePlatform implements AdServiceBase {
 
     if (!loadAds) return;
 
-    _banner = BannerAd(
-      adUnitId: Platform.isIOS
-          ? AdIds.iosBannerAdUnitId
-          : AdIds.androidBannerAdUnitId,
-      size: AdSize.banner,
-      listener: BannerAdListener(),
-      request: const AdRequest(),
-    )..load();
+    await _loadBannerAd();
 
     await loadInterstitialAd();
   }
 
   @override
   Widget buildBannerAd() {
-    if (_banner == null) return const SizedBox.shrink();
+    if (!_initialized) return const SizedBox.shrink();
+
+    if (_banner == null) {
+      unawaited(_loadBannerAd());
+      return const SizedBox.shrink();
+    }
+
     return SizedBox(height: 50, child: AdWidget(ad: _banner!));
   }
 
@@ -82,9 +104,7 @@ class AdServicePlatform implements AdServiceBase {
 
     _isLoadingInterstitial = true;
     await InterstitialAd.load(
-      adUnitId: Platform.isIOS
-          ? AdIds.iosInterstitialAdUnitId
-          : AdIds.androidInterstitialAdUnitId,
+      adUnitId: _interstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
