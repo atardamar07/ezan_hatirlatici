@@ -38,25 +38,25 @@ class AppTheme {
         elevation: 0,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: colorScheme.surface,
-        indicatorColor: colorScheme.primary.withOpacity(0.18),
+        backgroundColor: colorScheme.surface.withOpacity(0.96),
+        indicatorColor: colorScheme.primary.withOpacity(0.14),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         iconTheme: MaterialStateProperty.resolveWith(
               (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
                 ? colorScheme.primary
-                : colorScheme.onSurface.withOpacity(0.72),
+                : colorScheme.onSurface,
           ),
         ),
         labelTextStyle: MaterialStateProperty.resolveWith(
               (states) => TextStyle(
             color: states.contains(MaterialState.selected)
                 ? colorScheme.primary
-                : colorScheme.onSurface.withOpacity(0.72),
+                : colorScheme.onSurface,
                 fontWeight: states.contains(MaterialState.selected)
-                    ? FontWeight.w600
-                    : FontWeight.w500,
+                    ? FontWeight.w700
+                    : FontWeight.w600,
           ),
         ),
       ),
