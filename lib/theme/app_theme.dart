@@ -37,11 +37,11 @@ class AppTheme {
         backgroundColor: _lightSurface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
-      ),
-      systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: const Color(0xFFDCE3E9),
@@ -96,11 +96,11 @@ class AppTheme {
         backgroundColor: _darkSurface,
         foregroundColor: Colors.white,
         elevation: 0,
-      ),
-      systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surface,
