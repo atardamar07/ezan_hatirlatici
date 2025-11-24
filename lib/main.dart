@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -63,6 +64,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        final brightness = _effectiveBrightness(context);
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness:
+            brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+            statusBarBrightness: brightness,
+          ),
+        );
+        return child ?? const SizedBox.shrink();
+      },
 
       // Dil ve Yerelleştirme Ayarları
       localizationsDelegates: const [
@@ -124,5 +137,16 @@ class _MyAppState extends State<MyApp> {
         '/notifications': (context) => const NotificationStatusScreen(),
       },
     );
+  }
+
+  Brightness _effectiveBrightness(BuildContext context) {
+    switch (_themeMode) {
+      case ThemeMode.light:
+        return Brightness.light;
+      case ThemeMode.dark:
+        return Brightness.dark;
+      case ThemeMode.system:
+        return MediaQuery.platformBrightnessOf(context);
+    }
   }
 }
