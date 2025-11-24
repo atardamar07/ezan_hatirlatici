@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,16 +11,51 @@ import 'ad_service_base.dart';
 
 class AdServicePlatform implements AdServiceBase {
   static const _adInterval = Duration(minutes: 5);
+  static const _retryDelay = Duration(minutes: 1);
 
   BannerAd? _banner;
   InterstitialAd? _interstitial;
   bool _isInterstitialShowing = false;
   bool _initialized = false;
+  bool _canLoadAds = true;
+  bool _isLoadingInterstitial = false;
+  final bool _useTestAds = kDebugMode;
+
+  String get _bannerAdUnitId {
+    if (_useTestAds) {
+      return Platform.isIOS
+          ? AdIds.iosTestBannerAdUnitId
+          : AdIds.androidTestBannerAdUnitId;
+    }
+
+    return Platform.isIOS
+        ? AdIds.iosBannerAdUnitId
+        : AdIds.androidBannerAdUnitId;
+  }
+
+  String get _interstitialAdUnitId {
+    if (_useTestAds) {
+      return Platform.isIOS
+          ? AdIds.iosTestInterstitialAdUnitId
+          : AdIds.androidTestInterstitialAdUnitId;
+    }
+
+    return Platform.isIOS
+        ? AdIds.iosInterstitialAdUnitId
+        : AdIds.androidInterstitialAdUnitId;
+  }
 
   @override
   Future<void> initialize({bool loadAds = true}) async {
-    await MobileAds.instance.initialize();
-    _initialized = true;
+    try {
+      await MobileAds.instance.initialize();
+      _initialized = true;
+    } catch (e, stack) {
+      debugPrint('AdMob initialization failed: $e\n$stack');
+      _canLoadAds = false;
+      return;
+    }
+
     if (!loadAds) return;
 
     _banner = BannerAd(
@@ -42,6 +78,9 @@ class AdServicePlatform implements AdServiceBase {
 
   @override
   Future<void> loadInterstitialAd() async {
+    if (!_canLoadAds || _isLoadingInterstitial) return;
+
+    _isLoadingInterstitial = true;
     await InterstitialAd.load(
       adUnitId: Platform.isIOS
           ? AdIds.iosInterstitialAdUnitId
@@ -49,6 +88,7 @@ class AdServicePlatform implements AdServiceBase {
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
+          _isLoadingInterstitial = false;
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdShowedFullScreenContent: (_) async {
               _isInterstitialShowing = true;
@@ -68,7 +108,12 @@ class AdServicePlatform implements AdServiceBase {
 
           _interstitial = ad;
         },
-        onAdFailedToLoad: (_) => _interstitial = null,
+        onAdFailedToLoad: (error) {
+          debugPrint('Interstitial failed to load: ${error.message}');
+          _interstitial = null;
+          _isLoadingInterstitial = false;
+          _retryLoadInterstitial();
+        },
       ),
     );
   }
@@ -113,5 +158,12 @@ class AdServicePlatform implements AdServiceBase {
   Future<void> _updateLastAdTime() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt("lastAdTime", DateTime.now().millisecondsSinceEpoch);
+  }
+
+  void _retryLoadInterstitial() {
+    Future.delayed(_retryDelay, () {
+      if (_isInterstitialShowing || !_canLoadAds) return;
+      loadInterstitialAd();
+    });
   }
 }

@@ -21,7 +21,7 @@
         <!-- AdMob App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
+            android:value="${ADMOB_APP_ID}" />
 
         <!-- Flutter Local Notifications için default notification channel -->
         <meta-data

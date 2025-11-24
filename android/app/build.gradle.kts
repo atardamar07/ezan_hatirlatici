@@ -16,10 +16,10 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-android {
-    namespace = "com.example.ezan_hatirlatici"
-    compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    android {
+        namespace = "com.example.ezan_hatirlatici"
+        compileSdk = 36
+        ndkVersion = "27.0.12077973"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -45,13 +45,18 @@ android {
         kotlinOptions.jvmTarget = "11"
     }
 
-    defaultConfig {
-        applicationId = "com.example.ezan_hatirlatici"
-        minSdk = flutter.minSdkVersion
-        targetSdk = 36
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-    }
+        defaultConfig {
+            applicationId = "com.example.ezan_hatirlatici"
+            minSdk = flutter.minSdkVersion
+            targetSdk = 36
+            versionCode = flutter.versionCode
+            versionName = flutter.versionName
+
+            // Google Mobile Ads SDK'nin MobileAdsInitProvider'ı uygulama açılışında
+            // doğru çalışabilmesi için AdMob uygulama kimliğini manifest placeholder
+            // olarak sağlıyoruz. (AdMob uygulama kimliği olmadan sağlayıcı çöküyor.)
+            manifestPlaceholders["ADMOB_APP_ID"] = "ca-app-pub-1498129057551982~3865121210"
+        }
 
     signingConfigs {
         create("release") {
