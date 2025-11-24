@@ -39,20 +39,20 @@ class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surface,
-        indicatorColor: colorScheme.primary.withOpacity(0.12),
+        indicatorColor: colorScheme.primary.withOpacity(0.18),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         iconTheme: MaterialStateProperty.resolveWith(
               (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
-                ? colorScheme.onSurface
+                ? colorScheme.primary
                 : colorScheme.onSurface.withOpacity(0.72),
           ),
         ),
         labelTextStyle: MaterialStateProperty.resolveWith(
               (states) => TextStyle(
             color: states.contains(MaterialState.selected)
-                ? colorScheme.onSurface
+                ? colorScheme.primary
                 : colorScheme.onSurface.withOpacity(0.72),
                 fontWeight: states.contains(MaterialState.selected)
                     ? FontWeight.w600
