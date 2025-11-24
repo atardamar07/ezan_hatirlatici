@@ -45,7 +45,7 @@ class AppTheme {
         iconTheme: MaterialStateProperty.resolveWith(
               (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
-                ? colorScheme.primary
+                ? colorScheme.onSurface
                 : colorScheme.onSurface.withOpacity(0.72),
           ),
         ),
@@ -54,8 +54,9 @@ class AppTheme {
             color: states.contains(MaterialState.selected)
                 ? colorScheme.onSurface
                 : colorScheme.onSurface.withOpacity(0.72),
-            fontWeight:
-            states.contains(MaterialState.selected) ? FontWeight.w600 : null,
+                fontWeight: states.contains(MaterialState.selected)
+                    ? FontWeight.w600
+                    : FontWeight.w500,
           ),
         ),
       ),
@@ -98,7 +99,7 @@ class AppTheme {
         iconTheme: MaterialStateProperty.resolveWith(
               (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
-                ? colorScheme.primary
+                ? colorScheme.onSurface
                 : colorScheme.onSurface.withOpacity(0.72),
           ),
         ),
@@ -107,8 +108,9 @@ class AppTheme {
             color: states.contains(MaterialState.selected)
                 ? colorScheme.onSurface
                 : colorScheme.onSurface.withOpacity(0.72),
-            fontWeight:
-            states.contains(MaterialState.selected) ? FontWeight.w600 : null,
+                fontWeight: states.contains(MaterialState.selected)
+                    ? FontWeight.w600
+                    : FontWeight.w500,
           ),
         ),
       ),
