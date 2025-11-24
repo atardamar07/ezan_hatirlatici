@@ -225,15 +225,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get supportApp => 'Uygulamayı bahşişle desteklemek ister misiniz?';
 
   @override
-  String get supportOptionalText =>
-      'Bahşiş vermek tamamen gönüllüdür; uygulamadaki özelliklere erişmek için zorunlu değildir.';
-
-  @override
   String get adFreeExperience => 'Reklamsız deneyimin keyfini çıkarın';
 
   @override
-  String get donationInfoText =>
-      'Bahşişler Google Play Faturalandırma ile alınır ve geliştirme ile sunucu masraflarında kullanılır.';
+  String get supportOptionalText => 'Bahşiş vermek tamamen gönüllüdür; uygulamadaki özelliklere erişmek için zorunlu değildir.';
+
+  @override
+  String get donationInfoText => 'Bahşişler Google Play Faturalandırma ile alınır ve geliştirme ile sunucu masraflarında kullanılır.';
 
   @override
   String get noAdsFor30Days => 'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.';

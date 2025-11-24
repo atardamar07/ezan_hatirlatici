@@ -196,8 +196,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get donationsForWeb => 'Unterstützung ist in der mobilen App verfügbar';
 
   @override
-  String get donateInfo =>
-      'Du kannst eine freiwillige Unterstützung über die Android- oder iOS-App senden.';
+  String get donateInfo => 'Du kannst eine freiwillige Unterstützung über die Android- oder iOS-App senden.';
 
   @override
   String get donationTitle => 'App unterstützen';
@@ -226,15 +225,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get supportApp => 'Möchtest du die App mit einem Trinkgeld unterstützen?';
 
   @override
-  String get supportOptionalText =>
-      'Die Unterstützung ist völlig freiwillig und nicht erforderlich, um die App zu nutzen.';
-
-  @override
   String get adFreeExperience => 'Genießen Sie Ihre werbefreie Erfahrung';
 
   @override
-  String get donationInfoText =>
-      'Unterstützungen werden über Google Play Abrechnung abgewickelt und helfen bei Entwicklung und Serverkosten.';
+  String get supportOptionalText => 'Die Unterstützung ist völlig freiwillig und nicht erforderlich, um die App zu nutzen.';
+
+  @override
+  String get donationInfoText => 'Unterstützungen werden über Google Play Abrechnung abgewickelt und helfen bei Entwicklung und Serverkosten.';
 
   @override
   String get noAdsFor30Days => 'Es werden 30 Tage lang keine Anzeigen angezeigt, nachdem Sie gespendet haben.';

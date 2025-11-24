@@ -225,15 +225,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supportApp => 'هل ترغب في دعم التطبيق بإكرامية؟';
 
   @override
-  String get supportOptionalText =>
-      'الدعم اختياري بالكامل وليس مطلوبًا لاستخدام التطبيق.';
-
-  @override
   String get adFreeExperience => 'استمتع بتجربة خالية من الإعلانات';
 
   @override
-  String get donationInfoText =>
-      'تُعالج مبالغ الدعم عبر فوترة Google Play وتساعد في تغطية التطوير وتكاليف الخادم.';
+  String get supportOptionalText => 'الدعم اختياري بالكامل وليس مطلوبًا لاستخدام التطبيق.';
+
+  @override
+  String get donationInfoText => 'تُعالج مبالغ الدعم عبر فوترة Google Play وتساعد في تغطية التطوير وتكاليف الخادم.';
 
   @override
   String get noAdsFor30Days => 'لن يتم عرض إعلانات لمدة 30 يوماً بعد التبرع.';

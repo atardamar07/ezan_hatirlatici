@@ -196,8 +196,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get donationsForWeb => 'Поддержка доступна в мобильном приложении';
 
   @override
-  String get donateInfo =>
-      'Вы можете отправить добровольную поддержку через приложение на Android или iOS.';
+  String get donateInfo => 'Вы можете отправить добровольную поддержку через приложение на Android или iOS.';
 
   @override
   String get donationTitle => 'Поддержать';
@@ -226,15 +225,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get supportApp => 'Хотите поддержать приложение чаевыми?';
 
   @override
-  String get supportOptionalText =>
-      'Поддержка полностью добровольная и не требуется для использования приложения.';
-
-  @override
   String get adFreeExperience => 'Наслаждайтесь безрекламным опытом';
 
   @override
-  String get donationInfoText =>
-      'Пожертвования обрабатываются через Google Play Billing и помогают покрыть разработку и серверные расходы.';
+  String get supportOptionalText => 'Поддержка полностью добровольная и не требуется для использования приложения.';
+
+  @override
+  String get donationInfoText => 'Пожертвования обрабатываются через Google Play Billing и помогают покрыть разработку и серверные расходы.';
 
   @override
   String get noAdsFor30Days => 'Реклама не будет показываться в течение 30 дней после пожертвования.';

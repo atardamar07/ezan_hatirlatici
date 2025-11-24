@@ -497,17 +497,17 @@ abstract class AppLocalizations {
   /// **'Would you like to leave a tip for the app?'**
   String get supportApp;
 
-  /// No description provided for @supportOptionalText.
-  ///
-  /// In en, this message translates to:
-  /// **'Tips are completely optional and not required to use the app.'**
-  String get supportOptionalText;
-
   /// No description provided for @adFreeExperience.
   ///
   /// In en, this message translates to:
   /// **'Enjoy your ad-free experience'**
   String get adFreeExperience;
+
+  /// No description provided for @supportOptionalText.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips are completely optional and not required to use the app.'**
+  String get supportOptionalText;
 
   /// No description provided for @donationInfoText.
   ///
@@ -530,7 +530,7 @@ abstract class AppLocalizations {
   /// No description provided for @coffeeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Buy the developer a coffee'**
+  /// **'One-time small show of support'**
   String get coffeeDescription;
 
   /// No description provided for @mealDonation.
