@@ -37,6 +37,28 @@ class AppTheme {
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withOpacity(0.12),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: MaterialStateProperty.resolveWith(
+              (states) => IconThemeData(
+            color: states.contains(MaterialState.selected)
+                ? colorScheme.primary
+                : colorScheme.onSurface.withOpacity(0.72),
+          ),
+        ),
+        labelTextStyle: MaterialStateProperty.resolveWith(
+              (states) => TextStyle(
+            color: states.contains(MaterialState.selected)
+                ? colorScheme.onSurface
+                : colorScheme.onSurface.withOpacity(0.72),
+            fontWeight:
+            states.contains(MaterialState.selected) ? FontWeight.w600 : null,
+          ),
+        ),
+      ),
       textTheme: _textTheme(colorScheme),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
@@ -67,6 +89,28 @@ class AppTheme {
         backgroundColor: _darkSurface,
         foregroundColor: Colors.white,
         elevation: 0,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: colorScheme.surface,
+        indicatorColor: colorScheme.primary.withOpacity(0.2),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        iconTheme: MaterialStateProperty.resolveWith(
+              (states) => IconThemeData(
+            color: states.contains(MaterialState.selected)
+                ? colorScheme.primary
+                : colorScheme.onSurface.withOpacity(0.72),
+          ),
+        ),
+        labelTextStyle: MaterialStateProperty.resolveWith(
+              (states) => TextStyle(
+            color: states.contains(MaterialState.selected)
+                ? colorScheme.onSurface
+                : colorScheme.onSurface.withOpacity(0.72),
+            fontWeight:
+            states.contains(MaterialState.selected) ? FontWeight.w600 : null,
+          ),
+        ),
       ),
       textTheme: _textTheme(colorScheme),
       visualDensity: VisualDensity.adaptivePlatformDensity,
