@@ -334,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             DrawerHeader(
               decoration:
-              BoxDecoration(color: Theme.of(context).colorScheme.primary),
+              BoxDecoration(color: const Color(0xFF1C1C27)),
               child: Center(
                 child: Text(
                   AppLocalizations.of(context)!.menu,
@@ -482,7 +482,10 @@ class _HomeScreenState extends State<HomeScreen> {
         avatar: Icon(icon, size: 18, color: Colors.white),
         label: Text(
           label,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Color(0xFF11B2A2),
+            fontWeight: FontWeight.w600,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,

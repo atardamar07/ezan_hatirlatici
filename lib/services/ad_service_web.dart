@@ -18,5 +18,15 @@ class AdServicePlatform implements AdServiceBase {
   Future<bool> shouldShowAd() async => false;
 
   @override
+  Future<AdStatus> getStatus() async {
+    return const AdStatus(
+      initialized: false,
+      bannerReady: false,
+      interstitialReady: false,
+      interstitialShowing: false,
+    );
+  }
+
+  @override
   void dispose() {}
 }
