@@ -38,22 +38,22 @@ class AppTheme {
         elevation: 0,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: colorScheme.surface.withOpacity(0.96),
-        indicatorColor: colorScheme.primary.withOpacity(0.14),
+        backgroundColor: const Color(0xFFE9EEF2),
+        indicatorColor: colorScheme.primary.withOpacity(0.16),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         iconTheme: MaterialStateProperty.resolveWith(
               (states) => IconThemeData(
             color: states.contains(MaterialState.selected)
                 ? colorScheme.primary
-                : colorScheme.onSurface,
+                : colorScheme.onSurface.withOpacity(0.78),
           ),
         ),
         labelTextStyle: MaterialStateProperty.resolveWith(
               (states) => TextStyle(
             color: states.contains(MaterialState.selected)
                 ? colorScheme.primary
-                : colorScheme.onSurface,
+                : colorScheme.onSurface.withOpacity(0.84),
                 fontWeight: states.contains(MaterialState.selected)
                     ? FontWeight.w700
                     : FontWeight.w600,
