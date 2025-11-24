@@ -13,9 +13,12 @@ import 'theme/app_theme.dart';
 import 'screens/weekly_view_screen.dart';
 import 'screens/notification_status_screen.dart';
 import 'screens/calendar_screen.dart';
+import 'services/notification_service.dart';
 
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.initialize();
   runApp(const MyApp());
 }
 

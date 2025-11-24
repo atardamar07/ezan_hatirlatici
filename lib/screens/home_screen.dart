@@ -81,9 +81,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (!kIsWeb) {
       await _adService.initialize();
-      await NotificationService.initialize();
+      final status = await NotificationService.getStatus();
       if (mounted) {
-        setState(() => _notificationsReady = true);
+        setState(() => _notificationsReady =
+            status.notificationsEnabled && status.exactAlarmsEnabled);
       }
       _startAdTimer();
     }

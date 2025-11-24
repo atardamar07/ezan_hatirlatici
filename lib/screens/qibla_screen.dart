@@ -18,8 +18,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
   double _distanceToQibla = 0.0;
   bool _isQiblaFound = false;
   bool _isLoading = true;
-
-  StreamSubscription<CompassEvent>? _compassSubscription;
+  StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
 
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -51,7 +50,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   Future<void> _initializeCompass() async {
     try {
-      _compassSubscription = compassEvents.listen((CompassEvent event) {
+      _magnetometerSubscription = magnetometerEventStream(
+        samplingPeriod: SensorInterval.game,
+      ).listen((MagnetometerEvent event) {
         final heading = event.heading;
 
         if (heading == null || !mounted) return;
