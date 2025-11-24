@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppTheme {
   static const Color _lightPrimary = Color(0xFF0BA88B);
@@ -37,9 +38,14 @@ class AppTheme {
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
       ),
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFFE9EEF2),
-        indicatorColor: colorScheme.primary.withOpacity(0.16),
+        backgroundColor: const Color(0xFFDCE3E9),
+        indicatorColor: colorScheme.primary.withOpacity(0.22),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         iconTheme: MaterialStateProperty.resolveWith(
@@ -90,6 +96,11 @@ class AppTheme {
         backgroundColor: _darkSurface,
         foregroundColor: Colors.white,
         elevation: 0,
+      ),
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surface,
