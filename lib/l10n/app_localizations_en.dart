@@ -193,66 +193,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToCount => 'Tap the screen to increase your dhikr count';
 
   @override
-  String get donationsForWeb => 'Donations Available on Mobile App';
+  String get donationsForWeb => 'Support Options Available on Mobile App';
 
   @override
-  String get donateInfo => 'You can make donations by using the app on your Android or iOS device.';
+  String get donateInfo => 'You can leave an optional tip using the app on your Android or iOS device.';
 
   @override
-  String get donationTitle => 'Donate';
+  String get donationTitle => 'Support / Tip';
 
   @override
   String get thankYou => 'Thank You!';
 
   @override
-  String get donationSuccess => 'Thank you for your donation!';
+  String get donationSuccess => 'Thank you for your support!';
 
   @override
   String get noAds => 'You will no longer see ads in the app.';
 
   @override
   String donationFailed(Object error) {
-    return 'Donation failed: $error';
+    return 'Support payment failed: $error';
   }
 
   @override
   String get errorTitle => 'Error';
 
   @override
-  String get hasDonatedThanks => 'Thank you for your donation!';
+  String get hasDonatedThanks => 'Thank you for your support!';
 
   @override
-  String get supportApp => 'Would you like to support the app?';
+  String get supportApp => 'Would you like to leave a tip for the app?';
+
+  @override
+  String get supportOptionalText =>
+      'Tips are completely optional and not required to use the app.';
 
   @override
   String get adFreeExperience => 'Enjoy your ad-free experience';
 
   @override
-  String get donationInfoText => 'Your donations will be used for app development and server costs.';
+  String get donationInfoText =>
+      'Tips are processed via Google Play Billing and help cover development and server costs.';
 
   @override
   String get noAdsFor30Days => 'No ads will be shown for 30 days after donating.';
 
   @override
-  String get coffeeDonation => '☕ A Cup of Coffee';
+  String get coffeeDonation => '☕ Small Tip';
 
   @override
-  String get coffeeDescription => 'Buy the developer a coffee';
+  String get coffeeDescription => 'One-time small show of support';
 
   @override
-  String get mealDonation => '🍽️ A Meal';
+  String get mealDonation => '🍽️ Standard Support';
 
   @override
-  String get mealDescription => 'Buy the developer a meal';
+  String get mealDescription => 'One-time support to keep improvements coming';
 
   @override
-  String get generousDonation => '💎 Generous Donation';
+  String get generousDonation => '💎 Big Support';
 
   @override
-  String get generousDescription => 'Support the development of the app';
+  String get generousDescription => 'A generous tip to help grow the app';
 
   @override
-  String get donateButton => 'Donate';
+  String get donateButton => 'Send Support';
 
   @override
   String get locationNotDetected => 'Location not detected. Please select a city manually.';

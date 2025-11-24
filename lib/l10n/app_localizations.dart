@@ -440,19 +440,19 @@ abstract class AppLocalizations {
   /// No description provided for @donationsForWeb.
   ///
   /// In en, this message translates to:
-  /// **'Donations Available on Mobile App'**
+  /// **'Support Options Available on Mobile App'**
   String get donationsForWeb;
 
   /// No description provided for @donateInfo.
   ///
   /// In en, this message translates to:
-  /// **'You can make donations by using the app on your Android or iOS device.'**
+  /// **'You can leave an optional tip using the app on your Android or iOS device.'**
   String get donateInfo;
 
   /// No description provided for @donationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Donate'**
+  /// **'Support / Tip'**
   String get donationTitle;
 
   /// No description provided for @thankYou.
@@ -464,7 +464,7 @@ abstract class AppLocalizations {
   /// No description provided for @donationSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for your donation!'**
+  /// **'Thank you for your support!'**
   String get donationSuccess;
 
   /// No description provided for @noAds.
@@ -476,7 +476,7 @@ abstract class AppLocalizations {
   /// No description provided for @donationFailed.
   ///
   /// In en, this message translates to:
-  /// **'Donation failed: {error}'**
+  /// **'Support payment failed: {error}'**
   String donationFailed(Object error);
 
   /// No description provided for @errorTitle.
@@ -488,14 +488,20 @@ abstract class AppLocalizations {
   /// No description provided for @hasDonatedThanks.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for your donation!'**
+  /// **'Thank you for your support!'**
   String get hasDonatedThanks;
 
   /// No description provided for @supportApp.
   ///
   /// In en, this message translates to:
-  /// **'Would you like to support the app?'**
+  /// **'Would you like to leave a tip for the app?'**
   String get supportApp;
+
+  /// No description provided for @supportOptionalText.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips are completely optional and not required to use the app.'**
+  String get supportOptionalText;
 
   /// No description provided for @adFreeExperience.
   ///
@@ -506,7 +512,7 @@ abstract class AppLocalizations {
   /// No description provided for @donationInfoText.
   ///
   /// In en, this message translates to:
-  /// **'Your donations will be used for app development and server costs.'**
+  /// **'Tips are processed via Google Play Billing and help cover development and server costs.'**
   String get donationInfoText;
 
   /// No description provided for @noAdsFor30Days.
@@ -518,7 +524,7 @@ abstract class AppLocalizations {
   /// No description provided for @coffeeDonation.
   ///
   /// In en, this message translates to:
-  /// **'☕ A Cup of Coffee'**
+  /// **'☕ Small Tip'**
   String get coffeeDonation;
 
   /// No description provided for @coffeeDescription.
@@ -530,31 +536,31 @@ abstract class AppLocalizations {
   /// No description provided for @mealDonation.
   ///
   /// In en, this message translates to:
-  /// **'🍽️ A Meal'**
+  /// **'🍽️ Standard Support'**
   String get mealDonation;
 
   /// No description provided for @mealDescription.
   ///
   /// In en, this message translates to:
-  /// **'Buy the developer a meal'**
+  /// **'One-time support to keep improvements coming'**
   String get mealDescription;
 
   /// No description provided for @generousDonation.
   ///
   /// In en, this message translates to:
-  /// **'💎 Generous Donation'**
+  /// **'💎 Big Support'**
   String get generousDonation;
 
   /// No description provided for @generousDescription.
   ///
   /// In en, this message translates to:
-  /// **'Support the development of the app'**
+  /// **'A generous tip to help grow the app'**
   String get generousDescription;
 
   /// No description provided for @donateButton.
   ///
   /// In en, this message translates to:
-  /// **'Donate'**
+  /// **'Send Support'**
   String get donateButton;
 
   /// No description provided for @locationNotDetected.

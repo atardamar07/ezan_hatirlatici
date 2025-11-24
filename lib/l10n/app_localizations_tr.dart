@@ -193,66 +193,71 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tapToCount => 'Ekrana dokunarak zikir sayınızı artırabilirsiniz';
 
   @override
-  String get donationsForWeb => 'Bağış İşlemleri Mobil Uygulamada Mevcut';
+  String get donationsForWeb => 'Destek İşlemleri Mobil Uygulamada Mevcut';
 
   @override
-  String get donateInfo => 'Uygulamayı Android veya iOS cihazınızdan kullanarak bağış yapabilirsiniz.';
+  String get donateInfo => 'Android veya iOS uygulamasından isteğe bağlı bahşiş verebilirsiniz.';
 
   @override
-  String get donationTitle => 'Bağış Yap';
+  String get donationTitle => 'Destek / Bahşiş';
 
   @override
   String get thankYou => 'Teşekkürler!';
 
   @override
-  String get donationSuccess => 'Bağışınız için çok teşekkür ederiz!';
+  String get donationSuccess => 'Desteğiniz için çok teşekkür ederiz!';
 
   @override
   String get noAds => 'Artık uygulamada reklam görmeyeceksiniz.';
 
   @override
   String donationFailed(Object error) {
-    return 'Bağış işlemi başarısız oldu: $error';
+    return 'Destek işlemi başarısız oldu: $error';
   }
 
   @override
   String get errorTitle => 'Hata';
 
   @override
-  String get hasDonatedThanks => 'Bağış yaptığınız için teşekkürler!';
+  String get hasDonatedThanks => 'Desteğiniz için teşekkürler!';
 
   @override
-  String get supportApp => 'Uygulamayı desteklemek ister misiniz?';
+  String get supportApp => 'Uygulamayı bahşişle desteklemek ister misiniz?';
+
+  @override
+  String get supportOptionalText =>
+      'Bahşiş vermek tamamen gönüllüdür; uygulamadaki özelliklere erişmek için zorunlu değildir.';
 
   @override
   String get adFreeExperience => 'Reklamsız deneyimin keyfini çıkarın';
 
   @override
-  String get donationInfoText => 'Bağışlarınız uygulamanın geliştirilmesi ve sunucu masraflarının karşılanmasında kullanılacaktır.';
+  String get donationInfoText =>
+      'Bahşişler Google Play Faturalandırma ile alınır ve geliştirme ile sunucu masraflarında kullanılır.';
 
   @override
   String get noAdsFor30Days => 'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.';
 
   @override
-  String get coffeeDonation => '☕ Bir Fincan Kahve';
+  String get coffeeDonation => '☕ Küçük Destek';
 
   @override
-  String get coffeeDescription => 'Geliştiriciye kahve ısmarla';
+  String get coffeeDescription => 'Tek seferlik küçük bir bahşiş';
 
   @override
-  String get mealDonation => '🍽️ Bir Öğün Yemek';
+  String get mealDonation => '🍽️ Standart Destek';
 
   @override
-  String get mealDescription => 'Geliştiriciye yemek ısmarla';
+  String get mealDescription => 'Geliştirmeyi sürdürmek için tek seferlik destek';
 
   @override
-  String get generousDonation => '💎 Cömert Bağış';
+  String get generousDonation => '💎 Gönülden Destek';
 
   @override
-  String get generousDescription => 'Uygulamanın gelişimine destek ol';
+  String get generousDescription => 'Uygulamayı ileri taşımak için cömert bahşiş';
 
   @override
-  String get donateButton => 'Bağış Yap';
+  String get donateButton => 'Destek Ol';
 
   @override
   String get locationNotDetected => 'Konum alınamadı. Lütfen manuel olarak şehir seçin.';

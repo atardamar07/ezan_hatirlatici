@@ -41,26 +41,26 @@ class DonationService {
     };
   }
 
-  /// Ekranda göstereceğimiz bağış seçenekleri
+  /// Ekranda göstereceğimiz destek/bahşiş seçenekleri
   static List<Map<String, dynamic>> getDonationProducts(AppLocalizations loc) {
     // Buradaki id'ler, mobilde tanımladığımız IAP id'leriyle eşleşiyor
     return [
       {
-        'id': 'coffee_donation',
+        'id': 'support_tip_small',
         'title': loc.coffeeDonation,
         'description': loc.coffeeDescription,
         'price': '₺20',
         'icon': Icons.local_cafe,
       },
       {
-        'id': 'meal_donation',
+        'id': 'support_tip_standard',
         'title': loc.mealDonation,
         'description': loc.mealDescription,
         'price': '₺50',
         'icon': Icons.fastfood,
       },
       {
-        'id': 'generous_donation',
+        'id': 'support_tip_plus',
         'title': loc.generousDonation,
         'description': loc.generousDescription,
         'price': '₺200',

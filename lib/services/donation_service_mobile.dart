@@ -9,9 +9,10 @@ import 'donation_service_base.dart';
 /// Mobil (Android / iOS) için bağış servisi
 class PlatformDonationService implements DonationServiceBase {
   // Ürün ID'leri (Google Play / App Store'da tanımladığın ID'lerle aynı olmalı)
-  static const String coffeeId = 'coffee_donation';
-  static const String mealId = 'meal_donation';
-  static const String generousId = 'generous_donation';
+  // Google Play Billing / App Store ürün kimlikleri (tek seferlik destek)
+  static const String coffeeId = 'support_tip_small';
+  static const String mealId = 'support_tip_standard';
+  static const String generousId = 'support_tip_plus';
 
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;

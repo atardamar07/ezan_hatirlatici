@@ -3,6 +3,8 @@
 ## 🕌 Uygulama Hakkında
 
 Bu, dünya genelinde tüm şehirlerde namaz vakitlerini gösteren, kıble yönünü bulmaya yardımcı olan, zikirmatik özelliği sunan ve reklam destekli gelir modeliyle çalışan kapsamlı bir İslami uygulamadır.
+> **Yasal Statü Notu:** Proje, STK veya şirket statüsünde olmayan bireysel bir geliştirici tarafından yürütülmektedir; bu nedenle kullanıcı ödemeleri bağış olarak değil, gönüllü destek ödemesi kapsamında değerlendirilir.
+
 
 ## ✨ Özellikler
 

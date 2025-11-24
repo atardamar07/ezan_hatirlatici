@@ -193,66 +193,71 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tapToCount => 'اضغط على الشاشة لزيادة عدد الأذكار';
 
   @override
-  String get donationsForWeb => 'التبرعات متاحة في تطبيق الجوال';
+  String get donationsForWeb => 'خيارات الدعم متاحة في تطبيق الجوال';
 
   @override
-  String get donateInfo => 'يمكنك التبرع باستخدام التطبيق على جهاز Android أو iOS.';
+  String get donateInfo => 'يمكنك إرسال دعم اختياري عبر تطبيق Android أو iOS.';
 
   @override
-  String get donationTitle => 'تبرع';
+  String get donationTitle => 'دعم التطبيق';
 
   @override
   String get thankYou => 'شكراً لك!';
 
   @override
-  String get donationSuccess => 'شكراً جزيلاً على تبرعك!';
+  String get donationSuccess => 'شكراً جزيلاً على دعمك!';
 
   @override
   String get noAds => 'لن ترى إعلانات بعد الآن في التطبيق.';
 
   @override
   String donationFailed(Object error) {
-    return 'فشلت عملية التبرع: $error';
+    return 'فشل دفع الدعم: $error';
   }
 
   @override
   String get errorTitle => 'خطأ';
 
   @override
-  String get hasDonatedThanks => 'شكراً جزيلاً على تبرعك!';
+  String get hasDonatedThanks => 'شكراً جزيلاً على دعمك!';
 
   @override
-  String get supportApp => 'هل ترغب في دعم التطبيق؟';
+  String get supportApp => 'هل ترغب في دعم التطبيق بإكرامية؟';
+
+  @override
+  String get supportOptionalText =>
+      'الدعم اختياري بالكامل وليس مطلوبًا لاستخدام التطبيق.';
 
   @override
   String get adFreeExperience => 'استمتع بتجربة خالية من الإعلانات';
 
   @override
-  String get donationInfoText => 'ستُستخدم تبرعاتك لتطوير التطبيق وتغطية تكاليف الخادم.';
+  String get donationInfoText =>
+      'تُعالج مبالغ الدعم عبر فوترة Google Play وتساعد في تغطية التطوير وتكاليف الخادم.';
 
   @override
   String get noAdsFor30Days => 'لن يتم عرض إعلانات لمدة 30 يوماً بعد التبرع.';
 
   @override
-  String get coffeeDonation => '☕ فنجان قهوة';
+  String get coffeeDonation => '☕ دعم صغير';
 
   @override
-  String get coffeeDescription => 'اشتري قهوة للمطور';
+  String get coffeeDescription => 'مساهمة بسيطة لمرة واحدة';
 
   @override
-  String get mealDonation => '🍽️ وجبة';
+  String get mealDonation => '🍽️ دعم قياسي';
 
   @override
-  String get mealDescription => 'اشتري وجبة للمطور';
+  String get mealDescription => 'دعم لمرة واحدة لمواصلة التحسين';
 
   @override
-  String get generousDonation => '💎 تبرع سخي';
+  String get generousDonation => '💎 دعم سخي';
 
   @override
-  String get generousDescription => 'ادعم تطوير التطبيق';
+  String get generousDescription => 'إكرامية سخية للمساعدة في تطوير التطبيق';
 
   @override
-  String get donateButton => 'تبرع';
+  String get donateButton => 'تقديم دعم';
 
   @override
   String get locationNotDetected => 'تعذر الحصول على الموقع. يرجى اختيار المدينة يدوياً.';

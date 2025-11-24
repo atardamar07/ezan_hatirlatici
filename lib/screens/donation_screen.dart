@@ -231,6 +231,12 @@ class _DonationScreenState extends State<DonationScreen> {
             const Icon(Icons.info, color: Colors.teal),
             const SizedBox(height: 8),
             Text(
+              AppLocalizations.of(context)!.supportOptionalText,
+              style: const TextStyle(color: Colors.white70),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
               AppLocalizations.of(context)!.donationInfoText,
               style: const TextStyle(color: Colors.white70),
               textAlign: TextAlign.center,

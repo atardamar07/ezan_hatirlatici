@@ -193,66 +193,72 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tapToCount => 'Tippen Sie auf den Bildschirm, um Ihre Dhikr-Anzahl zu erhöhen';
 
   @override
-  String get donationsForWeb => 'Spenden sind in der mobilen App verfügbar';
+  String get donationsForWeb => 'Unterstützung ist in der mobilen App verfügbar';
 
   @override
-  String get donateInfo => 'Sie können spenden, indem Sie die App auf Ihrem Android- oder iOS-Gerät verwenden.';
+  String get donateInfo =>
+      'Du kannst eine freiwillige Unterstützung über die Android- oder iOS-App senden.';
 
   @override
-  String get donationTitle => 'Spenden';
+  String get donationTitle => 'App unterstützen';
 
   @override
   String get thankYou => 'Vielen Dank!';
 
   @override
-  String get donationSuccess => 'Vielen Dank für Ihre Spende!';
+  String get donationSuccess => 'Vielen Dank für deine Unterstützung!';
 
   @override
   String get noAds => 'Sie werden keine Anzeigen mehr in der App sehen.';
 
   @override
   String donationFailed(Object error) {
-    return 'Spende fehlgeschlagen: $error';
+    return 'Unterstützung fehlgeschlagen: $error';
   }
 
   @override
   String get errorTitle => 'Fehler';
 
   @override
-  String get hasDonatedThanks => 'Vielen Dank für Ihre Spende!';
+  String get hasDonatedThanks => 'Vielen Dank für deine Unterstützung!';
 
   @override
-  String get supportApp => 'Möchten Sie die App unterstützen?';
+  String get supportApp => 'Möchtest du die App mit einem Trinkgeld unterstützen?';
+
+  @override
+  String get supportOptionalText =>
+      'Die Unterstützung ist völlig freiwillig und nicht erforderlich, um die App zu nutzen.';
 
   @override
   String get adFreeExperience => 'Genießen Sie Ihre werbefreie Erfahrung';
 
   @override
-  String get donationInfoText => 'Ihre Spenden werden für die App-Entwicklung und Serverkosten verwendet.';
+  String get donationInfoText =>
+      'Unterstützungen werden über Google Play Abrechnung abgewickelt und helfen bei Entwicklung und Serverkosten.';
 
   @override
   String get noAdsFor30Days => 'Es werden 30 Tage lang keine Anzeigen angezeigt, nachdem Sie gespendet haben.';
 
   @override
-  String get coffeeDonation => '☕ Eine Tasse Kaffee';
+  String get coffeeDonation => '☕ Kleine Unterstützung';
 
   @override
-  String get coffeeDescription => 'Schenken Sie dem Entwickler einen Kaffee';
+  String get coffeeDescription => 'Einmaliger kleiner Beitrag';
 
   @override
-  String get mealDonation => '🍽️ Eine Mahlzeit';
+  String get mealDonation => '🍽️ Standard-Unterstützung';
 
   @override
-  String get mealDescription => 'Schenken Sie dem Entwickler eine Mahlzeit';
+  String get mealDescription => 'Einmalige Unterstützung für weitere Verbesserungen';
 
   @override
-  String get generousDonation => '💎 Großzügige Spende';
+  String get generousDonation => '💎 Große Unterstützung';
 
   @override
-  String get generousDescription => 'Unterstützen Sie die Entwicklung der App';
+  String get generousDescription => 'Großzügiges Trinkgeld, um die App auszubauen';
 
   @override
-  String get donateButton => 'Spenden';
+  String get donateButton => 'Unterstützen';
 
   @override
   String get locationNotDetected => 'Standort nicht erkannt. Bitte wählen Sie eine Stadt manuell aus.';
