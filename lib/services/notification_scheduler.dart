@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/prayer_times_api.dart';
@@ -43,38 +44,47 @@ class NotificationScheduler {
     for (final entry in timings.entries) {
       if (entry.key == 'Sunrise') continue; // Güneş için bildirim yok
 
-      final prayerTime = _parseTime(entry.value as String, today);
+      try {
+        final prayerTime = _parseTime(entry.value as String, today);
 
-      // Hatırlatıcı bildirimi
-      final reminderTime = prayerTime.subtract(Duration(minutes: minutesBefore));
-      if (reminderTime.isAfter(now) && minutesBefore > 0) {
-        await NotificationService.scheduleNotification(
-          title: '⏰ Namaz Hatırlatıcı',
-          body: '${_getTurkishPrayerName(entry.key)} vakti ${minutesBefore} dakika sonra',
-          scheduledTime: reminderTime,
-        );
-      }
+        // Hatırlatıcı bildirimi
+        final reminderTime =
+        prayerTime.subtract(Duration(minutes: minutesBefore));
+        if (reminderTime.isAfter(now) && minutesBefore > 0) {
+          await NotificationService.scheduleNotification(
+            title: '⏰ Namaz Hatırlatıcı',
+            body:
+            '${_getTurkishPrayerName(entry.key)} vakti ${minutesBefore} dakika sonra',
+            scheduledTime: reminderTime,
+          );
+        }
 
-      // Vakit girince bildirimi
-      if (prayerTime.isAfter(now)) {
-        await NotificationService.scheduleNotification(
-          title: '🕌 Namaz Vakti',
-          body: '${_getTurkishPrayerName(entry.key)} vakti geldi. Haydi namaza!',
-          scheduledTime: prayerTime,
-        );
+        // Vakit girince bildirimi
+        if (prayerTime.isAfter(now)) {
+          await NotificationService.scheduleNotification(
+            title: '🕌 Namaz Vakti',
+            body:
+            '${_getTurkishPrayerName(entry.key)} vakti geldi. Haydi namaza!',
+            scheduledTime: prayerTime,
+          );
+        }
+      } catch (e) {
+        debugPrint('Notification scheduling skipped (${entry.key} → ${entry.value}): $e');
       }
     }
   }
 
   DateTime _parseTime(String timeStr, DateTime baseDate) {
-    final parts = timeStr.split(':');
-    return DateTime(
-      baseDate.year,
-      baseDate.month,
-      baseDate.day,
-      int.parse(parts[0]),
-      int.parse(parts[1]),
-    );
+    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(timeStr);
+
+    if (match == null) {
+      throw FormatException('Invalid time format: $timeStr');
+    }
+
+    final hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+
+    return DateTime(baseDate.year, baseDate.month, baseDate.day, hour, minute);
   }
 
   String _getTurkishPrayerName(String key) {

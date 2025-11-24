@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -17,6 +18,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
   double _distanceToQibla = 0.0;
   bool _isQiblaFound = false;
   bool _isLoading = true;
+
+  StreamSubscription<CompassEvent>? _compassSubscription;
 
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -48,14 +51,24 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   Future<void> _initializeCompass() async {
     try {
-      // Manyetik sensör dinleyicisi
-      magnetometerEvents.listen((MagnetometerEvent event) {
-        if (mounted) {
+      _compassSubscription = compassEvents.listen((CompassEvent event) {
+        final heading = event.heading;
+
+        if (heading == null || !mounted) return;
+
+        setState(() {
+          _currentHeading = heading;
+          _checkQiblaDirection();
+        });
+      }, onError: (error) {
+        // Geriye dönük uyumluluk için manyetik sensöre düş
+        magnetometerEvents.listen((MagnetometerEvent event) {
+          if (!mounted) return;
           setState(() {
             _currentHeading = _calculateHeading(event.x, event.y);
             _checkQiblaDirection();
           });
-        }
+        });
       });
     } catch (e) {
       print('Compass initialization error: $e');
@@ -167,6 +180,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    _compassSubscription?.cancel();
     _animationController.dispose();
     super.dispose();
   }

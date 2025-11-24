@@ -21,6 +21,7 @@ class AdServicePlatform implements AdServiceBase {
   bool _canLoadAds = true;
   bool _isLoadingInterstitial = false;
   final bool _useTestAds = kDebugMode;
+  final ValueNotifier<BannerAd?> _bannerNotifier = ValueNotifier(null);
 
   Future<void> _loadBannerAd() async {
     if (!_canLoadAds || !_initialized) return;
@@ -30,10 +31,14 @@ class AdServicePlatform implements AdServiceBase {
       adUnitId: _bannerAdUnitId,
       size: AdSize.banner,
       listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          _bannerNotifier.value = _banner;
+        },
         onAdFailedToLoad: (ad, error) {
           debugPrint('Banner failed to load: ${error.message}');
           ad.dispose();
           _banner = null;
+          _bannerNotifier.value = null;
 
           Future.delayed(_retryDelay, () {
             if (_canLoadAds) _loadBannerAd();
@@ -92,10 +97,14 @@ class AdServicePlatform implements AdServiceBase {
 
     if (_banner == null) {
       unawaited(_loadBannerAd());
-      return const SizedBox.shrink();
     }
-
-    return SizedBox(height: 50, child: AdWidget(ad: _banner!));
+    return ValueListenableBuilder<BannerAd?>(
+      valueListenable: _bannerNotifier,
+      builder: (context, banner, _) {
+        if (banner == null) return const SizedBox.shrink();
+        return SizedBox(height: 50, child: AdWidget(ad: banner));
+      },
+    );
   }
 
   @override
@@ -174,6 +183,7 @@ class AdServicePlatform implements AdServiceBase {
   void dispose() {
     _banner?.dispose();
     _interstitial?.dispose();
+    _bannerNotifier.dispose();
   }
   Future<void> _updateLastAdTime() async {
     final prefs = await SharedPreferences.getInstance();
