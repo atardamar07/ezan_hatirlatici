@@ -66,15 +66,17 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         final brightness = _effectiveBrightness(context);
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness:
-            brightness == Brightness.dark ? Brightness.light : Brightness.dark,
-            statusBarBrightness: brightness,
-          ),
+        final overlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness:
+          brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: brightness,
         );
-        return child ?? const SizedBox.shrink();
+
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: overlayStyle,
+          child: child ?? const SizedBox.shrink(),
+        );
       },
 
       // Dil ve Yerelleştirme Ayarları
