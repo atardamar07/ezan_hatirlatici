@@ -75,7 +75,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dhikrCounter => 'Счетчик зикра';
 
   @override
-  String get donate => 'Пожертвовать';
+  String get donate => 'Поддержать';
 
   @override
   String get retry => 'Повторить';

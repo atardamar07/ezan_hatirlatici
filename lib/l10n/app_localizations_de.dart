@@ -75,7 +75,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dhikrCounter => 'Dhikr-Zähler';
 
   @override
-  String get donate => 'Spenden';
+  String get donate => 'Unterstützen';
 
   @override
   String get retry => 'Wiederholen';

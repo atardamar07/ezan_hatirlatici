@@ -75,7 +75,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dhikrCounter => 'عداد الذكر';
 
   @override
-  String get donate => 'تبرع';
+  String get donate => 'قدّم دعمًا';
 
   @override
   String get retry => 'إعادة المحاولة';

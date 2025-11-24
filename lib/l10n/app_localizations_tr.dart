@@ -75,7 +75,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dhikrCounter => 'Zikirmatik';
 
   @override
-  String get donate => 'Bağış Yap';
+  String get donate => 'Destek Ol';
 
   @override
   String get retry => 'Tekrar Dene';

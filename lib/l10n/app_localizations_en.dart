@@ -75,7 +75,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dhikrCounter => 'Dhikr Counter';
 
   @override
-  String get donate => 'Donate';
+  String get donate => 'Support';
 
   @override
   String get retry => 'Retry';
