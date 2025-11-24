@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
     android {
-        namespace = "com.example.ezan_hatirlatici"
+        namespace = "com.minicoreapps.ezan_hatirlatici"
         compileSdk = 36
         ndkVersion = "27.0.12077973"
 
@@ -46,7 +46,7 @@ if (keystorePropertiesFile.exists()) {
     }
 
         defaultConfig {
-            applicationId = "com.example.ezan_hatirlatici"
+            applicationId = "com.minicoreapps.ezan_hatirlatici"
             minSdk = flutter.minSdkVersion
             targetSdk = 36
             versionCode = flutter.versionCode
