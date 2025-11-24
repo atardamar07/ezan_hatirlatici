@@ -1,4 +1,4 @@
-package com.example.ezan_hatirlatici
+package com.minicoreapps.ezan_hatirlatici
 
 import io.flutter.embedding.android.FlutterActivity
 

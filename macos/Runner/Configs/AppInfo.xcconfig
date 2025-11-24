@@ -8,7 +8,7 @@
 PRODUCT_NAME = ezan_hatirlatici
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.ezanHatirlatici
+PRODUCT_BUNDLE_IDENTIFIER = com.minicoreapps.ezanHatirlatici
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2025 com.minicoreapps. All rights reserved.
