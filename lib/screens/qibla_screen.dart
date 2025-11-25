@@ -50,25 +50,11 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   Future<void> _initializeCompass() async {
     try {
-      _magnetometerSubscription = magnetometerEventStream(
-        samplingPeriod: SensorInterval.game,
-      ).listen((MagnetometerEvent event) {
-        final heading = event.heading;
-
-        if (heading == null || !mounted) return;
-
+      _magnetometerSubscription = magnetometerEvents.listen((MagnetometerEvent event) {
+        if (!mounted) return;
         setState(() {
-          _currentHeading = heading;
+          _currentHeading = _calculateHeading(event.x, event.y);
           _checkQiblaDirection();
-        });
-      }, onError: (error) {
-        // Geriye dönük uyumluluk için manyetik sensöre düş
-        magnetometerEvents.listen((MagnetometerEvent event) {
-          if (!mounted) return;
-          setState(() {
-            _currentHeading = _calculateHeading(event.x, event.y);
-            _checkQiblaDirection();
-          });
         });
       });
     } catch (e) {
@@ -181,7 +167,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    _compassSubscription?.cancel();
+    _magnetometerSubscription?.cancel();
     _animationController.dispose();
     super.dispose();
   }
