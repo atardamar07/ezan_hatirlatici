@@ -202,7 +202,7 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 64),
+            Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary, size: 64),
             const SizedBox(height: 16),
             Text(AppLocalizations.of(context)!
                 .completedDhikr(_selectedZikir, _targetCount)),
@@ -239,6 +239,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final progress = _counter / _targetCount;
     final selectedZikirData = _zikirler.firstWhere(
           (z) => z['name'] == _selectedZikir,
@@ -246,18 +248,16 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C27),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C27),
-        title: Text(
-          AppLocalizations.of(context)!.dhikrCounter,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
+        title: Text(AppLocalizations.of(context)!.dhikrCounter),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: _showSettingsDialog,
-            color: Colors.white,
+            color: colors.onSurface,
           ),
         ],
       ),
@@ -267,17 +267,16 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Card(
-              color: const Color(0xFF2C2C38),
+              color: colors.surface,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Text(
                       _selectedZikir,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: colors.onSurface,
                         fontSize: 28,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (selectedZikirData['meaning'] != null)
@@ -285,9 +284,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           selectedZikirData['meaning']!,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colors.onSurface.withOpacity(0.7),
                             fontStyle: FontStyle.italic,
                           ),
                           textAlign: TextAlign.center,
@@ -307,14 +305,14 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                   height: 200,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF2C2C38),
+                    color: colors.surface,
                     border: Border.all(
-                      color: Colors.teal,
+                      color: colors.primary,
                       width: 4,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: colors.shadow.withOpacity(0.15),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -326,32 +324,30 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                       SizedBox(
                         width: 180,
                         height: 180,
-                        child: CircularProgressIndicator(
-                          value: progress,
-                          strokeWidth: 8,
-                          backgroundColor: Colors.grey.shade800,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            _counter >= _targetCount ? Colors.green : Colors.teal,
-                          ),
+                    child: CircularProgressIndicator(
+                      value: progress,
+                      strokeWidth: 8,
+                      backgroundColor: colors.onSurface.withOpacity(0.08),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        _counter >= _targetCount ? colors.primary : colors.secondary,
                         ),
+                      ),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             '$_counter',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              color: colors.onSurface,
                               fontWeight: FontWeight.bold,
-                            ),
+                          ),
                           ),
                           Text(
                             '/ $_targetCount',
-                            style: const TextStyle(
-                              color: Colors.white54,
-                              fontSize: 18,
-                            ),
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: colors.onSurface.withOpacity(0.6),
+                          ),
                           ),
                         ],
                       ),
@@ -363,9 +359,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
             const SizedBox(height: 20),
             Text(
               '%${(progress * 100).toStringAsFixed(1)}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: colors.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -375,11 +370,11 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
               children: [
                 ElevatedButton.icon(
                   onPressed: _resetCounter,
-                  icon: const Icon(Icons.refresh, color: Colors.white),
+                  icon: Icon(Icons.refresh, color: colors.onPrimary),
                   label: Text(AppLocalizations.of(context)!.reset,
-                      style: const TextStyle(color: Colors.white)),
+                      style: TextStyle(color: colors.onPrimary)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade700,
+                    backgroundColor: colors.error,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -387,11 +382,11 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
                 ),
                 ElevatedButton.icon(
                   onPressed: _incrementCounter,
-                  icon: const Icon(Icons.add, color: Colors.white),
+                  icon: Icon(Icons.refresh, color: colors.onPrimary),
                   label: Text(AppLocalizations.of(context)!.count,
-                      style: const TextStyle(color: Colors.white)),
+                      style: TextStyle(color: colors.onPrimary)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: colors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -402,9 +397,8 @@ class _ZikirmatikScreenState extends State<ZikirmatikScreen> with SingleTickerPr
             const SizedBox(height: 20),
             Text(
               AppLocalizations.of(context)!.tapToCount,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurface.withOpacity(0.6),
               ),
               textAlign: TextAlign.center,
             ),

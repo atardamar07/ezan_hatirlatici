@@ -279,7 +279,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supportOptionalText => 'Tips are completely optional and not required to use the app.';
 
   @override
-  String get donationInfoText => 'Tips are processed via Google Play Billing and help cover development and server costs.';
+  String get donationInfoText => 'Tips are processed via Google Play Billing and are used for development costs.';
 
   @override
   String get noAdsFor30Days => 'No ads will be shown for 30 days after donating.';

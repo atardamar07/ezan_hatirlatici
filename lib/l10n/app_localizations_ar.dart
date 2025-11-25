@@ -279,7 +279,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supportOptionalText => 'الدعم اختياري بالكامل وليس مطلوبًا لاستخدام التطبيق.';
 
   @override
-  String get donationInfoText => 'تُعالج مبالغ الدعم عبر فوترة Google Play وتساعد في تغطية التطوير وتكاليف الخادم.';
+  String get donationInfoText => 'تُعالج مبالغ الدعم عبر فوترة Google Play وتُستخدم لتكاليف التطوير.';
 
   @override
   String get noAdsFor30Days => 'لن يتم عرض إعلانات لمدة 30 يوماً بعد التبرع.';

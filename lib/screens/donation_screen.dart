@@ -69,18 +69,19 @@ class _DonationScreenState extends State<DonationScreen> {
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         title: Row(children: [
-          const Icon(Icons.favorite, color: Colors.green),
+          Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
           Text(AppLocalizations.of(context)!.thankYou),
         ]),
         content: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.check_circle, color: Colors.green, size: 64),
+          Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary, size: 64),
           const SizedBox(height: 16),
           Text(AppLocalizations.of(context)!.donationSuccess,
               textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
           const SizedBox(height: 8),
           Text(AppLocalizations.of(context)!.noAds,
-              textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
         ]),
         actions: [
           ElevatedButton(
@@ -99,7 +100,7 @@ class _DonationScreenState extends State<DonationScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: Row(children: [
-          const Icon(Icons.error, color: Colors.red),
+          Icon(Icons.error, color: Theme.of(context).colorScheme.error),
           const SizedBox(width: 8),
           Text(AppLocalizations.of(context)!.errorTitle),
         ]),
@@ -123,33 +124,36 @@ class _DonationScreenState extends State<DonationScreen> {
   }
   /* ---------- WEB UYARISI ---------- */
   Widget _webBody() {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C27),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C27),
-        title: Text(AppLocalizations.of(context)!.donationTitle,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
+        title: Text(AppLocalizations.of(context)!.donationTitle),
       ),
       body: Center(
         child: Card(
-          color: const Color(0xFF2C2C38),
+          color: colors.surface,
           margin: const EdgeInsets.all(20),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.mobile_friendly, color: Colors.teal, size: 48),
+              Icon(Icons.mobile_friendly, color: colors.primary, size: 48),
               const SizedBox(height: 16),
               Text(AppLocalizations.of(context)!.donationsForWeb,
                   textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.white,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                      color: colors.onSurface,
                           fontSize: 18,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text(
                       AppLocalizations.of(context)!.donateInfo,
                       textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurface.withOpacity(0.7))),
             ]),
           ),
         ),
@@ -158,15 +162,17 @@ class _DonationScreenState extends State<DonationScreen> {
   }
   /* ---------- MOBIL EKRAN ---------- */
   Widget _mobileBody(List<Map<String, dynamic>> products) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C27),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C27),
-        title: Text(AppLocalizations.of(context)!.donationTitle,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
+        title: Text(AppLocalizations.of(context)!.donationTitle),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+          ? Center(child: CircularProgressIndicator(color: colors.primary))
           : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -174,8 +180,8 @@ class _DonationScreenState extends State<DonationScreen> {
             if (_donationInfo != null) _statusCard(),
             const SizedBox(height: 20),
             Text(AppLocalizations.of(context)!.supportApp,
-                style: const TextStyle(
-                    color: Colors.white,
+                style: theme.textTheme.titleLarge?.copyWith(
+                    color: colors.onSurface,
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
@@ -189,15 +195,16 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   Widget _statusCard() {
+    final colors = Theme.of(context).colorScheme;
     return Card(
-      color: _donationInfo!['hasDonated'] ? Colors.green.shade800 : const Color(0xFF2C2C38),
+      color: _donationInfo!['hasDonated'] ? colors.primary.withOpacity(0.15) : colors.surface,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Icon(
               _donationInfo!['hasDonated'] ? Icons.favorite : Icons.favorite_border,
-              color: _donationInfo!['hasDonated'] ? Colors.green : Colors.grey,
+              color: _donationInfo!['hasDonated'] ? colors.primary : colors.onSurface.withOpacity(0.6),
               size: 48,
             ),
             const SizedBox(height: 8),
@@ -205,15 +212,15 @@ class _DonationScreenState extends State<DonationScreen> {
               _donationInfo!['hasDonated']
                   ? AppLocalizations.of(context)!.hasDonatedThanks
                   : AppLocalizations.of(context)!.supportApp,
-              style: const TextStyle(
-                  color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colors.onSurface, fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             if (_donationInfo!['hasDonated'] && _donationInfo!['isActive'])
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(AppLocalizations.of(context)!.adFreeExperience,
-                    style: const TextStyle(color: Colors.green)),
+                    style: TextStyle(color: colors.primary)),
               ),
           ],
         ),
@@ -222,30 +229,36 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   Widget _infoCard() {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Card(
-      color: const Color(0xFF2C2C38),
+      color: colors.surface,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Icon(Icons.info, color: Colors.teal),
+            Icon(Icons.info, color: colors.primary),
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.supportOptionalText,
-              style: const TextStyle(color: Colors.white70),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colors.onSurface.withOpacity(0.7),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.donationInfoText,
-              style: const TextStyle(color: Colors.white70),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colors.onSurface.withOpacity(0.7),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.noAdsFor30Days,
-              style: const TextStyle(
-                  color: Colors.teal, fontWeight: FontWeight.bold),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.primary, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ],
@@ -255,10 +268,12 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   Widget _donationCard(Map<String, dynamic> product) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
-        color: const Color(0xFF2C2C38),
+        color: colors.surface,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: _isProcessing ? null : () => _makeDonation(product['id']),
@@ -270,10 +285,10 @@ class _DonationScreenState extends State<DonationScreen> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.teal.shade800,
+                    color: colors.primary,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(product['icon'], size: 30, color: Colors.white),
+                  child: Icon(product['icon'], size: 30, color: colors.onPrimary),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -281,14 +296,14 @@ class _DonationScreenState extends State<DonationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(product['title'],
-                          style: const TextStyle(
-                              color: Colors.white,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                              color: colors.onSurface,
                               fontSize: 18,
                               fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(product['description'],
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 14)),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colors.onSurface.withOpacity(0.7), fontSize: 14)),
                     ],
                   ),
                 ),
@@ -296,8 +311,8 @@ class _DonationScreenState extends State<DonationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(product['price'],
-                        style: const TextStyle(
-                            color: Colors.amber,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            color: colors.secondary,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
@@ -310,10 +325,10 @@ class _DonationScreenState extends State<DonationScreen> {
                         : ElevatedButton(
                       onPressed: () => _makeDonation(product['id']),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
+                          backgroundColor: colors.primary,
                           minimumSize: const Size(80, 32)),
                       child: Text(AppLocalizations.of(context)!.donateButton,
-                          style: const TextStyle(fontSize: 12)),
+                          style: TextStyle(fontSize: 12, color: colors.onPrimary)),
                     ),
                   ],
                 ),

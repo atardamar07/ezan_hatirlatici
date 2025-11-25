@@ -174,17 +174,22 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C27),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1C1C27),
-        title: Text(
-          AppLocalizations.of(context)!.qiblaCompass,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        backgroundColor: colors.surface,
+        foregroundColor: colors.onSurface,
+        title: Text(AppLocalizations.of(context)!.qiblaCompass),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+          ? Center(
+        child: CircularProgressIndicator(
+          color: colors.primary,
+        ),
+      )
           : Stack(
         children: [
           Center(
@@ -204,23 +209,23 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                         height: 280,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xFF2C2C38),
+                          color: colors.surface,
                           border: Border.all(
-                            color: Colors.teal,
+                            color: colors.surface,
                             width: 3,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              blurRadius: 10,
-                              spreadRadius: 2,
+                              color: colors.shadow.withOpacity(0.15),
+                              blurRadius: 12,
+                              spreadRadius: 1,
                             ),
                           ],
                         ),
                       ),
 
                       // Yön Göstergeleri
-                      ..._buildDirectionMarkers(),
+                      ..._buildDirectionMarkers(colors),
 
                       // Kıble Yönü İşareti
                       Transform.rotate(
@@ -229,7 +234,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                           width: 4,
                           height: 120,
                           decoration: BoxDecoration(
-                            color: Colors.amber,
+                            color: colors.secondary,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -239,9 +244,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                       Container(
                         width: 20,
                         height: 20,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color: colors.onSurface,
                         ),
                       ),
 
@@ -254,9 +259,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                             height: 100,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.green.withOpacity(0.3),
+                              color: colors.primary.withOpacity(0.28),
                               border: Border.all(
-                                color: Colors.green,
+                                color: colors.primary,
                                 width: 2,
                               ),
                             ),
@@ -274,7 +279,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: _isQiblaFound ? Colors.green : Colors.amber,
+                    color: _isQiblaFound ? colors.primary : colors.secondary,
                   ),
                 ),
 
@@ -284,9 +289,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                 Text(
                   AppLocalizations.of(context)!
                       .distanceToKaaba(_distanceToQibla.toStringAsFixed(0)),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.white70,
+                    color: colors.onSurface.withOpacity(0.7),
                   ),
                 ),
 
@@ -301,18 +306,18 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: colors.primary,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.check_circle, color: Colors.white, size: 30),
+                    Icon(Icons.check_circle, color: colors.onPrimary, size: 30),
                     const SizedBox(width: 10),
                     Text(
                       AppLocalizations.of(context)!.youAreFacingQibla,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: colors.onPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -326,7 +331,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     );
   }
 
-  List<Widget> _buildDirectionMarkers() {
+  List<Widget> _buildDirectionMarkers(ColorScheme colors) {
     final directions = [
       {'label': 'N', 'angle': 0},
       {'label': 'E', 'angle': 90},
@@ -350,8 +355,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
               children: [
                 Text(
                   direction['label'] as String,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colors.onSurface,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -359,7 +364,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                 Container(
                   width: 2,
                   height: 15,
-                  color: Colors.white54,
+                  color: colors.onSurface.withOpacity(0.6),
                 ),
               ],
             ),

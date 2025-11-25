@@ -68,7 +68,7 @@
   "supportApp": "Would you like to leave a tip for the app?",
   "adFreeExperience": "Enjoy your ad-free experience",
   "supportOptionalText": "Tips are completely optional and not required to use the app.",
-  "donationInfoText": "Tips are processed via Google Play Billing and help cover development and server costs.",
+  "donationInfoText": "Tips are processed via Google Play Billing and are used for development costs.",
   "noAdsFor30Days": "No ads will be shown for 30 days after donating.",
   "coffeeDonation": "☕ Small Tip",
   "coffeeDescription": "One-time small show of support",
