@@ -411,8 +411,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             }),
-
-            if (!kIsWeb) _adService.buildBannerAd(),
           ],
         ),
       ),

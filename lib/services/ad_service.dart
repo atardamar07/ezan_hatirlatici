@@ -19,8 +19,6 @@ AdService._internal() : _impl = AdServicePlatform();
 Future<void> initialize({bool loadAds = true}) =>
 _impl.initialize(loadAds: loadAds);
 
-  Widget buildBannerAd() => _impl.buildBannerAd();
-
   Future<void> loadInterstitialAd() => _impl.loadInterstitialAd();
 
   void showInterstitialAd() => _impl.showInterstitialAd();

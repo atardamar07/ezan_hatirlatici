@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
 import 'ad_service_base.dart';
 
 class AdServicePlatform implements AdServiceBase {
   @override
   Future<void> initialize({bool loadAds = true}) async {}
-
-  @override
-  Widget buildBannerAd() => const SizedBox.shrink();
 
   @override
   Future<void> loadInterstitialAd() async {}
@@ -21,7 +17,6 @@ class AdServicePlatform implements AdServiceBase {
   Future<AdStatus> getStatus() async {
     return const AdStatus(
       initialized: false,
-      bannerReady: false,
       interstitialReady: false,
       interstitialShowing: false,
     );

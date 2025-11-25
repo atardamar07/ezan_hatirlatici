@@ -119,13 +119,6 @@ class _NotificationStatusScreenState extends State<NotificationStatusScreen> {
                       ),
                       const SizedBox(height: 12),
                       _buildStatusRow(
-                        loc.bannerAd,
-                        status?.bannerReady ?? false,
-                        okText: loc.loaded,
-                        failText: loc.notLoaded,
-                      ),
-                      const SizedBox(height: 12),
-                      _buildStatusRow(
                         loc.interstitialAd,
                         status?.interstitialReady ?? false,
                         okText: status?.interstitialShowing == true

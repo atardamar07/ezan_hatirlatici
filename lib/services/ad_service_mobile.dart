@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,55 +10,16 @@ import 'ad_ids.dart';
 import 'ad_service_base.dart';
 
 class AdServicePlatform implements AdServiceBase {
-  static const _adInterval = Duration(minutes: 5);
+  static const _adInterval = Duration(minutes: 3);
   static const _retryDelay = Duration(minutes: 1);
 
-  BannerAd? _banner;
   InterstitialAd? _interstitial;
   bool _isInterstitialShowing = false;
   bool _initialized = false;
   bool _canLoadAds = true;
   bool _isLoadingInterstitial = false;
   final bool _useTestAds = kDebugMode;
-  final ValueNotifier<BannerAd?> _bannerNotifier = ValueNotifier(null);
 
-  Future<void> _loadBannerAd() async {
-    if (!_canLoadAds || !_initialized) return;
-
-    _banner?.dispose();
-    _banner = BannerAd(
-      adUnitId: _bannerAdUnitId,
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          _bannerNotifier.value = _banner;
-        },
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('Banner failed to load: ${error.message}');
-          ad.dispose();
-          _banner = null;
-          _bannerNotifier.value = null;
-
-          Future.delayed(_retryDelay, () {
-            if (_canLoadAds) _loadBannerAd();
-          });
-        },
-      ),
-      request: const AdRequest(),
-    )..load();
-  }
-
-  String get _bannerAdUnitId {
-    if (_useTestAds) {
-      return Platform.isIOS
-          ? AdIds.iosTestBannerAdUnitId
-          : AdIds.androidTestBannerAdUnitId;
-    }
-
-    return Platform.isIOS
-        ? AdIds.iosBannerAdUnitId
-        : AdIds.androidBannerAdUnitId;
-  }
 
   String get _interstitialAdUnitId {
     if (_useTestAds) {
@@ -86,25 +46,7 @@ class AdServicePlatform implements AdServiceBase {
 
     if (!loadAds) return;
 
-    await _loadBannerAd();
-
     await loadInterstitialAd();
-  }
-
-  @override
-  Widget buildBannerAd() {
-    if (!_initialized) return const SizedBox.shrink();
-
-    if (_banner == null) {
-      unawaited(_loadBannerAd());
-    }
-    return ValueListenableBuilder<BannerAd?>(
-      valueListenable: _bannerNotifier,
-      builder: (context, banner, _) {
-        if (banner == null) return const SizedBox.shrink();
-        return SizedBox(height: 50, child: AdWidget(ad: banner));
-      },
-    );
   }
 
   @override
@@ -173,7 +115,6 @@ class AdServicePlatform implements AdServiceBase {
   Future<AdStatus> getStatus() async {
     return AdStatus(
       initialized: _initialized,
-      bannerReady: _banner != null,
       interstitialReady: _interstitial != null,
       interstitialShowing: _isInterstitialShowing,
     );
@@ -181,9 +122,7 @@ class AdServicePlatform implements AdServiceBase {
 
   @override
   void dispose() {
-    _banner?.dispose();
     _interstitial?.dispose();
-    _bannerNotifier.dispose();
   }
   Future<void> _updateLastAdTime() async {
     final prefs = await SharedPreferences.getInstance();
