@@ -168,6 +168,22 @@
   "lightTheme": "Hell",
   "lightThemeSubtitle": "Tagesansicht",
   "darkTheme": "Dunkel",
-  "darkThemeSubtitle": "Nachtansicht"
+  "darkThemeSubtitle": "Nachtansicht",
+  "methodDiyanetName": "Präsidium für Religionsangelegenheiten",
+  "methodDiyanetDescription": "Offizielle Methode für die Türkei",
+  "methodMwlName": "Muslim World League",
+  "methodMwlDescription": "Allgemeine internationale Methode",
+  "methodEgyptianName": "Ägyptische Generalbehörde",
+  "methodEgyptianDescription": "Ägyptische Methode",
+  "methodKarachiName": "Karachi",
+  "methodKarachiDescription": "Pakistanische Methode",
+  "methodUmmAlQuraName": "Umm Al-Qura",
+  "methodUmmAlQuraDescription": "Saudi-Arabien",
+  "methodMoonsightingName": "Universität der Islamischen Wissenschaften",
+  "methodMoonsightingDescription": "Jordanien / Universität der Islamischen Wissenschaften",
+  "methodTehranName": "Institut für Geophysik, Teheran",
+  "methodTehranDescription": "Iranische Methode",
+  "methodFranceName": "Union islamischer Organisationen",
+  "methodFranceDescription": "Französische Methode"
 
 }

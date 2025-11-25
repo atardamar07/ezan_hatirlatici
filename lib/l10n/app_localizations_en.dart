@@ -87,6 +87,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calculationMethod => 'Calculation Method';
 
   @override
+  String get methodDiyanetName => 'Presidency of Religious Affairs';
+
+  @override
+  String get methodDiyanetDescription => 'Official method for Türkiye';
+
+  @override
+  String get methodMwlName => 'Muslim World League';
+
+  @override
+  String get methodMwlDescription => 'General international method';
+
+  @override
+  String get methodEgyptianName => 'Egyptian General Authority';
+
+  @override
+  String get methodEgyptianDescription => 'Egyptian method';
+
+  @override
+  String get methodKarachiName => 'Karachi';
+
+  @override
+  String get methodKarachiDescription => 'Pakistan method';
+
+  @override
+  String get methodUmmAlQuraName => 'Umm Al-Qura';
+
+  @override
+  String get methodUmmAlQuraDescription => 'Saudi Arabia';
+
+  @override
+  String get methodMoonsightingName => 'University of Islamic Sciences';
+
+  @override
+  String get methodMoonsightingDescription => 'Jordan / University of Islamic Sciences';
+
+  @override
+  String get methodTehranName => 'Institute of Geophysics, Tehran';
+
+  @override
+  String get methodTehranDescription => 'Iran method';
+
+  @override
+  String get methodFranceName => 'Union of Islamic Organisations';
+
+  @override
+  String get methodFranceDescription => 'France method';
+
+  @override
   String get cancel => 'Cancel';
 
   @override

@@ -177,5 +177,21 @@
   "lightTheme": "Açık Tema",
   "lightThemeSubtitle": "Gündüz görünümü",
   "darkTheme": "Koyu Tema",
-  "darkThemeSubtitle": "Gece görünümü"
+  "darkThemeSubtitle": "Gece görünümü",
+  "methodDiyanetName": "Diyanet İşleri Başkanlığı",
+  "methodDiyanetDescription": "Türkiye için resmi yöntem",
+  "methodMwlName": "Dünya Müslüman Birliği",
+  "methodMwlDescription": "Genel uluslararası yöntem",
+  "methodEgyptianName": "Mısır Genel Otoritesi",
+  "methodEgyptianDescription": "Mısır yöntemi",
+  "methodKarachiName": "Karaçi",
+  "methodKarachiDescription": "Pakistan yöntemi",
+  "methodUmmAlQuraName": "Umm Al-Qura",
+  "methodUmmAlQuraDescription": "Suudi Arabistan",
+  "methodMoonsightingName": "İslam Bilimleri Üniversitesi",
+  "methodMoonsightingDescription": "Ürdün / İslam Bilimleri Üniversitesi",
+  "methodTehranName": "Tahran Jeofizik Enstitüsü",
+  "methodTehranDescription": "İran yöntemi",
+  "methodFranceName": "Fransa İslam Organizasyonları Birliği",
+  "methodFranceDescription": "Fransa yöntemi"
 }

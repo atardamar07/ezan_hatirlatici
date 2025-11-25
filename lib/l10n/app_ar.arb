@@ -168,5 +168,21 @@
   "lightTheme": "سمة فاتحة",
   "lightThemeSubtitle": "مظهر النهار",
   "darkTheme": "سمة داكنة",
-  "darkThemeSubtitle": "مظهر الليل"
+  "darkThemeSubtitle": "مظهر الليل",
+  "methodDiyanetName": "رئاسة الشؤون الدينية",
+  "methodDiyanetDescription": "الطريقة الرسمية لتركيا",
+  "methodMwlName": "رابطة العالم الإسلامي",
+  "methodMwlDescription": "طريقة دولية عامة",
+  "methodEgyptianName": "الهيئة العامة المصرية",
+  "methodEgyptianDescription": "الطريقة المصرية",
+  "methodKarachiName": "كراتشي",
+  "methodKarachiDescription": "الطريقة الباكستانية",
+  "methodUmmAlQuraName": "أم القرى",
+  "methodUmmAlQuraDescription": "المملكة العربية السعودية",
+  "methodMoonsightingName": "جامعة العلوم الإسلامية",
+  "methodMoonsightingDescription": "الأردن / جامعة العلوم الإسلامية",
+  "methodTehranName": "معهد الجيوفيزياء، طهران",
+  "methodTehranDescription": "الطريقة الإيرانية",
+  "methodFranceName": "اتحاد المنظمات الإسلامية",
+  "methodFranceDescription": "الطريقة الفرنسية"
 }

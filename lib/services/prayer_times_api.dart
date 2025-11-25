@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:ezan_hatirlatici/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -140,39 +142,47 @@ class PrayerTimesApi {
   }
 
   /// 🔥 Hesaplama metodları listesi
-  List<Map<String, dynamic>> getCalculationMethods() {
+  List<Map<String, dynamic>> getCalculationMethods(AppLocalizations l10n) {
     return [
       {
         "id": diyanetMethodId,
-        "name": "Diyanet İşleri Başkanlığı",
-        "description": "Türkiye için resmi yöntem"
+        "name": l10n.methodDiyanetName,
+        "description": l10n.methodDiyanetDescription
       },
       {
         "id": 0,
-        "name": "Muslim World League",
-        "description": "Genel uluslararası yöntem"
+        "name": l10n.methodMwlName,
+        "description": l10n.methodMwlDescription,
       },
       {
         "id": 1,
-        "name": "Egyptian General Authority",
-        "description": "Mısır yöntemi"
+        "name": l10n.methodEgyptianName,
+        "description": l10n.methodEgyptianDescription,
       },
-      {"id": 2, "name": "Karachi", "description": "Pakistan yöntemi"},
-      {"id": 3, "name": "Umm Al-Qura", "description": "Suudi Arabistan"},
+      {
+        "id": 2,
+        "name": l10n.methodKarachiName,
+        "description": l10n.methodKarachiDescription,
+      },
+      {
+        "id": 3,
+        "name": l10n.methodUmmAlQuraName,
+        "description": l10n.methodUmmAlQuraDescription,
+      },
       {
         "id": 5,
-        "name": "University of Islamic Sciences",
-        "description": "Ürdün / İslam Bilimleri Üniv."
+        "name": l10n.methodMoonsightingName,
+        "description": l10n.methodMoonsightingDescription,
       },
       {
         "id": 7,
-        "name": "Institute of Geophysics, Tehran",
-        "description": "İran yöntemi"
+        "name": l10n.methodTehranName,
+        "description": l10n.methodTehranDescription,
       },
       {
         "id": 12,
-        "name": "Union of Islamic Organisations",
-        "description": "Fransa yöntemi"
+        "name": l10n.methodFranceName,
+        "description": l10n.methodFranceDescription,
       },
     ];
   }

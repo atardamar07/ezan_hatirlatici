@@ -552,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> {
       IconData icon,
       String title,
       VoidCallback onTap,
-      ) {
+) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return ListTile(
       leading: Icon(icon, color: onSurface),
@@ -565,12 +565,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showCalculationMethods() {
-    final methods = _prayerApi.getCalculationMethods();
+    final loc = AppLocalizations.of(context)!;
+    final methods = _prayerApi.getCalculationMethods(loc);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.calculationMethod),
+        title: Text(loc.calculationMethod),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(

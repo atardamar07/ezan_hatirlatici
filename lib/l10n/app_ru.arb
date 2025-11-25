@@ -168,6 +168,22 @@
   "lightTheme": "Светлая тема",
   "lightThemeSubtitle": "Дневной вид",
   "darkTheme": "Тёмная тема",
-  "darkThemeSubtitle": "Ночной вид"
+  "darkThemeSubtitle": "Ночной вид",
+  "methodDiyanetName": "Управление по делам религии",
+  "methodDiyanetDescription": "Официальный метод для Турции",
+  "methodMwlName": "Мусульманская Всемирная Лига",
+  "methodMwlDescription": "Общий международный метод",
+  "methodEgyptianName": "Египетское Главное Управление",
+  "methodEgyptianDescription": "Египетский метод",
+  "methodKarachiName": "Карачи",
+  "methodKarachiDescription": "Пакистанский метод",
+  "methodUmmAlQuraName": "Умм аль-Кура",
+  "methodUmmAlQuraDescription": "Саудовская Аравия",
+  "methodMoonsightingName": "Университет исламских наук",
+  "methodMoonsightingDescription": "Иордания / Университет исламских наук",
+  "methodTehranName": "Институт геофизики, Тегеран",
+  "methodTehranDescription": "Иранский метод",
+  "methodFranceName": "Союз исламских организаций",
+  "methodFranceDescription": "Французский метод"
 
 }

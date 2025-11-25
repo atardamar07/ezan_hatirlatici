@@ -245,6 +245,102 @@ abstract class AppLocalizations {
   /// **'Calculation Method'**
   String get calculationMethod;
 
+  /// No description provided for @methodDiyanetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Presidency of Religious Affairs'**
+  String get methodDiyanetName;
+
+  /// No description provided for @methodDiyanetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Official method for Türkiye'**
+  String get methodDiyanetDescription;
+
+  /// No description provided for @methodMwlName.
+  ///
+  /// In en, this message translates to:
+  /// **'Muslim World League'**
+  String get methodMwlName;
+
+  /// No description provided for @methodMwlDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'General international method'**
+  String get methodMwlDescription;
+
+  /// No description provided for @methodEgyptianName.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian General Authority'**
+  String get methodEgyptianName;
+
+  /// No description provided for @methodEgyptianDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian method'**
+  String get methodEgyptianDescription;
+
+  /// No description provided for @methodKarachiName.
+  ///
+  /// In en, this message translates to:
+  /// **'Karachi'**
+  String get methodKarachiName;
+
+  /// No description provided for @methodKarachiDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pakistan method'**
+  String get methodKarachiDescription;
+
+  /// No description provided for @methodUmmAlQuraName.
+  ///
+  /// In en, this message translates to:
+  /// **'Umm Al-Qura'**
+  String get methodUmmAlQuraName;
+
+  /// No description provided for @methodUmmAlQuraDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Saudi Arabia'**
+  String get methodUmmAlQuraDescription;
+
+  /// No description provided for @methodMoonsightingName.
+  ///
+  /// In en, this message translates to:
+  /// **'University of Islamic Sciences'**
+  String get methodMoonsightingName;
+
+  /// No description provided for @methodMoonsightingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Jordan / University of Islamic Sciences'**
+  String get methodMoonsightingDescription;
+
+  /// No description provided for @methodTehranName.
+  ///
+  /// In en, this message translates to:
+  /// **'Institute of Geophysics, Tehran'**
+  String get methodTehranName;
+
+  /// No description provided for @methodTehranDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Iran method'**
+  String get methodTehranDescription;
+
+  /// No description provided for @methodFranceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Union of Islamic Organisations'**
+  String get methodFranceName;
+
+  /// No description provided for @methodFranceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'France method'**
+  String get methodFranceDescription;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:

@@ -87,6 +87,54 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calculationMethod => 'Berechnungsmethode';
 
   @override
+  String get methodDiyanetName => 'Präsidium für Religionsangelegenheiten';
+
+  @override
+  String get methodDiyanetDescription => 'Offizielle Methode für die Türkei';
+
+  @override
+  String get methodMwlName => 'Muslim World League';
+
+  @override
+  String get methodMwlDescription => 'Allgemeine internationale Methode';
+
+  @override
+  String get methodEgyptianName => 'Ägyptische Generalbehörde';
+
+  @override
+  String get methodEgyptianDescription => 'Ägyptische Methode';
+
+  @override
+  String get methodKarachiName => 'Karachi';
+
+  @override
+  String get methodKarachiDescription => 'Pakistanische Methode';
+
+  @override
+  String get methodUmmAlQuraName => 'Umm Al-Qura';
+
+  @override
+  String get methodUmmAlQuraDescription => 'Saudi-Arabien';
+
+  @override
+  String get methodMoonsightingName => 'Universität der Islamischen Wissenschaften';
+
+  @override
+  String get methodMoonsightingDescription => 'Jordanien / Universität der Islamischen Wissenschaften';
+
+  @override
+  String get methodTehranName => 'Institut für Geophysik, Teheran';
+
+  @override
+  String get methodTehranDescription => 'Iranische Methode';
+
+  @override
+  String get methodFranceName => 'Union islamischer Organisationen';
+
+  @override
+  String get methodFranceDescription => 'Französische Methode';
+
+  @override
   String get cancel => 'Abbrechen';
 
   @override

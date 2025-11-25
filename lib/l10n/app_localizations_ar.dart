@@ -87,6 +87,54 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calculationMethod => 'طريقة الحساب';
 
   @override
+  String get methodDiyanetName => 'رئاسة الشؤون الدينية';
+
+  @override
+  String get methodDiyanetDescription => 'الطريقة الرسمية لتركيا';
+
+  @override
+  String get methodMwlName => 'رابطة العالم الإسلامي';
+
+  @override
+  String get methodMwlDescription => 'طريقة دولية عامة';
+
+  @override
+  String get methodEgyptianName => 'الهيئة العامة المصرية';
+
+  @override
+  String get methodEgyptianDescription => 'الطريقة المصرية';
+
+  @override
+  String get methodKarachiName => 'كراتشي';
+
+  @override
+  String get methodKarachiDescription => 'الطريقة الباكستانية';
+
+  @override
+  String get methodUmmAlQuraName => 'أم القرى';
+
+  @override
+  String get methodUmmAlQuraDescription => 'المملكة العربية السعودية';
+
+  @override
+  String get methodMoonsightingName => 'جامعة العلوم الإسلامية';
+
+  @override
+  String get methodMoonsightingDescription => 'الأردن / جامعة العلوم الإسلامية';
+
+  @override
+  String get methodTehranName => 'معهد الجيوفيزياء، طهران';
+
+  @override
+  String get methodTehranDescription => 'الطريقة الإيرانية';
+
+  @override
+  String get methodFranceName => 'اتحاد المنظمات الإسلامية';
+
+  @override
+  String get methodFranceDescription => 'الطريقة الفرنسية';
+
+  @override
   String get cancel => 'إلغاء';
 
   @override
