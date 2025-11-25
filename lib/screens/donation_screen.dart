@@ -254,13 +254,6 @@ class _DonationScreenState extends State<DonationScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.noAdsFor30Days,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colors.primary, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
       ),

@@ -611,12 +611,6 @@ abstract class AppLocalizations {
   /// **'Tips are processed via Google Play Billing and help cover development and server costs.'**
   String get donationInfoText;
 
-  /// No description provided for @noAdsFor30Days.
-  ///
-  /// In en, this message translates to:
-  /// **'No ads will be shown for 30 days after donating.'**
-  String get noAdsFor30Days;
-
   /// No description provided for @coffeeDonation.
   ///
   /// In en, this message translates to:

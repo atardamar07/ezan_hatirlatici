@@ -282,9 +282,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get donationInfoText => 'Unterstützungen werden über Google Play Abrechnung abgewickelt und werden für Entwicklungskosten verwendet.';
 
   @override
-  String get noAdsFor30Days => 'Es werden 30 Tage lang keine Anzeigen angezeigt, nachdem Sie gespendet haben.';
-
-  @override
   String get coffeeDonation => '☕ Kleine Unterstützung';
 
   @override

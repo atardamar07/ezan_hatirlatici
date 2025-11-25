@@ -282,9 +282,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get donationInfoText => 'تُعالج مبالغ الدعم عبر فوترة Google Play وتُستخدم لتكاليف التطوير.';
 
   @override
-  String get noAdsFor30Days => 'لن يتم عرض إعلانات لمدة 30 يوماً بعد التبرع.';
-
-  @override
   String get coffeeDonation => '☕ دعم صغير';
 
   @override

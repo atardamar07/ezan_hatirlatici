@@ -282,9 +282,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donationInfoText => 'Tips are processed via Google Play Billing and are used for development costs.';
 
   @override
-  String get noAdsFor30Days => 'No ads will be shown for 30 days after donating.';
-
-  @override
   String get coffeeDonation => '☕ Small Tip';
 
   @override

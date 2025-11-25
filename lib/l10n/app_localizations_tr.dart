@@ -282,9 +282,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get donationInfoText => 'Bahşişler Google Play Faturalandırma ile alınır ve geliştirme masrafları için kullanılır.';
 
   @override
-  String get noAdsFor30Days => 'Bağış yaptıktan sonra 30 gün boyunca reklam gösterilmeyecektir.';
-
-  @override
   String get coffeeDonation => '☕ Küçük Destek';
 
   @override
