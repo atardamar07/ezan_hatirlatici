@@ -14,11 +14,17 @@ class QiblaScreen extends StatefulWidget {
 
 class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStateMixin {
   double _currentHeading = 0.0;
+  double _smoothedHeading = 0.0;
   double _qiblaDirection = 0.0;
   double _distanceToQibla = 0.0;
   bool _isQiblaFound = false;
   bool _isLoading = true;
   StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
+  bool _hasHeading = false;
+
+  static const Duration _headingUpdateInterval = Duration(milliseconds: 16);
+  static const double _headingSmoothing = 0.15;
+  DateTime _lastHeadingUpdate = DateTime.fromMillisecondsSinceEpoch(0);
 
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -52,8 +58,28 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     try {
       _magnetometerSubscription = magnetometerEvents.listen((MagnetometerEvent event) {
         if (!mounted) return;
+        final now = DateTime.now();
+        final heading = _calculateHeading(event.x, event.y);
+
+        if (!_hasHeading) {
+          _lastHeadingUpdate = now;
+          setState(() {
+            _currentHeading = heading;
+            _smoothedHeading = heading;
+            _hasHeading = true;
+            _checkQiblaDirection();
+          });
+          return;
+        }
+
+        if (now.difference(_lastHeadingUpdate) < _headingUpdateInterval) {
+          return;
+        }
+        _lastHeadingUpdate = now;
+
         setState(() {
-          _currentHeading = _calculateHeading(event.x, event.y);
+          _currentHeading = heading;
+          _smoothedHeading = _smoothHeading(_smoothedHeading, heading);
           _checkQiblaDirection();
         });
       });
@@ -114,6 +140,13 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     return (bearing + 360) % 360;
   }
 
+  double _smoothHeading(double current, double target) {
+    final delta = _normalizeAngle(target - current);
+    final adjustedDelta = delta > 180 ? delta - 360 : delta;
+    final smoothed = current + adjustedDelta * _headingSmoothing;
+    return _normalizeAngle(smoothed);
+  }
+
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const earthRadius = 6371; // km
     final lat1Rad = _degreesToRadians(lat1);
@@ -133,9 +166,19 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     return degrees * math.pi / 180;
   }
 
+  double _normalizeAngle(double angle) {
+    final normalized = angle % 360;
+    return normalized < 0 ? normalized + 360 : normalized;
+  }
+
+  double _angleDifference(double a, double b) {
+    final diff = (a - b).abs() % 360;
+    return diff > 180 ? 360 - diff : diff;
+  }
+
   void _checkQiblaDirection() {
-    final difference = (_currentHeading - _qiblaDirection).abs();
-    final isQibla = difference < 5 || difference > 355; // 5 derece tolerans
+    final difference = _angleDifference(_smoothedHeading, _qiblaDirection);
+    final isQibla = difference < 5; // 5 derece tolerans
 
     if (isQibla != _isQiblaFound) {
       setState(() {
@@ -156,8 +199,9 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     if (_isQiblaFound) {
       return loc.qiblaFound;
     } else {
-      final difference = _qiblaDirection - _currentHeading;
-      if (difference > 0 && difference < 180) {
+      final difference = _angleDifference(_qiblaDirection, _smoothedHeading);
+      final isRight = _normalizeAngle(_qiblaDirection - _smoothedHeading) < 180;
+      if (isRight && difference >= 1) {
         return loc.turnRight;
       } else {
         return loc.turnLeft;
@@ -229,7 +273,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
                       // Kıble Yönü İşareti
                       Transform.rotate(
-                        angle: _degreesToRadians(_qiblaDirection - _currentHeading),
+                        angle: _degreesToRadians(_qiblaDirection - _smoothedHeading),
                         child: Container(
                           width: 4,
                           height: 120,
@@ -341,7 +385,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
     return directions.map((direction) {
       final angle = _degreesToRadians(
-          (direction['angle'] as num).toDouble() - _currentHeading
+          (direction['angle'] as num).toDouble() - _smoothedHeading
       );
 
       return Transform.rotate(
