@@ -22,7 +22,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
   StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
   bool _hasHeading = false;
 
-  static const Duration _headingUpdateInterval = Duration(milliseconds: 16);
+  // Update heading roughly 30 times per second for smoother compass motion
+  static const Duration _headingUpdateInterval = Duration(milliseconds: 33);
   static const double _headingSmoothing = 0.15;
   DateTime _lastHeadingUpdate = DateTime.fromMillisecondsSinceEpoch(0);
 
