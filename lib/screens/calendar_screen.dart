@@ -191,6 +191,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: _focusedDay,
               calendarFormat: _calendarFormat,
+              locale: Localizations.localeOf(context).toLanguageTag(),
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               headerStyle: const HeaderStyle(formatButtonVisible: false),
               availableCalendarFormats: {
