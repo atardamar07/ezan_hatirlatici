@@ -436,6 +436,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          debugPrint('🔘 Manual Test Button Pressed');
+          await NotificationService.showNotification(
+            title: '🔔 Manuel Test',
+            body: 'Bu bildirim butona basınca geldi! Ses çalıyor mu?',
+          );
+        },
+        child: const Icon(Icons.notifications_active),
+      ),
     );
   }
   Widget _buildQuickActions(BuildContext context) {
@@ -637,6 +647,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
     );
   }
 }

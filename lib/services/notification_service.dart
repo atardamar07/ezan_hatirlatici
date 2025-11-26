@@ -1,41 +1,51 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
-  static const _androidChannelId = 'prayer_channel_id';
+  static const _androidChannelId = 'prayer_channel_id_v2';
   static const _androidChannelName = 'Namaz Bildirimleri';
   static const _androidChannelDescription =
       'Namaz vakitleri ve hatırlatıcıları';
 
   static Future<void> initialize() async {
     const AndroidInitializationSettings androidSettings =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings iosSettings =
-    DarwinInitializationSettings(
+        DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
 
     const InitializationSettings settings =
-      InitializationSettings(android: androidSettings, iOS: iosSettings);
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
 
     await flutterLocalNotificationsPlugin.initialize(settings);
+
+    // ✅ Timezone ayarlarını yap
     tz.initializeTimeZones();
+    try {
+      final dynamic timeZoneResult = await FlutterTimezone.getLocalTimezone();
+      final String timeZoneName = timeZoneResult.toString();
+      
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+      debugPrint('🌍 Local Timezone set to: $timeZoneName');
+    } catch (e) {
+      debugPrint('⚠️ Failed to set local timezone: $e');
+    }
 
     final androidPlugin = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+            AndroidFlutterLocalNotificationsPlugin>();
 
-    // Android 13 (API 33) ve üzeri için hem bildirim hem de exact alarm izinlerini iste
     if (androidPlugin != null) {
-      // ✅ Bildirim kanalını oluştur
       const androidChannel = AndroidNotificationChannel(
         _androidChannelId,
         _androidChannelName,
@@ -52,12 +62,12 @@ class NotificationService {
       await androidPlugin.requestNotificationsPermission();
 
       final canScheduleExact =
-        await androidPlugin.canScheduleExactNotifications();
+          await androidPlugin.canScheduleExactNotifications();
 
       if (canScheduleExact != true) {
         await androidPlugin.requestExactAlarmsPermission();
       }
-      
+
       debugPrint('📢 Notification permissions requested');
     }
   }
@@ -91,7 +101,10 @@ class NotificationService {
       return;
     }
 
-    final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    final tz.TZDateTime tzScheduledTime =
+        tz.TZDateTime.from(scheduledTime, tz.local);
+    
+    debugPrint('🔔 Scheduling for: $tzScheduledTime (Local: ${tz.local.name})');
 
     final details = _buildNotificationDetails();
 
@@ -121,12 +134,12 @@ class NotificationService {
 
     final androidPlugin = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+            AndroidFlutterLocalNotificationsPlugin>();
 
     final notificationsEnabled =
         await androidPlugin?.areNotificationsEnabled() ?? true;
-    final exactAlarms = await androidPlugin?.canScheduleExactNotifications() ??
-        true;
+    final exactAlarms =
+        await androidPlugin?.canScheduleExactNotifications() ?? true;
 
     return NotificationStatus(
       notificationsEnabled: notificationsEnabled,
