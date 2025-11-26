@@ -67,7 +67,7 @@ class NotificationService {
     required String body,
   }) async {
     if (kIsWeb) {
-      debugPrint('Web notification: $ title - $body');
+      debugPrint('Web notification: $title - $body');
       return;
     }
 

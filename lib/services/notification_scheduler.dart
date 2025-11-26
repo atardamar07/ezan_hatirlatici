@@ -7,27 +7,27 @@ import 'notification_service.dart';
 class NotificationScheduler {
   final PrayerTimesApi _prayerApi = PrayerTimesApi();
 
-  /// TEST MODE: Her 2 dakikada bir bildirim gönder
+  /// TEST MODE: Her 1 dakikada bir bildirim gönder
   Future<void> scheduleTestNotifications() async {
     await NotificationService.cancelAllNotifications();
-    debugPrint('🧪 TEST MODE: Scheduling notifications every 2 minutes');
+    debugPrint('🧪 TEST MODE: Scheduling notifications every 1 minute');
 
     final now = DateTime.now();
     
-    // 5 test bildirimi planla (2, 4, 6, 8, 10 dakika sonra)
-    for (int i = 1; i <= 5; i++) {
-      final notificationTime = now.add(Duration(minutes: i * 2));
+    // 10 test bildirimi planla (1, 2, 3... 10 dakika sonra)
+    for (int i = 1; i <= 10; i++) {
+      final notificationTime = now.add(Duration(minutes: i));
       
       await NotificationService.scheduleNotification(
-        title: '🧪 Test Bildirimi #$i',
-        body: 'Bu bir test bildirimidir. Ezan sesi çalacak!',
+        title: '🧪 Test #$i',
+        body: 'Dakika $i - Ezan sesi çalacak!',
         scheduledTime: notificationTime,
       );
       
       debugPrint('✅ Test notification #$i scheduled for: $notificationTime');
     }
     
-    debugPrint('🧪 TEST MODE: Scheduled 5 test notifications (every 2 min)');
+    debugPrint('🧪 TEST MODE: Scheduled 10 test notifications (every 1 min)');
   }
 
   /// Tüm namaz vakitleri için hatırlatıcı ve vakit bildirimlerini planlar
