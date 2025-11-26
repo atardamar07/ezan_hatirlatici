@@ -35,6 +35,20 @@ class NotificationService {
 
     // Android 13 (API 33) ve üzeri için hem bildirim hem de exact alarm izinlerini iste
     if (androidPlugin != null) {
+      // ✅ Bildirim kanalını oluştur
+      const androidChannel = AndroidNotificationChannel(
+        _androidChannelId,
+        _androidChannelName,
+        description: _androidChannelDescription,
+        importance: Importance.max,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('ezan'),
+        enableVibration: true,
+      );
+
+      await androidPlugin.createNotificationChannel(androidChannel);
+      debugPrint('📢 Notification channel created: $_androidChannelId');
+
       await androidPlugin.requestNotificationsPermission();
 
       final canScheduleExact =
@@ -43,6 +57,8 @@ class NotificationService {
       if (canScheduleExact != true) {
         await androidPlugin.requestExactAlarmsPermission();
       }
+      
+      debugPrint('📢 Notification permissions requested');
     }
   }
 
@@ -51,7 +67,7 @@ class NotificationService {
     required String body,
   }) async {
     if (kIsWeb) {
-      debugPrint('Web notification: $title - $body');
+      debugPrint('Web notification: $ title - $body');
       return;
     }
 
@@ -86,7 +102,6 @@ class NotificationService {
       tzScheduledTime,
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      // ❌ KALDIRILDI: uiLocalNotificationDateInterpretation
     );
   }
 
