@@ -18,7 +18,14 @@ import 'services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService.initialize();
+  
+  try {
+    await NotificationService.initialize();
+  } catch (e, stack) {
+    debugPrint('Failed to initialize notification service: $e\n$stack');
+    // Continue app launch even if notifications fail
+  }
+  
   runApp(const MyApp());
 }
 

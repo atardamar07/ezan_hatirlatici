@@ -36,10 +36,19 @@ class AdServicePlatform implements AdServiceBase {
   @override
   Future<void> initialize({bool loadAds = true}) async {
     try {
-      await MobileAds.instance.initialize();
+      // Add timeout protection to prevent indefinite hanging
+      await MobileAds.instance.initialize().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('AdMob initialization timed out after 10 seconds');
+          throw TimeoutException('AdMob initialization timeout');
+        },
+      );
       _initialized = true;
+      debugPrint('AdMob initialized successfully');
     } catch (e, stack) {
       debugPrint('AdMob initialization failed: $e\n$stack');
+      _initialized = false;
       _canLoadAds = false;
       return;
     }
@@ -90,11 +99,13 @@ class AdServicePlatform implements AdServiceBase {
   }
   @override
   void showInterstitialAd() {
-    if (_isInterstitialShowing) return;
+    if (!_initialized || _isInterstitialShowing || _interstitial == null) {
+      debugPrint('Cannot show ad: initialized=$_initialized, showing=$_isInterstitialShowing, ad=${_interstitial != null}');
+      return;
+    }
 
     _interstitial?.show();
     _interstitial = null;
-
   }
 
   @override

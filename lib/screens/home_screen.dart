@@ -80,12 +80,24 @@ class _HomeScreenState extends State<HomeScreen> {
         _prefs!.getInt('calculationMethod') ?? PrayerTimesApi.diyanetMethodId;
 
     if (!kIsWeb) {
-      await _adService.initialize();
-      final status = await NotificationService.getStatus();
-      if (mounted) {
-        setState(() => _notificationsReady =
-            status.notificationsEnabled && status.exactAlarmsEnabled);
+      try {
+        await _adService.initialize();
+      } catch (e, stack) {
+        debugPrint('Failed to initialize AdService: $e\n$stack');
+        // Continue without ads if initialization fails
       }
+      
+      try {
+        final status = await NotificationService.getStatus();
+        if (mounted) {
+          setState(() => _notificationsReady =
+              status.notificationsEnabled && status.exactAlarmsEnabled);
+        }
+      } catch (e, stack) {
+        debugPrint('Failed to get notification status: $e\n$stack');
+        // Continue with notifications disabled
+      }
+      
       _startAdTimer();
     }
 
