@@ -211,8 +211,27 @@ class _HomeScreenState extends State<HomeScreen> {
       final type = _prefs!.getString('locationType');
 
       if (type == 'location') {
-        final lat = _prefs!.getDouble('latitude');
-        final lng = _prefs!.getDouble('longitude');
+        double? lat = _prefs!.getDouble('latitude');
+        double? lng = _prefs!.getDouble('longitude');
+
+        final freshPosition = await _locationService.getCurrentLocation();
+
+        if (freshPosition != null) {
+          lat = freshPosition.latitude;
+          lng = freshPosition.longitude;
+
+          final fullAddress = await _locationService.getFullAddress(lat, lng);
+          final locationName = fullAddress?.isNotEmpty == true
+              ? fullAddress!
+              : "${lat.toStringAsFixed(2)}, ${lng.toStringAsFixed(2)}";
+
+          await _prefs!.setDouble('latitude', lat);
+          await _prefs!.setDouble('longitude', lng);
+          await _prefs!.setString('currentLocation', locationName);
+
+          setState(() => _currentLocation = locationName);
+          setState(() => _statusMessage = loc.locationUpdated(locationName));
+        }
 
         if (lat != null && lng != null) {
           today = await _prayerApi.getPrayerTimesByLocation(
@@ -220,8 +239,6 @@ class _HomeScreenState extends State<HomeScreen> {
             lng,
             _selectedMethod,
           );
-
-
         }
       } else if (type == 'city') {
         final city = _prefs!.getString('selectedCity');

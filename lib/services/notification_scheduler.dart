@@ -10,24 +10,14 @@ class NotificationScheduler {
   /// TEST MODE: Her 1 dakikada bir bildirim gönder
   Future<void> scheduleTestNotifications() async {
     await NotificationService.cancelAllNotifications();
-    debugPrint('🧪 TEST MODE: Scheduling notifications every 1 minute');
+    debugPrint('🧪 TEST MODE: Scheduling repeating notifications every 1 minute');
 
-    final now = DateTime.now();
+    await NotificationService.scheduleRepeatingTestNotification(
+      title: '🧪 Dakika bildirimi',
+      body: 'Test bildirimi her dakika tetikleniyor.',
+    );
 
-    // 60 test bildirimi planla (1 saat boyunca her dakika)
-    for (int i = 1; i <= 60; i++) {
-      final notificationTime = now.add(Duration(minutes: i));
-      
-      await NotificationService.scheduleNotification(
-        title: '🧪 Dakika $i',
-        body: 'Her dakika test bildirimi gönderiliyor.',
-        scheduledTime: notificationTime,
-      );
-      
-      debugPrint('✅ Test notification #$i scheduled for: $notificationTime');
-    }
-
-    debugPrint('🧪 TEST MODE: Scheduled 60 test notifications (every 1 min)');
+    debugPrint('🧪 TEST MODE: Repeating notification scheduled (every 1 min)');
   }
 
   /// Tüm namaz vakitleri için hatırlatıcı ve vakit bildirimlerini planlar

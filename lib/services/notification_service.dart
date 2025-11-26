@@ -175,6 +175,28 @@ class NotificationService {
     );
   }
 
+  /// Test bildirimi için her dakika tekrarlayan bir bildirim planlar.
+  static Future<void> scheduleRepeatingTestNotification({
+    required String title,
+    required String body,
+  }) async {
+    if (kIsWeb) {
+      debugPrint('Web repeating notification: $title - $body');
+      return;
+    }
+
+    final details = _buildNotificationDetails();
+
+    await flutterLocalNotificationsPlugin.periodicallyShow(
+      9999,
+      title,
+      body,
+      RepeatInterval.everyMinute,
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
+
   /// Normalizes timezone strings to a format accepted by the `timezone` package.
   ///
   /// Some platforms return a wrapped string like
