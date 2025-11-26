@@ -10,11 +10,15 @@ class NotificationScheduler {
   /// Tüm namaz vakitleri için hatırlatıcı ve vakit bildirimlerini planlar
   Future<void> scheduleAllPrayerNotifications() async {
     await NotificationService.cancelAllNotifications();
+    debugPrint('🔔 Starting notification scheduling...');
 
     final prefs = await SharedPreferences.getInstance();
     final locationType = prefs.getString('locationType');
 
-    if (locationType == null) return;
+    if (locationType == null) {
+      debugPrint('⚠️ No location type set, skipping notification scheduling');
+      return;
+    }
 
     Map<String, dynamic>? timings;
     if (locationType == 'location') {
@@ -33,7 +37,10 @@ class NotificationScheduler {
       }
     }
 
-    if (timings == null) return;
+    if (timings == null) {
+      debugPrint('⚠️ Failed to get prayer timings');
+      return;
+    }
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -41,8 +48,40 @@ class NotificationScheduler {
     // Kullanıcı ayarı: kaç dakika önce hatırlatılsın
     final minutesBefore = prefs.getInt('notificationMinutesBefore') ?? 15;
 
+    // Özel Fajr zamanlaması için Sunrise (Güneş) vaktini al
+    final sunriseTimeStr = timings['Sunrise'] as String?;
+    DateTime? fajrNotificationTime;
+    
+    if (sunriseTimeStr != null) {
+      try {
+        final sunriseTime = _parseTime(sunriseTimeStr, today);
+        fajrNotificationTime = sunriseTime.subtract(const Duration(minutes: 60));
+        debugPrint('☀️ Fajr notification scheduled for: $fajrNotificationTime (60 min before Sunrise at $sunriseTime)');
+      } catch (e) {
+        debugPrint('⚠️ Failed to calculate Fajr notification time: $e');
+      }
+    }
+
+    int scheduledCount = 0;
+    
     for (final entry in timings.entries) {
       if (entry.key == 'Sunrise') continue; // Güneş için bildirim yok
+
+      // Özel Fajr işleme
+      if (entry.key == 'Fajr' && fajrNotificationTime != null) {
+        if (fajrNotificationTime.isAfter(now)) {
+          await NotificationService.scheduleNotification(
+            title: '☀️ Sabah Namazı Hatırlatıcı',
+            body: 'Sabah namazı için 60 dakika kaldı (Güneş doğmadan önce)',
+            scheduledTime: fajrNotificationTime,
+          );
+          scheduledCount++;
+          debugPrint('✅ Scheduled Fajr notification at $fajrNotificationTime');
+        } else {
+          debugPrint('⏭️ Skipped Fajr notification (time already passed)');
+        }
+        continue; // Fajr için normal işlemeyi atla
+      }
 
       try {
         final prayerTime = _parseTime(entry.value as String, today);
@@ -54,9 +93,11 @@ class NotificationScheduler {
           await NotificationService.scheduleNotification(
             title: '⏰ Namaz Hatırlatıcı',
             body:
-            '${_getTurkishPrayerName(entry.key)} vakti ${minutesBefore} dakika sonra',
+            '${_getTurkishPrayerName(entry.key)} vakti $minutesBefore dakika sonra',
             scheduledTime: reminderTime,
           );
+          scheduledCount++;
+          debugPrint('✅ Scheduled ${entry.key} reminder at $reminderTime');
         }
 
         // Vakit girince bildirimi
@@ -67,11 +108,15 @@ class NotificationScheduler {
             '${_getTurkishPrayerName(entry.key)} vakti geldi. Haydi namaza!',
             scheduledTime: prayerTime,
           );
+          scheduledCount++;
+          debugPrint('✅ Scheduled ${entry.key} prayer time at $prayerTime');
         }
       } catch (e) {
-        debugPrint('Notification scheduling skipped (${entry.key} → ${entry.value}): $e');
+        debugPrint('⚠️ Notification scheduling skipped (${entry.key} → ${entry.value}): $e');
       }
     }
+    
+    debugPrint('🔔 Notification scheduling complete. Total scheduled: $scheduledCount');
   }
 
   DateTime _parseTime(String timeStr, DateTime baseDate) {

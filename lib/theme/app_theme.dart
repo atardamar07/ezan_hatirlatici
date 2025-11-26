@@ -17,6 +17,8 @@ class AppTheme {
       brightness: Brightness.light,
       primary: _lightPrimary,
       onPrimary: Colors.white,
+      primaryContainer: const Color(0xFFB2F4EA),
+      onPrimaryContainer: const Color(0xFF003731),
       secondary: _lightSecondary,
       onSecondary: Colors.white,
       error: const Color(0xFFBA1A1A),

@@ -476,25 +476,32 @@ class _HomeScreenState extends State<HomeScreen> {
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF242433),
+        color: isDark ? const Color(0xFF242433) : colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
+            color: Colors.black.withOpacity(isDark ? 0.25 : 0.1),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
         ],
       ),
       child: ActionChip(
-        avatar: Icon(icon, size: 18, color: Colors.white),
+        avatar: Icon(
+          icon, 
+          size: 18, 
+          color: isDark ? Colors.white : colorScheme.onPrimaryContainer,
+        ),
         label: Text(
           label,
-          style: const TextStyle(
-            color: Color(0xFF11B2A2),
+          style: TextStyle(
+            color: isDark ? const Color(0xFF11B2A2) : colorScheme.primary,
             fontWeight: FontWeight.w600,
           ),
         ),
