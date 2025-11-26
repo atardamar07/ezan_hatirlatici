@@ -101,15 +101,17 @@ class _HomeScreenState extends State<HomeScreen> {
       _startAdTimer();
     }
 
-    // 🧪 TEST MODE: Zamanlanmış bildirimleri planla
-    // Test için her 2 dakikada bir bildirim gönder
+    // Önce normal yüklemeyi yap (UI açılsın)
+    await _loadSavedLocation();
+
+    // 🧪 TEST MODE: Normal bildirimleri sil ve test bildirimlerini planla
+    // Test için her 1 dakikada bir bildirim gönder
     try {
+      debugPrint('🧪 TEST MODE ACTIVE - Overwriting normal prayer notifications');
       await NotificationScheduler().scheduleTestNotifications();
     } catch (e) {
       debugPrint('Failed to schedule test notifications: $e');
     }
-
-    await _loadSavedLocation();
   }
 
   void _startAdTimer() {
