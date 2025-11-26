@@ -55,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _currentLocation = '';
   int _selectedMethod = PrayerTimesApi.diyanetMethodId;
   bool _notificationsReady = false;
+  final bool _testNotificationsEnabled = true;
   bool _locationPermissionGranted = false;
   String _statusMessage = '';
 
@@ -104,13 +105,15 @@ class _HomeScreenState extends State<HomeScreen> {
     // Önce normal yüklemeyi yap (UI açılsın)
     await _loadSavedLocation();
 
-    // 🧪 TEST MODE: Normal bildirimleri sil ve test bildirimlerini planla
-    // Test için her 1 dakikada bir bildirim gönder
-    try {
-      debugPrint('🧪 TEST MODE ACTIVE - Overwriting normal prayer notifications');
-      await NotificationScheduler().scheduleTestNotifications();
-    } catch (e) {
-      debugPrint('Failed to schedule test notifications: $e');
+    if (_testNotificationsEnabled) {
+      // 🧪 TEST MODE: Normal bildirimleri sil ve test bildirimlerini planla
+      // Test için her 1 dakikada bir bildirim gönder
+      try {
+        debugPrint('🧪 TEST MODE ACTIVE - Overwriting normal prayer notifications');
+        await NotificationScheduler().scheduleTestNotifications();
+      } catch (e) {
+        debugPrint('Failed to schedule test notifications: $e');
+      }
     }
   }
 
@@ -243,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
         throw Exception("Prayer data is null");
       }
 
-      if (!kIsWeb) {
+      if (!kIsWeb && !_testNotificationsEnabled) {
         await NotificationScheduler().scheduleAllPrayerNotifications();
       }
     } catch (e) {
@@ -435,16 +438,6 @@ class _HomeScreenState extends State<HomeScreen> {
             }),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          debugPrint('🔘 Manual Test Button Pressed');
-          await NotificationService.showNotification(
-            title: '🔔 Manuel Test',
-            body: 'Bu bildirim butona basınca geldi! Ses çalıyor mu?',
-          );
-        },
-        child: const Icon(Icons.notifications_active),
       ),
     );
   }

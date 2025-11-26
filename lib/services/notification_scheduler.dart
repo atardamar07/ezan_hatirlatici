@@ -13,21 +13,21 @@ class NotificationScheduler {
     debugPrint('🧪 TEST MODE: Scheduling notifications every 1 minute');
 
     final now = DateTime.now();
-    
-    // 10 test bildirimi planla (1, 2, 3... 10 dakika sonra)
-    for (int i = 1; i <= 10; i++) {
+
+    // 60 test bildirimi planla (1 saat boyunca her dakika)
+    for (int i = 1; i <= 60; i++) {
       final notificationTime = now.add(Duration(minutes: i));
       
       await NotificationService.scheduleNotification(
-        title: '🧪 Test #$i',
-        body: 'Dakika $i - Ezan sesi çalacak!',
+        title: '🧪 Dakika $i',
+        body: 'Her dakika test bildirimi gönderiliyor.',
         scheduledTime: notificationTime,
       );
       
       debugPrint('✅ Test notification #$i scheduled for: $notificationTime');
     }
-    
-    debugPrint('🧪 TEST MODE: Scheduled 10 test notifications (every 1 min)');
+
+    debugPrint('🧪 TEST MODE: Scheduled 60 test notifications (every 1 min)');
   }
 
   /// Tüm namaz vakitleri için hatırlatıcı ve vakit bildirimlerini planlar

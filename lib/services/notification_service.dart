@@ -114,6 +114,9 @@ class NotificationService {
       body,
       tzScheduledTime,
       details,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.wallClockTime,
+      androidAllowWhileIdle: true,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
