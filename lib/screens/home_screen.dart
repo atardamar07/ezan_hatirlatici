@@ -101,6 +101,14 @@ class _HomeScreenState extends State<HomeScreen> {
       _startAdTimer();
     }
 
+    // 🧪 TEST MODE: Zamanlanmış bildirimleri planla
+    // Test için her 2 dakikada bir bildirim gönder
+    try {
+      await NotificationScheduler().scheduleTestNotifications();
+    } catch (e) {
+      debugPrint('Failed to schedule test notifications: $e');
+    }
+
     await _loadSavedLocation();
   }
 
@@ -482,11 +490,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF242433) : colorScheme.primaryContainer,
+        color: isDark ? const Color(0xFF242433) : colorScheme.surface,
+        border: Border.all(
+          color: isDark ? Colors.transparent : colorScheme.primary.withOpacity(0.3),
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.25 : 0.1),
+            color: Colors.black.withOpacity(isDark ? 0.25 : 0.08),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -496,7 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
         avatar: Icon(
           icon, 
           size: 18, 
-          color: isDark ? Colors.white : colorScheme.onPrimaryContainer,
+          color: isDark ? Colors.white : colorScheme.primary,
         ),
         label: Text(
           label,

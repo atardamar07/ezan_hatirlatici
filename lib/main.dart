@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/home_screen.dart';
@@ -21,6 +22,17 @@ Future<void> main() async {
   
   try {
     await NotificationService.initialize();
+    
+    // İlk açılışta bildirim izni iste
+    final prefs = await SharedPreferences.getInstance();
+    final hasAskedPermission = prefs.getBool('hasAskedNotificationPermission') ?? false;
+    
+    if (!hasAskedPermission) {
+      debugPrint('📱 First launch - requesting notification permission...');
+      final status = await Permission.notification.request();
+      await prefs.setBool('hasAskedNotificationPermission', true);
+      debugPrint('📱 Notification permission status: $status');
+    }
   } catch (e, stack) {
     debugPrint('Failed to initialize notification service: $e\n$stack');
     // Continue app launch even if notifications fail
