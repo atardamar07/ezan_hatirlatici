@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _currentLocation = '';
   int _selectedMethod = PrayerTimesApi.diyanetMethodId;
   bool _notificationsReady = false;
-  final bool _testNotificationsEnabled = true;
+  final bool _testNotificationsEnabled = kDebugMode;
   bool _locationPermissionGranted = false;
   String _statusMessage = '';
 

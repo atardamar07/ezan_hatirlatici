@@ -33,8 +33,8 @@ class NotificationService {
     tz.initializeTimeZones();
     try {
       final dynamic timeZoneResult = await FlutterTimezone.getLocalTimezone();
-      final String timeZoneName = timeZoneResult.toString();
-      
+      final String timeZoneName = _normalizeTimezoneName(timeZoneResult);
+
       tz.setLocalLocation(tz.getLocation(timeZoneName));
       debugPrint('🌍 Local Timezone set to: $timeZoneName');
     } catch (e) {
@@ -173,6 +173,20 @@ class NotificationService {
       android: androidDetails,
       iOS: iosDetails,
     );
+  }
+
+  /// Normalizes timezone strings to a format accepted by the `timezone` package.
+  ///
+  /// Some platforms return a wrapped string like
+  /// `TimezoneInfo(Europe/Istanbul, (locale: tr_TR, name: GMT+03:00))`.
+  /// This method extracts the actual timezone name (e.g. `Europe/Istanbul`).
+  static String _normalizeTimezoneName(dynamic timeZoneResult) {
+    final raw = timeZoneResult.toString().trim();
+    final match = RegExp(r'TimezoneInfo\(([^,]+)').firstMatch(raw);
+    if (match != null) {
+      return match.group(1)!;
+    }
+    return raw;
   }
 }
 
