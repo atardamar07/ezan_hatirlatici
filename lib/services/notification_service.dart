@@ -114,7 +114,6 @@ class NotificationService {
       body,
       tzScheduledTime,
       details,
-      androidAllowWhileIdle: true,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
