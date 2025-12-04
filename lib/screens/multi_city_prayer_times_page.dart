@@ -312,7 +312,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
       _NavDestination(icon: Icons.notifications, label: 'Bildirimler', route: '/notifications'),
       _NavDestination(icon: Icons.accessibility, label: 'Zikirmatik', route: '/zikirmatik'),
       _NavDestination(icon: Icons.settings, label: 'Ayarlar', route: '/settings'),
-      _NavDestination(icon: Icons.support_heart, label: 'Bağış Yap', route: '/donate'),
+      _NavDestination(icon: Icons.volunteer_activism, label: 'Bağış Yap', route: '/donate'),
     ];
 
     return Drawer(
