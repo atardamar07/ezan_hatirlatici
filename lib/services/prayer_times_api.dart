@@ -216,4 +216,69 @@ class PrayerTimesApi {
 
     return nextName;
   }
+
+  /// 🔥 Belirli bir ayın 30 günlük takvimi
+  Future<Map<DateTime, Map<String, dynamic>>?> getMonthlyPrayerTimes({
+    required int month,
+    required int year,
+    double? lat,
+    double? lng,
+    String? city,
+    String? country,
+    required int method,
+  }) async {
+    Uri? url;
+
+    if (lat != null && lng != null) {
+      url = Uri.parse(
+        "$baseUrl/calendar?latitude=$lat&longitude=$lng&method=$method&month=$month&year=$year",
+      );
+    } else if (city != null && country != null) {
+      url = Uri.parse(
+        "$baseUrl/calendarByCity?city=$city&country=$country&method=$method&month=$month&year=$year",
+      );
+    }
+
+    if (url == null) return null;
+
+    try {
+      final res = await http.get(url);
+
+      if (res.statusCode == 200) {
+        final json = jsonDecode(res.body);
+        final data = List<Map<String, dynamic>>.from(
+          (json["data"] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+        );
+
+        final results = <DateTime, Map<String, dynamic>>{};
+
+        for (final day in data) {
+          final gregorianDate = (day["date"]?["gregorian"]?["date"] ?? '') as String;
+          final parts = gregorianDate.split('-');
+
+          if (parts.length == 3) {
+            final parsedDate = DateTime(
+              int.parse(parts[2]),
+              int.parse(parts[1]),
+              int.parse(parts[0]),
+            );
+
+            final normalizedDate =
+            DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
+
+            results[normalizedDate] =
+            Map<String, dynamic>.from(day["timings"] ?? {});
+          }
+        }
+
+        return results;
+      } else {
+        debugPrint("getMonthlyPrayerTimes failed: ${res.statusCode} → ${res.body}");
+      }
+    } catch (e) {
+      debugPrint("getMonthlyPrayerTimes error: $e");
+    }
+
+    return null;
+  }
 }

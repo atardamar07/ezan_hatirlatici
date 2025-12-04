@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -27,6 +28,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   double? _longitude;
   String? _city;
   String? _country;
+
+  Map<DateTime, Map<String, dynamic>> _monthlyTimings = {};
 
   @override
   void initState() {
@@ -73,7 +76,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       return;
     }
 
-    await _fetchPrayerTimesForDate(_selectedDay);
+    await _fetchMonthlyPrayerTimes(_focusedDay);
   }
 
   Future<void> _fetchPrayerTimesForDate(DateTime date) async {
@@ -100,6 +103,54 @@ class _CalendarScreenState extends State<CalendarScreen> {
       _statusMessage = timings == null ? loc.failedToLoadPrayerTimes : null;
       _isLoading = false;
     });
+  }
+
+  Future<void> _fetchMonthlyPrayerTimes(DateTime date) async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = null;
+      _monthlyTimings = {};
+    });
+
+    final loc = AppLocalizations.of(context)!;
+
+    final monthData = await _prayerApi.getMonthlyPrayerTimes(
+      month: date.month,
+      year: date.year,
+      lat: _latitude,
+      lng: _longitude,
+      city: _city,
+      country: _country,
+      method: _selectedMethod,
+    );
+
+    if (!mounted) return;
+
+    if (monthData == null || monthData.isEmpty) {
+      setState(() {
+        _selectedDayTimings = null;
+        _statusMessage = loc.failedToLoadPrayerTimes;
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final normalizedSelected = DateTime(
+      _selectedDay.year,
+      _selectedDay.month,
+      _selectedDay.day,
+    );
+
+    setState(() {
+      _monthlyTimings = monthData;
+      _selectedDayTimings = _monthlyTimings[normalizedSelected];
+      _statusMessage = null;
+      _isLoading = false;
+    });
+
+    if (_selectedDayTimings == null) {
+      await _fetchPrayerTimesForDate(_selectedDay);
+    }
   }
 
   String _translatePrayerName(BuildContext context, String name) {
@@ -238,36 +289,107 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 CalendarFormat.week: loc.weeklyLabel,
               },
               onDaySelected: (selectedDay, focusedDay) {
+                final normalizedDay = DateTime(
+                  selectedDay.year,
+                  selectedDay.month,
+                  selectedDay.day,
+                );
+
                 setState(() {
-                  _selectedDay = selectedDay;
+                  _selectedDay = normalizedDay;
                   _focusedDay = focusedDay;
+                  _selectedDayTimings = _monthlyTimings[normalizedDay];
                 });
-                _fetchPrayerTimesForDate(selectedDay);
+
+                if (_selectedDayTimings == null) {
+                  _fetchPrayerTimesForDate(normalizedDay);
+                }
               },
               onPageChanged: (focusedDay) {
-                _focusedDay = focusedDay;
+                if (_focusedDay.month != focusedDay.month ||
+                    _focusedDay.year != focusedDay.year) {
+                  _focusedDay = focusedDay;
+                  _fetchMonthlyPrayerTimes(focusedDay);
+                } else {
+                  _focusedDay = focusedDay;
+                }
               },
             ),
             const SizedBox(height: 16),
-            Text(
-              loc.selectedDayTimes,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            if (_isLoading)
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else
-              Expanded(
-                child: ListView(
-                  children: _buildPrayerList(context),
-                ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                children: [
+                  Text(
+                    loc.selectedDayTimes,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  ..._buildPrayerList(context),
+                  const SizedBox(height: 16),
+                  Text(
+                    loc.monthlyLabel,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  ..._buildMonthlyTimingsList(context),
+                ],
               ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _buildMonthlyTimingsList(BuildContext context) {
+    if (_monthlyTimings.isEmpty) {
+      return [
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(
+            _statusMessage ?? AppLocalizations.of(context)!.noDataForDay,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ];
+    }
+
+    final entries = _monthlyTimings.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    final order = ['Sabah', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    return entries.map((entry) {
+      final displayTimings = _formatDisplayTimings(entry.value, entry.key);
+      final dateLabel = DateFormat('d MMMM yyyy', locale).format(entry.key);
+
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                dateLabel,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Divider(),
+              ...order.map(
+                    (key) => ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.access_time),
+                  title: Text(_translatePrayerName(context, key)),
+                  trailing: Text(displayTimings[key] ?? ''),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 }
