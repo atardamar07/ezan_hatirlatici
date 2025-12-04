@@ -118,7 +118,7 @@ class PrayerTimesApi {
       );
     } else if (city != null && country != null) {
       url = Uri.parse(
-        "$baseUrl/timingsByCity/$formatted?city=$city&country=$country&method=$method",
+        "$baseUrl/timingsByCity?city=$city&country=$country&method=$method&date=$formatted",
       );
     }
 

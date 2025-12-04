@@ -82,6 +82,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
       _statusMessage = null;
     });
 
+    final loc = AppLocalizations.of(context)!;
+
     final timings = await _prayerApi.getPrayerTimesForDate(
       date: date,
       lat: _latitude,
@@ -95,7 +97,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     setState(() {
       _selectedDayTimings = timings;
-      _statusMessage = timings == null ? 'Vakitler getirilemedi.' : null;
+      _statusMessage = timings == null ? loc.failedToLoadPrayerTimes : null;
       _isLoading = false;
     });
   }
