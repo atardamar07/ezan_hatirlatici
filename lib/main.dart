@@ -15,6 +15,7 @@ import 'screens/weekly_view_screen.dart';
 import 'screens/notification_status_screen.dart';
 import 'screens/calendar_screen.dart';
 import 'services/notification_service.dart';
+import 'screens/multi_city_prayer_times_page.dart';
 
 
 Future<void> main() async {
