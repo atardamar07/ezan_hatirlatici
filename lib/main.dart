@@ -144,17 +144,17 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/home': (context) => const MultiCityPrayerTimesPage(),
         '/legacy_home': (context) => HomeScreen(
-          onOpenSettings: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => SettingsScreen(
-                  currentMode: _themeMode,
-                  onThemeModeChanged: _setThemeMode,
+            onOpenSettings: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SettingsScreen(
+                    currentMode: _themeMode,
+                    onThemeModeChanged: _setThemeMode,
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
             ),
         '/qibla': (context) => const QiblaScreen(),
         '/zikirmatik': (context) => const ZikirmatikScreen(),
@@ -164,6 +164,10 @@ class _MyAppState extends State<MyApp> {
         '/calendar': (context) => const CalendarScreen(),
         '/notifications': (context) => const NotificationStatusScreen(),
         '/multi_city_prayers': (context) => const MultiCityPrayerTimesPage(),
+        '/settings': (context) => SettingsScreen(
+          currentMode: _themeMode,
+          onThemeModeChanged: _setThemeMode,
+        ),
       },
     );
   }

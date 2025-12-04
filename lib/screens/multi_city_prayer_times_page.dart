@@ -104,6 +104,12 @@ class FakeCityResolver implements CityResolver {
     ),
   };
 
+  List<ResolvedCity> get availableCities {
+    final entries = _cities.values.toList()
+      ..sort((a, b) => a.cityName.compareTo(b.cityName));
+    return entries;
+  }
+
   @override
   Future<ResolvedCity> resolveCityByName(String cityName) async {
     final key = cityName.toLowerCase().trim();
@@ -199,7 +205,7 @@ class MultiCityPrayerTimesPage extends StatefulWidget {
 class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   final List<CityPrayerTimes> _cities = [];
   final PrayerTimesRepository _prayerTimesRepository = FakePrayerTimesRepository();
-  final CityResolver _cityResolver = FakeCityResolver();
+  final FakeCityResolver _cityResolver = FakeCityResolver();
   final TextEditingController _searchController = TextEditingController();
   bool _isLoadingCurrent = false;
   bool _isSearching = false;
@@ -233,7 +239,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
       );
 
       final times =
-      await _prayerTimesRepository.getPrayerTimesForLocation(current.lat, current.lon);
+        await _prayerTimesRepository.getPrayerTimesForLocation(current.lat, current.lon);
 
       setState(() {
         _cities
@@ -277,6 +283,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
           countryName: resolved.countryName,
           times: times,
         ));
+        _searchController.clear();
       });
     } catch (e) {
       setState(() => _error = 'Şehir bulunamadı: $e');
@@ -292,9 +299,54 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     });
   }
 
+  Drawer _buildAppDrawer(BuildContext context) {
+    final navItems = [
+      _NavDestination(
+        icon: Icons.location_city,
+        label: 'Çoklu Şehir',
+        route: '/home',
+      ),
+      _NavDestination(icon: Icons.calendar_month, label: 'Takvim', route: '/calendar'),
+      _NavDestination(icon: Icons.view_week, label: 'Haftalık Vakitler', route: '/weekly_view'),
+      _NavDestination(icon: Icons.explore, label: 'Kıble Pusulası', route: '/qibla'),
+      _NavDestination(icon: Icons.notifications, label: 'Bildirimler', route: '/notifications'),
+      _NavDestination(icon: Icons.accessibility, label: 'Zikirmatik', route: '/zikirmatik'),
+      _NavDestination(icon: Icons.settings, label: 'Ayarlar', route: '/settings'),
+      _NavDestination(icon: Icons.support_heart, label: 'Bağış Yap', route: '/donate'),
+    ];
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Color(0xFF4A6375)),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                'Ezan Hatırlatıcı',
+                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          for (final item in navItems)
+            _NavigationTile(
+              destination: item,
+              onTap: () {
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name == item.route) return;
+                Navigator.pushNamed(context, item.route);
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: _buildAppDrawer(context),
       appBar: AppBar(
         title: const Text('Ezan Hatırlatıcı'),
       ),
@@ -322,13 +374,39 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
                 IconButton(
                   icon: _isSearching
                       ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                       : const Icon(Icons.search),
-                  onPressed: _isSearching ? null : () => _addCityByName(_searchController.text),
+                  onPressed: _isSearching
+                      ? null
+                      : () => _addCityByName(_searchController.text),
                 ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Hazır şehirlerden seçebilir veya arama kutusuna yazarak ekleyebilirsin.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final city in _cityResolver.availableCities)
+                  ActionChip(
+                    label: Text(city.cityName),
+                    onPressed: _isSearching ? null : () => _addCityByName(city.cityName),
+                  ),
               ],
             ),
           ),
@@ -359,6 +437,35 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _NavDestination {
+  const _NavDestination({
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
+
+  final IconData icon;
+  final String label;
+  final String route;
+}
+
+class _NavigationTile extends StatelessWidget {
+  const _NavigationTile({required this.destination, required this.onTap});
+
+  final _NavDestination destination;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(destination.icon),
+      title: Text(destination.label),
+      onTap: onTap,
+      trailing: const Icon(Icons.chevron_right),
     );
   }
 }
