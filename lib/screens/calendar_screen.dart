@@ -104,6 +104,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final loc = AppLocalizations.of(context);
 
     switch (name) {
+      case "Sabah":
+        return loc?.sabah ?? 'Sabah';
       case "Fajr":
         return loc?.fajr ?? 'Fajr';
       case "Sunrise":
@@ -121,6 +123,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return name;
   }
 
+  Map<String, String> _formatDisplayTimings(
+      Map<String, dynamic> timings, DateTime date) {
+    final sabahTime = _calculateSabahTime(timings, date);
+
+    return {
+      "Sabah": sabahTime ?? timings["Fajr"] ?? "",
+      "Dhuhr": timings["Dhuhr"] ?? "",
+      "Asr": timings["Asr"] ?? "",
+      "Maghrib": timings["Maghrib"] ?? "",
+      "Isha": timings["Isha"] ?? "",
+    };
+  }
+
+  String? _calculateSabahTime(Map<String, dynamic> timings, DateTime date) {
+    final sunriseRaw = timings['Sunrise'];
+    if (sunriseRaw is! String) return null;
+
+    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(sunriseRaw);
+    if (match == null) return null;
+
+    final sunriseHour = int.parse(match.group(1)!);
+    final sunriseMinute = int.parse(match.group(2)!);
+
+    final sunriseTime =
+    DateTime(date.year, date.month, date.day, sunriseHour, sunriseMinute);
+    final sabahTime = sunriseTime.subtract(const Duration(hours: 1));
+
+    final hour = sabahTime.hour.toString().padLeft(2, '0');
+    final minute = sabahTime.minute.toString().padLeft(2, '0');
+
+    return '$hour:$minute';
+  }
+
   List<Widget> _buildPrayerList(BuildContext context) {
     if (_selectedDayTimings == null) {
       return [
@@ -134,10 +169,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ];
     }
 
-    const order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final displayTimings =
+    _formatDisplayTimings(_selectedDayTimings!, _selectedDay);
+    const order = ['Sabah', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
     return order
-        .where((key) => _selectedDayTimings!.containsKey(key))
+        .where((key) => displayTimings.containsKey(key))
         .map(
           (key) => Card(
         margin: const EdgeInsets.symmetric(vertical: 6),
@@ -147,7 +184,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             color: Theme.of(context).colorScheme.primary,
           ),
           title: Text(_translatePrayerName(context, key)),
-          trailing: Text(_selectedDayTimings![key]),
+          trailing: Text(displayTimings[key] ?? ''),
         ),
       ),
     )

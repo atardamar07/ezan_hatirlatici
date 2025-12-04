@@ -113,6 +113,8 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
   String _translatePrayerName(String name) {
     final loc = AppLocalizations.of(context);
     switch (name) {
+      case "Sabah":
+        return loc?.sabah ?? 'Sabah';
       case "Fajr":
         return loc?.fajr ?? 'Fajr';
       case "Sunrise":
@@ -130,10 +132,45 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
     return name;
   }
 
+  Map<String, String> _formatDisplayTimings(
+      Map<String, dynamic> timings, DateTime date) {
+    final sabahTime = _calculateSabahTime(timings, date);
+
+    return {
+      "Sabah": sabahTime ?? timings["Fajr"] ?? "",
+      "Dhuhr": timings["Dhuhr"] ?? "",
+      "Asr": timings["Asr"] ?? "",
+      "Maghrib": timings["Maghrib"] ?? "",
+      "Isha": timings["Isha"] ?? "",
+    };
+  }
+
+  String? _calculateSabahTime(Map<String, dynamic> timings, DateTime date) {
+    final sunriseRaw = timings['Sunrise'];
+    if (sunriseRaw is! String) return null;
+
+    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(sunriseRaw);
+    if (match == null) return null;
+
+    final sunriseHour = int.parse(match.group(1)!);
+    final sunriseMinute = int.parse(match.group(2)!);
+
+    final sunriseTime =
+    DateTime(date.year, date.month, date.day, sunriseHour, sunriseMinute);
+    final sabahTime = sunriseTime.subtract(const Duration(hours: 1));
+
+    final hour = sabahTime.hour.toString().padLeft(2, '0');
+    final minute = sabahTime.minute.toString().padLeft(2, '0');
+
+    return '$hour:$minute';
+  }
+
   Widget _buildDayCard(_DailyPrayerTimes day) {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final dateText = DateFormat('EEEE, d MMMM', locale).format(day.date);
-    final order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final order = ['Sabah', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    final displayTimings =
+    day.timings == null ? null : _formatDisplayTimings(day.timings!, day.date);
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -154,14 +191,14 @@ class _WeeklyViewScreenState extends State<WeeklyViewScreen> {
               )
             else
               ...order
-                  .where((key) => day.timings!.containsKey(key))
+                  .where((key) => displayTimings?.containsKey(key) ?? false)
                   .map(
                     (key) => ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.access_time),
                   title: Text(_translatePrayerName(key)),
-                  trailing: Text(day.timings![key]),
+                      trailing: Text(displayTimings?[key] ?? ''),
                 ),
               ),
           ],
