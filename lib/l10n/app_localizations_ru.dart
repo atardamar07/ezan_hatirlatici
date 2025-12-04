@@ -282,7 +282,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get supportOptionalText => 'Поддержка полностью добровольная и не требуется для использования приложения.';
 
   @override
-  String get donationInfoText => 'Пожертвования обрабатываются через Google Play Billing и используются для расходов на разработку.';
+  String get donationInfoText => 'Поддержка обрабатывается через Google Play Billing и направляется на расходы по разработке.';
 
   @override
   String get coffeeDonation => '☕ Небольшая поддержка';
