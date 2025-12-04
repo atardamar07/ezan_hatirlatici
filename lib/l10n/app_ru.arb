@@ -103,6 +103,7 @@
   "@citySelected": {"placeholders": {"location": {}}},
   "locationPermissionGranted": "Разрешение на местоположение активно",
   "locationPermissionPending": "Ожидание разрешения на местоположение",
+  "searchLanguageInfo": "Поиск использует язык приложения. Пожалуйста, вводите названия городов на выбранном языке.",
   "notificationsReady": "Уведомления готовы",
   "notificationsPending": "Ожидается разрешение на уведомления",
   "quickActionToday": "Сегодня",

@@ -327,6 +327,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noCityFoundMessage => 'Şehir bulunamadı';
 
   @override
+  String get searchLanguageInfo => 'Arama uygulama diline göre yapılır. Lütfen şehir adını seçili dilde yazın.';
+
+  @override
   String get useCurrentLocationButton => 'Mevcut Konumumu Kullan';
 
   @override

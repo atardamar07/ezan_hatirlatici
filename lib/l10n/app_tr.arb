@@ -79,6 +79,7 @@
   "popularCitiesTitle": "Popüler Şehirler",
   "citySearchHint": "Şehir ara...",
   "noCityFoundMessage": "Şehir bulunamadı",
+  "searchLanguageInfo": "Arama uygulama diline göre yapılır. Lütfen şehir adını seçili dilde yazın.",
   "useCurrentLocationButton": "Mevcut Konumumu Kullan",
   "prayerTimesLoadFailed": "Namaz vakitleri yüklenemedi",
   "loadingPrayerTimes": "Namaz vakitleri yükleniyor...",

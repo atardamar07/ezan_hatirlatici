@@ -103,6 +103,7 @@
   "@citySelected": {"placeholders": {"location": {}}},
   "locationPermissionGranted": "إذن الموقع مفعّل",
   "locationPermissionPending": "بانتظار إذن الموقع",
+  "searchLanguageInfo": "يتم البحث حسب لغة التطبيق. يرجى إدخال اسم المدينة باللغة التي اخترتها.",
   "notificationsReady": "الإشعارات جاهزة",
   "notificationsPending": "بانتظار إذن الإشعارات",
   "quickActionToday": "اليوم",

@@ -327,6 +327,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noCityFoundMessage => 'No city found';
 
   @override
+  String get searchLanguageInfo => 'Поиск использует язык приложения. Пожалуйста, вводите названия городов на выбранном языке.';
+
+  @override
   String get useCurrentLocationButton => 'Use My Current Location';
 
   @override

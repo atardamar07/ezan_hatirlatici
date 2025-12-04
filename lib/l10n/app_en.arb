@@ -85,6 +85,7 @@
   "popularCitiesTitle": "Popular Cities",
   "citySearchHint": "Search city...",
   "noCityFoundMessage": "No city found",
+  "searchLanguageInfo": "Search uses the app language. Please type city names in your selected language.",
   "useCurrentLocationButton": "Use My Current Location",
   "prayerTimesLoadFailed": "Prayer times could not be loaded",
   "loadingPrayerTimes": "Loading prayer times...",

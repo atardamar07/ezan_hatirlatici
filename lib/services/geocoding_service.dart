@@ -3,9 +3,15 @@ import 'package:geocoding/geocoding.dart';
 
 class GeocodingService {
   /// Search for city-like locations using the geocoding package.
-  Future<List<Map<String, dynamic>>> searchCities(String query) async {
+  Future<List<Map<String, dynamic>>> searchCities(
+      String query, {
+        String? localeIdentifier,
+      }) async {
     try {
-      final locations = await locationFromAddress(query);
+      final locations = await locationFromAddress(
+        query,
+        localeIdentifier: localeIdentifier,
+      );
       final results = <Map<String, dynamic>>[];
 
       for (final location in locations) {

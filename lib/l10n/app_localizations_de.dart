@@ -327,6 +327,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noCityFoundMessage => 'No city found';
 
   @override
+  String get searchLanguageInfo => 'Die Suche verwendet die App-Sprache. Bitte gib Städtenamen in der ausgewählten Sprache ein.';
+
+  @override
   String get useCurrentLocationButton => 'Use My Current Location';
 
   @override

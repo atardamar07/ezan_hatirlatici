@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 
@@ -68,9 +69,10 @@ abstract class PrayerTimesRepository {
 
 /// Şehir çözümleyici
 abstract class CityResolver {
-  Future<ResolvedCity?> resolveCityByName(String cityName);
-
-  List<ResolvedCity> get availableCities;
+  Future<ResolvedCity?> resolveCityByName(
+      String cityName, {
+        String? localeIdentifier,
+      });
 }
 
 /// Gerçek şehir çözümleyici (geocoding servisini kullanır)
@@ -81,54 +83,14 @@ class GeocodingCityResolver implements CityResolver {
   final GeocodingService _geocodingService;
 
   @override
-  List<ResolvedCity> get availableCities => const [
-  ResolvedCity(
-    cityName: 'İstanbul',
-      countryName: 'Türkiye',
-    lat: 41.0082,
-    lon: 28.9784,
-    ),
-  ResolvedCity(
-  cityName: 'Ankara',
-  countryName: 'Türkiye',
-  lat: 39.9334,
-  lon: 32.8597,
-    ),
-  ResolvedCity(
-  cityName: 'İzmir',
-  countryName: 'Türkiye',
-  lat: 38.4237,
-  lon: 27.1428,
-    ),
-  ResolvedCity(
-      cityName: 'Mecca',
-      countryName: 'Saudi Arabia',
-      lat: 21.3891,
-      lon: 39.8579,
-    ),
-  ResolvedCity(
-      cityName: 'Medina',
-      countryName: 'Saudi Arabia',
-      lat: 24.5247,
-      lon: 39.5692,
-    ),
-    ResolvedCity(
-      cityName: 'London',
-      countryName: 'United Kingdom',
-      lat: 51.5072,
-      lon: -0.1276,
-    ),
-    ResolvedCity(
-      cityName: 'Tokyo',
-      countryName: 'Japan',
-      lat: 35.6764,
-      lon: 139.6500,
-    ),
-  ];
-
-  @override
-  Future<ResolvedCity?> resolveCityByName(String cityName) async {
-    final results = await _geocodingService.searchCities(cityName);
+  Future<ResolvedCity?> resolveCityByName(
+      String cityName, {
+        String? localeIdentifier,
+      }) async {
+    final results = await _geocodingService.searchCities(
+      cityName,
+      localeIdentifier: localeIdentifier,
+    );
     if (results.isEmpty) return null;
 
     final first = results.first;
@@ -321,7 +283,11 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     });
 
     try {
-      final resolved = await _cityResolver.resolveCityByName(query);
+      final localeIdentifier = Localizations.localeOf(context).toLanguageTag();
+      final resolved = await _cityResolver.resolveCityByName(
+        query,
+        localeIdentifier: localeIdentifier,
+      );
       if (resolved == null) {
         _showErrorMessage('Bu şehir bulunamadı, lütfen başka bir şehir deneyin.');
         return;
@@ -402,6 +368,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       drawer: _buildAppDrawer(context),
       appBar: AppBar(
@@ -448,23 +415,9 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Hazır şehirlerden seçebilir veya arama kutusuna yazarak ekleyebilirsin.',
+                loc.searchLanguageInfo,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final city in _cityResolver.availableCities)
-                  ActionChip(
-                    label: Text(city.cityName),
-                    onPressed: _isSearching ? null : () => _addCityByName(city.cityName),
-                  ),
-              ],
             ),
           ),
           if (_error != null)

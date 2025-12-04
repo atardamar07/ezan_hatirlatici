@@ -327,6 +327,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noCityFoundMessage => 'No city found';
 
   @override
+  String get searchLanguageInfo => 'يتم البحث حسب لغة التطبيق. يرجى إدخال اسم المدينة باللغة التي اخترتها.';
+
+  @override
   String get useCurrentLocationButton => 'Use My Current Location';
 
   @override

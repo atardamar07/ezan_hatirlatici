@@ -701,6 +701,12 @@ abstract class AppLocalizations {
   /// **'No city found'**
   String get noCityFoundMessage;
 
+  /// No description provided for @searchLanguageInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Search uses the app language. Please type city names in your selected language.'**
+  String get searchLanguageInfo;
+
   /// No description provided for @useCurrentLocationButton.
   ///
   /// In en, this message translates to:

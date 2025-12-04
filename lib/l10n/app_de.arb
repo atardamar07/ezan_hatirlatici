@@ -103,6 +103,7 @@
   "@citySelected": {"placeholders": {"location": {}}},
   "locationPermissionGranted": "Standortberechtigung aktiv",
   "locationPermissionPending": "Warten auf Standortberechtigung",
+  "searchLanguageInfo": "Die Suche verwendet die App-Sprache. Bitte gib Städtenamen in der ausgewählten Sprache ein.",
   "notificationsReady": "Benachrichtigungen bereit",
   "notificationsPending": "Benachrichtigungsberechtigung ausstehend",
   "quickActionToday": "Heute",
