@@ -6,7 +6,14 @@ import '../services/geocoding_service.dart';
 import '../services/location_service.dart';
 
 class CitySelectionScreen extends StatefulWidget {
-  const CitySelectionScreen({Key? key}) : super(key: key);
+  final bool autofocusSearch;
+  final String? initialQuery;
+
+  const CitySelectionScreen({
+    Key? key,
+    this.autofocusSearch = false,
+    this.initialQuery,
+  }) : super(key: key);
 
   @override
   _CitySelectionScreenState createState() => _CitySelectionScreenState();
@@ -14,6 +21,7 @@ class CitySelectionScreen extends StatefulWidget {
 
 class _CitySelectionScreenState extends State<CitySelectionScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   final LocationService _locationService = LocationService();
   final GeocodingService _geocodingService = GeocodingService();
 
@@ -49,6 +57,19 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialQuery?.isNotEmpty == true) {
+      _searchController.text = widget.initialQuery!;
+      _searchQuery = widget.initialQuery!;
+      _searchCities(widget.initialQuery!);
+    }
+
+    if (widget.autofocusSearch) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _searchFocusNode.requestFocus();
+        }
+      });
+    }
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -56,6 +77,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   void dispose() {
     _debounce?.cancel();
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -183,6 +205,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                   ],
                 ),
                 child: TextField(
+                  focusNode: _searchFocusNode,
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.citySearchHint,

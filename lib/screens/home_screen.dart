@@ -328,7 +328,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _selectLocation() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const CitySelectionScreen()),
+      MaterialPageRoute(
+        builder: (context) => const CitySelectionScreen(
+          autofocusSearch: true,
+        ),
+      ),
     );
 
     final loc = AppLocalizations.of(context)!;
@@ -432,54 +436,267 @@ class _HomeScreenState extends State<HomeScreen> {
 
       bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.home),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: _isLoading
-            ? const Center(
-          child: CircularProgressIndicator(color: Colors.amber),
-        )
-            : ListView(
-          children: [
-            _buildQuickActions(context),
-            const SizedBox(height: 12),
-            _buildInfoBanner(),
-            const SizedBox(height: 12),
-            // ⭐ KONUM GÖSTERİMİ (İMSAK ÜSTÜNE)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colorScheme.primary.withOpacity(0.08),
+              Theme.of(context).scaffoldBackgroundColor,
+            ],
+          ),
+        ),
+        child: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(color: Colors.amber),
+                )
+                    : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Icon(Icons.location_on,
-                      color: Theme.of(context).colorScheme.primary, size: 22),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      _currentLocation,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  )
+                  _buildHeroHeader(),
+                  const SizedBox(height: 12),
+                  _buildSearchCard(),
+                  const SizedBox(height: 12),
+                  _buildQuickActions(context),
+                  const SizedBox(height: 12),
+                  _buildInfoBanner(),
+                  const SizedBox(height: 16),
+                  ..._buildPrayerCards(),
                 ],
               ),
             ),
+            ),
+        ),
+      ),
+    );
+  }
 
-            // ⭐ BUGÜNÜN 5 VAKTİ
-            ..._filteredTodayTimes.entries.map((entry) {
-              final isNext = entry.key == _nextPrayer;
-              return Column(
-                children: [
-                  PrayerCard(
-                    prayerName: translatePrayerName(context, entry.key),
-                    time: entry.value,
-                    isNextPrayer: isNext,
-                  ),
-                  const SizedBox(height: 6),
-                ],
-              );
-            }),
+  List<Widget> _buildPrayerCards() {
+    return _filteredTodayTimes.entries.map((entry) {
+      final isNext = entry.key == _nextPrayer;
+      return Column(
+        children: [
+          PrayerCard(
+            prayerName: translatePrayerName(context, entry.key),
+            time: entry.value,
+            isNextPrayer: isNext,
+          ),
+          const SizedBox(height: 6),
+        ],
+      );
+    }).toList();
+  }
+
+  Widget _buildHeroHeader() {
+    final nextPrayerName =
+    _nextPrayer != null ? translatePrayerName(context, _nextPrayer!) : null;
+    final nextPrayerTime =
+    _nextPrayer != null ? _filteredTodayTimes[_nextPrayer] : null;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary.withOpacity(0.9),
+            Theme.of(context).colorScheme.secondary,
           ],
         ),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 6),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.wb_sunny, color: Colors.white),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.appTitle,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.location_on, color: Colors.white70, size: 18),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  _currentLocation,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.white70),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (nextPrayerName != null && nextPrayerTime != null)
+            Row(
+              children: [
+                Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.nextPrayerSimple,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        nextPrayerName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.14),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.nextPrayer(nextPrayerName),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          nextPrayerTime,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchCard() {
+    final loc = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1F1F2B) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          Text(
+          loc.selectCity,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+            onTap: _selectLocation,
+            child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF262636) : const Color(0xFFF7F7FA),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                children: [
+                  Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      loc.searchCity,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.grey[600]),
+                    ),
+                  ),
+                  const Icon(Icons.arrow_forward_ios, size: 16)
+                ],
+                ),
+            ),
+        ),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: _getCurrentLocationAndFetchTimes,
+              icon: const Icon(Icons.my_location),
+              label: Text(loc.useCurrentLocation),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(46),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
       ),
     );
   }
