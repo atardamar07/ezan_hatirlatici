@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 
@@ -69,10 +69,7 @@ abstract class PrayerTimesRepository {
 
 /// Şehir çözümleyici
 abstract class CityResolver {
-  Future<ResolvedCity?> resolveCityByName(
-      String cityName, {
-        String? localeIdentifier,
-      });
+  Future<ResolvedCity?> resolveCityByName(String cityName);
 }
 
 /// Gerçek şehir çözümleyici (geocoding servisini kullanır)
@@ -83,14 +80,8 @@ class GeocodingCityResolver implements CityResolver {
   final GeocodingService _geocodingService;
 
   @override
-  Future<ResolvedCity?> resolveCityByName(
-      String cityName, {
-        String? localeIdentifier,
-      }) async {
-    final results = await _geocodingService.searchCities(
-      cityName,
-      localeIdentifier: localeIdentifier,
-    );
+  Future<ResolvedCity?> resolveCityByName(String cityName) async {
+    final results = await _geocodingService.searchCities(cityName);
     if (results.isEmpty) return null;
 
     final first = results.first;
@@ -283,11 +274,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     });
 
     try {
-      final localeIdentifier = Localizations.localeOf(context).toLanguageTag();
-      final resolved = await _cityResolver.resolveCityByName(
-        query,
-        localeIdentifier: localeIdentifier,
-      );
+      final resolved = await _cityResolver.resolveCityByName(query);
       if (resolved == null) {
         _showErrorMessage('Bu şehir bulunamadı, lütfen başka bir şehir deneyin.');
         return;
