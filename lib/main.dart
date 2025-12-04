@@ -160,6 +160,7 @@ class _MyAppState extends State<MyApp> {
         '/weekly_view': (context) => const WeeklyViewScreen(),
         '/calendar': (context) => const CalendarScreen(),
         '/notifications': (context) => const NotificationStatusScreen(),
+        '/multi_city_prayers': (context) => const MultiCityPrayerTimesPage(),
       },
     );
   }
