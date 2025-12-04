@@ -142,17 +142,20 @@ class _MyAppState extends State<MyApp> {
 
       initialRoute: '/home',
       routes: {
-        '/home': (context) => HomeScreen(onOpenSettings: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SettingsScreen(
-                currentMode: _themeMode,
-                onThemeModeChanged: _setThemeMode,
+        '/home': (context) => const MultiCityPrayerTimesPage(),
+        '/legacy_home': (context) => HomeScreen(
+          onOpenSettings: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SettingsScreen(
+                  currentMode: _themeMode,
+                  onThemeModeChanged: _setThemeMode,
+                ),
               ),
+            );
+          },
             ),
-          );
-        }),
         '/qibla': (context) => const QiblaScreen(),
         '/zikirmatik': (context) => const ZikirmatikScreen(),
         '/donate': (context) => const DonationScreen(),

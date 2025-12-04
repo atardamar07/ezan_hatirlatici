@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../navigation/bottom_nav_bar.dart';
+
 /// Namaz vakitleri model sınıfı
 class PrayerTimes {
   PrayerTimes({
@@ -295,6 +297,9 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ezan Hatırlatıcı'),
+      ),
+      bottomNavigationBar: const MainBottomNavBar(
+        currentTab: NavigationTab.home,
       ),
       body: Column(
         children: [
