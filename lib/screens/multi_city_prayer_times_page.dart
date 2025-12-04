@@ -64,7 +64,7 @@ abstract class PrayerTimesRepository {
 
 /// Şehir çözümleyici
 abstract class CityResolver {
-  Future<ResolvedCity> resolveCityByName(String cityName);
+  Future<ResolvedCity?> resolveCityByName(String cityName);
 }
 
 /// Fake şehir çözümleyici (hazır şehir listesi)
@@ -111,13 +111,9 @@ class FakeCityResolver implements CityResolver {
   }
 
   @override
-  Future<ResolvedCity> resolveCityByName(String cityName) async {
+  Future<ResolvedCity?> resolveCityByName(String cityName) async {
     final key = cityName.toLowerCase().trim();
-    final result = _cities[key];
-    if (result != null) {
-      return result;
-    }
-    throw StateError('City not found');
+    return _cities[key];
   }
 }
 
@@ -211,6 +207,19 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   bool _isSearching = false;
   String? _error;
 
+  void _showErrorMessage(String message) {
+    if (!mounted) return;
+    setState(() => _error = message);
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -265,7 +274,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     // Duplicate kontrolü
     final alreadyExists = _cities.any((c) => c.cityName.toLowerCase() == query.toLowerCase());
     if (alreadyExists) {
-      setState(() => _error = '$query zaten listede');
+      _showErrorMessage('$query zaten listede');
       return;
     }
 
@@ -276,7 +285,14 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
 
     try {
       final resolved = await _cityResolver.resolveCityByName(query);
+      if (resolved == null) {
+        _showErrorMessage('Bu şehir bulunamadı, lütfen başka bir şehir deneyin.');
+        return;
+      }
+
       final times = await _prayerTimesRepository.getPrayerTimesForCity(resolved.cityName);
+
+      if (!mounted) return;
       setState(() {
         _cities.add(CityPrayerTimes(
           cityName: resolved.cityName,
@@ -285,9 +301,8 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         ));
         _searchController.clear();
       });
-    } catch (e) {
-      setState(() => _error = 'Şehir bulunamadı: $e');
     } finally {
+      if (!mounted) return;
       setState(() => _isSearching = false);
     }
   }
