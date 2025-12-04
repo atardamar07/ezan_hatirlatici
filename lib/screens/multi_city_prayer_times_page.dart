@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 
 import '../navigation/bottom_nav_bar.dart';
+import '../services/geocoding_service.dart';
+import '../services/location_service.dart';
+import '../services/prayer_times_api.dart';
 
 /// Namaz vakitleri model sınıfı
 class PrayerTimes {
@@ -59,134 +63,152 @@ class CityPrayerTimes {
 abstract class PrayerTimesRepository {
   Future<PrayerTimes> getPrayerTimesForLocation(double lat, double lon);
 
-  Future<PrayerTimes> getPrayerTimesForCity(String cityName);
+  Future<PrayerTimes> getPrayerTimesForCity(String cityName, String countryName);
 }
 
 /// Şehir çözümleyici
 abstract class CityResolver {
   Future<ResolvedCity?> resolveCityByName(String cityName);
+
+  List<ResolvedCity> get availableCities;
 }
 
-/// Fake şehir çözümleyici (hazır şehir listesi)
-class FakeCityResolver implements CityResolver {
-  FakeCityResolver();
+/// Gerçek şehir çözümleyici (geocoding servisini kullanır)
+class GeocodingCityResolver implements CityResolver {
+  GeocodingCityResolver({GeocodingService? geocodingService})
+      : _geocodingService = geocodingService ?? GeocodingService();
 
-  final Map<String, ResolvedCity> _cities = {
-    'antalya': const ResolvedCity(
-      cityName: 'Antalya',
+  final GeocodingService _geocodingService;
+
+  @override
+  List<ResolvedCity> get availableCities => const [
+  ResolvedCity(
+    cityName: 'İstanbul',
       countryName: 'Türkiye',
-      lat: 36.8969,
-      lon: 30.7133,
+    lat: 41.0082,
+    lon: 28.9784,
     ),
-    'tokyo': const ResolvedCity(
-      cityName: 'Tokyo',
-      countryName: 'Japan',
-      lat: 35.6764,
-      lon: 139.6500,
+  ResolvedCity(
+  cityName: 'Ankara',
+  countryName: 'Türkiye',
+  lat: 39.9334,
+  lon: 32.8597,
     ),
-    'london': const ResolvedCity(
-      cityName: 'London',
-      countryName: 'United Kingdom',
-      lat: 51.5072,
-      lon: -0.1276,
+  ResolvedCity(
+  cityName: 'İzmir',
+  countryName: 'Türkiye',
+  lat: 38.4237,
+  lon: 27.1428,
     ),
-    'mecca': const ResolvedCity(
+  ResolvedCity(
       cityName: 'Mecca',
       countryName: 'Saudi Arabia',
       lat: 21.3891,
       lon: 39.8579,
     ),
-    'medina': const ResolvedCity(
+  ResolvedCity(
       cityName: 'Medina',
       countryName: 'Saudi Arabia',
       lat: 24.5247,
       lon: 39.5692,
     ),
-  };
-
-  List<ResolvedCity> get availableCities {
-    final entries = _cities.values.toList()
-      ..sort((a, b) => a.cityName.compareTo(b.cityName));
-    return entries;
-  }
+    ResolvedCity(
+      cityName: 'London',
+      countryName: 'United Kingdom',
+      lat: 51.5072,
+      lon: -0.1276,
+    ),
+    ResolvedCity(
+      cityName: 'Tokyo',
+      countryName: 'Japan',
+      lat: 35.6764,
+      lon: 139.6500,
+    ),
+  ];
 
   @override
   Future<ResolvedCity?> resolveCityByName(String cityName) async {
-    final key = cityName.toLowerCase().trim();
-    return _cities[key];
+    final results = await _geocodingService.searchCities(cityName);
+    if (results.isEmpty) return null;
+
+    final first = results.first;
+    final country = (first['country'] as String?)?.trim();
+    final name = (first['name'] as String?)?.trim();
+    final lat = first['latitude'] as double?;
+    final lon = first['longitude'] as double?;
+
+    if (name == null || lat == null || lon == null) return null;
+
+    return ResolvedCity(
+      cityName: name,
+      countryName: country?.isNotEmpty == true ? country! : '',
+      lat: lat,
+      lon: lon,
+    );
   }
 }
 
-/// Fake namaz vakitleri deposu
-class FakePrayerTimesRepository implements PrayerTimesRepository {
-  FakePrayerTimesRepository();
+/// Aladhan API kullanarak gerçek namaz vakitleri deposu
+class ApiPrayerTimesRepository implements PrayerTimesRepository {
+  ApiPrayerTimesRepository({PrayerTimesApi? prayerTimesApi})
+      : _prayerTimesApi = prayerTimesApi ?? PrayerTimesApi();
 
-  final Map<String, PrayerTimes> _prayerTimes = {};
+  final PrayerTimesApi _prayerTimesApi;
+
+  Future<int> _getMethod() => _prayerTimesApi.getSavedMethodOrDefault();
 
   @override
   Future<PrayerTimes> getPrayerTimesForLocation(double lat, double lon) async {
-    // Varsayılan olarak Antalya koordinatlarını kullan
-    return _prayerTimes['antalya'] ?? _generateDefaultForCity('antalya');
+    final method = await _getMethod();
+    final timings =
+    await _prayerTimesApi.getPrayerTimesByLocation(lat, lon, method);
+
+    if (timings == null) {
+      throw Exception('Namaz vakitleri alınamadı');
+    }
+
+    return _mapTimingsToPrayerTimes(timings);
   }
 
   @override
-  Future<PrayerTimes> getPrayerTimesForCity(String cityName) async {
-    final key = cityName.toLowerCase().trim();
-    return _prayerTimes[key] ?? _generateDefaultForCity(key);
+  Future<PrayerTimes> getPrayerTimesForCity(
+      String cityName,
+      String countryName,
+      ) async {
+    final method = await _getMethod();
+    final timings =
+    await _prayerTimesApi.getPrayerTimesByCity(cityName, countryName, method);
+
+    if (timings == null) {
+      throw Exception('Namaz vakitleri alınamadı');
+    }
+
+    return _mapTimingsToPrayerTimes(timings);
   }
 
-  PrayerTimes _generateDefaultForCity(String key) {
-    final today = DateTime.now();
-    final base = DateTime(today.year, today.month, today.day);
-    // Saatler örnek olması için sabit
-    switch (key) {
-      case 'tokyo':
-        return _prayerTimes[key] = PrayerTimes(
-          imsak: base.add(const Duration(hours: 4, minutes: 30)),
-          gunes: base.add(const Duration(hours: 5, minutes: 50)),
-          ogle: base.add(const Duration(hours: 12, minutes: 10)),
-          ikindi: base.add(const Duration(hours: 15, minutes: 45)),
-          aksam: base.add(const Duration(hours: 18, minutes: 35)),
-          yatsi: base.add(const Duration(hours: 20, minutes: 0)),
-        );
-      case 'london':
-        return _prayerTimes[key] = PrayerTimes(
-          imsak: base.add(const Duration(hours: 3, minutes: 40)),
-          gunes: base.add(const Duration(hours: 5, minutes: 5)),
-          ogle: base.add(const Duration(hours: 12, minutes: 30)),
-          ikindi: base.add(const Duration(hours: 16, minutes: 10)),
-          aksam: base.add(const Duration(hours: 19, minutes: 55)),
-          yatsi: base.add(const Duration(hours: 21, minutes: 20)),
-        );
-      case 'mecca':
-        return _prayerTimes[key] = PrayerTimes(
-          imsak: base.add(const Duration(hours: 4, minutes: 20)),
-          gunes: base.add(const Duration(hours: 5, minutes: 45)),
-          ogle: base.add(const Duration(hours: 12, minutes: 5)),
-          ikindi: base.add(const Duration(hours: 15, minutes: 35)),
-          aksam: base.add(const Duration(hours: 18, minutes: 25)),
-          yatsi: base.add(const Duration(hours: 19, minutes: 50)),
-        );
-      case 'medina':
-        return _prayerTimes[key] = PrayerTimes(
-          imsak: base.add(const Duration(hours: 4, minutes: 25)),
-          gunes: base.add(const Duration(hours: 5, minutes: 50)),
-          ogle: base.add(const Duration(hours: 12, minutes: 0)),
-          ikindi: base.add(const Duration(hours: 15, minutes: 30)),
-          aksam: base.add(const Duration(hours: 18, minutes: 20)),
-          yatsi: base.add(const Duration(hours: 19, minutes: 45)),
-        );
-      case 'antalya':
-      default:
-        return _prayerTimes[key] = PrayerTimes(
-          imsak: base.add(const Duration(hours: 4, minutes: 15)),
-          gunes: base.add(const Duration(hours: 5, minutes: 40)),
-          ogle: base.add(const Duration(hours: 12, minutes: 15)),
-          ikindi: base.add(const Duration(hours: 15, minutes: 45)),
-          aksam: base.add(const Duration(hours: 18, minutes: 55)),
-          yatsi: base.add(const Duration(hours: 20, minutes: 20)),
-        );
+  PrayerTimes _mapTimingsToPrayerTimes(Map<String, dynamic> timings) {
+    return PrayerTimes(
+      imsak: _parseTime(timings['Fajr'] as String?, 'İmsak'),
+      gunes: _parseTime(timings['Sunrise'] as String?, 'Güneş'),
+      ogle: _parseTime(timings['Dhuhr'] as String?, 'Öğle'),
+      ikindi: _parseTime(timings['Asr'] as String?, 'İkindi'),
+      aksam: _parseTime(timings['Maghrib'] as String?, 'Akşam'),
+      yatsi: _parseTime(timings['Isha'] as String?, 'Yatsı'),
+    );
+  }
+
+  DateTime _parseTime(String? raw, String label) {
+    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(raw ?? '');
+
+    if (match == null) {
+      throw FormatException('$label saati çözümlenemedi: $raw');
     }
+
+    final today = DateTime.now();
+    final hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+
+    return DateTime(today.year, today.month, today.day, hour, minute);
   }
 }
 
@@ -200,8 +222,9 @@ class MultiCityPrayerTimesPage extends StatefulWidget {
 
 class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   final List<CityPrayerTimes> _cities = [];
-  final PrayerTimesRepository _prayerTimesRepository = FakePrayerTimesRepository();
-  final FakeCityResolver _cityResolver = FakeCityResolver();
+  final PrayerTimesRepository _prayerTimesRepository = ApiPrayerTimesRepository();
+  final CityResolver _cityResolver = GeocodingCityResolver();
+  final LocationService _locationService = LocationService();
   final TextEditingController _searchController = TextEditingController();
   bool _isLoadingCurrent = false;
   bool _isSearching = false;
@@ -239,23 +262,37 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     });
 
     try {
-      // GPS entegrasyonu yerine Antalya sabit konumunu kullanıyoruz
-      const current = ResolvedCity(
-        cityName: 'Antalya',
-        countryName: 'Türkiye',
-        lat: 36.8969,
-        lon: 30.7133,
+      final position = await _locationService.getCurrentLocation();
+
+      if (position == null) {
+        _showErrorMessage('Konum alınamadı. Lütfen manuel olarak şehir seçin.');
+        return;
+      }
+
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
       );
 
-      final times =
-        await _prayerTimesRepository.getPrayerTimesForLocation(current.lat, current.lon);
+      final place = placemarks.isNotEmpty ? placemarks.first : null;
+      final cityName = place?.locality?.isNotEmpty == true
+          ? place!.locality!
+          : place?.administrativeArea?.isNotEmpty == true
+          ? place!.administrativeArea!
+          : 'Mevcut Konum';
+      final countryName = place?.country?.isNotEmpty == true ? place!.country! : '';
+
+      final times = await _prayerTimesRepository.getPrayerTimesForLocation(
+        position.latitude,
+        position.longitude,
+      );
 
       setState(() {
         _cities
           ..clear()
           ..add(CityPrayerTimes(
-            cityName: current.cityName,
-            countryName: current.countryName,
+            cityName: cityName,
+            countryName: countryName,
             times: times,
             isCurrentLocation: true,
           ));
@@ -290,7 +327,10 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         return;
       }
 
-      final times = await _prayerTimesRepository.getPrayerTimesForCity(resolved.cityName);
+      final times = await _prayerTimesRepository.getPrayerTimesForCity(
+        resolved.cityName,
+        resolved.countryName,
+      );
 
       if (!mounted) return;
       setState(() {
@@ -301,6 +341,8 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         ));
         _searchController.clear();
       });
+    } catch (e) {
+      _showErrorMessage('Şehir aranırken bir hata oluştu: $e');
     } finally {
       if (!mounted) return;
       setState(() => _isSearching = false);
