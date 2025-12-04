@@ -317,7 +317,6 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         route: '/home',
       ),
       _NavDestination(icon: Icons.calendar_month, label: 'Takvim', route: '/calendar'),
-      _NavDestination(icon: Icons.view_week, label: 'Haftalık Vakitler', route: '/weekly_view'),
       _NavDestination(icon: Icons.explore, label: 'Kıble Pusulası', route: '/qibla'),
       _NavDestination(icon: Icons.notifications, label: 'Bildirimler', route: '/notifications'),
       _NavDestination(icon: Icons.accessibility, label: 'Zikirmatik', route: '/zikirmatik'),

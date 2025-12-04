@@ -13,7 +13,6 @@ import '../widgets/prayer_card.dart';
 import 'city_selection_screen.dart';
 import 'notification_status_screen.dart';
 import 'qibla_screen.dart';
-import 'weekly_view_screen.dart';
 import '../navigation/bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {

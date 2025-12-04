@@ -19,10 +19,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Map<String, dynamic>? _selectedDayTimings;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  CalendarFormat _calendarFormat = CalendarFormat.month;
   bool _isLoading = true;
   String? _statusMessage;
   int _selectedMethod = PrayerTimesApi.diyanetMethodId;
+
+  static const double _defaultLatitude = 41.015137;
+  static const double _defaultLongitude = 28.97953;
+  static const String _defaultCity = 'Istanbul';
+  static const String _defaultCountry = 'Turkey';
 
   double? _latitude;
   double? _longitude;
@@ -42,7 +46,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final savedMethod = await _prayerApi.getSavedMethodOrDefault();
 
     setState(() => _selectedMethod = savedMethod);
-    final loc = AppLocalizations.of(context)!;
 
     final locationType = prefs.getString('locationType');
 
@@ -51,32 +54,28 @@ class _CalendarScreenState extends State<CalendarScreen> {
       _longitude = prefs.getDouble('longitude');
 
       if (_latitude == null || _longitude == null) {
-        setState(() {
-          _statusMessage = loc.locationInfoMissing;
-          _isLoading = false;
-        });
-        return;
+        _applyDefaultLocation();
       }
     } else if (locationType == 'city') {
       _city = prefs.getString('selectedCity');
       _country = prefs.getString('selectedCountry');
 
       if (_city == null || _country == null) {
-        setState(() {
-          _statusMessage = loc.cityInfoMissing;
-          _isLoading = false;
-        });
-        return;
+        _applyDefaultLocation();
       }
     } else {
-      setState(() {
-        _statusMessage = loc.selectLocationOrCity;
-        _isLoading = false;
-      });
-      return;
+      _applyDefaultLocation();
     }
 
     await _fetchMonthlyPrayerTimes(_focusedDay);
+  }
+
+  void _applyDefaultLocation() {
+    _latitude = _defaultLatitude;
+    _longitude = _defaultLongitude;
+    _city = _defaultCity;
+    _country = _defaultCountry;
+    _statusMessage = null;
   }
 
   Future<void> _fetchPrayerTimesForDate(DateTime date) async {
@@ -257,36 +256,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SegmentedButton<CalendarFormat>(
-              segments: [
-                ButtonSegment(
-                  value: CalendarFormat.week,
-                  icon: Icon(Icons.view_week),
-                  label: Text(loc.weeklyLabel),
-                ),
-                ButtonSegment(
-                  value: CalendarFormat.month,
-                  icon: Icon(Icons.calendar_view_month),
-                  label: Text(loc.monthlyLabel),
-                ),
-              ],
-              selected: {_calendarFormat},
-              onSelectionChanged: (selection) {
-                setState(() => _calendarFormat = selection.first);
-              },
-            ),
-            const SizedBox(height: 12),
             TableCalendar(
               firstDay: DateTime.utc(2010, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
+              calendarFormat: CalendarFormat.month,
               locale: Localizations.localeOf(context).toLanguageTag(),
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               headerStyle: const HeaderStyle(formatButtonVisible: false),
               availableCalendarFormats: {
                 CalendarFormat.month: loc.monthlyLabel,
-                CalendarFormat.week: loc.weeklyLabel,
               },
               onDaySelected: (selectedDay, focusedDay) {
                 final normalizedDay = DateTime(

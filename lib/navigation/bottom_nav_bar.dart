@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 
-enum NavigationTab { home, calendar, weekly }
+enum NavigationTab { home, calendar }
 
 class MainBottomNavBar extends StatelessWidget {
   final NavigationTab currentTab;
@@ -26,9 +26,6 @@ class MainBottomNavBar extends StatelessWidget {
           case NavigationTab.calendar:
             Navigator.pushReplacementNamed(context, '/calendar');
             break;
-          case NavigationTab.weekly:
-            Navigator.pushReplacementNamed(context, '/weekly_view');
-            break;
         }
       },
       destinations: [
@@ -41,11 +38,6 @@ class MainBottomNavBar extends StatelessWidget {
           icon: const Icon(Icons.calendar_today_outlined),
           selectedIcon: const Icon(Icons.calendar_month),
           label: loc?.calendarTitle ?? 'Takvim',
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.view_week_outlined),
-          selectedIcon: const Icon(Icons.view_week),
-          label: loc?.weeklyLabel ?? 'Haftalık',
         ),
       ],
     );
