@@ -141,6 +141,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectLocation => 'Select Location';
 
   @override
+  String get sabah => 'Morning';
+
+  @override
   String get fajr => 'Fajr';
 
   @override

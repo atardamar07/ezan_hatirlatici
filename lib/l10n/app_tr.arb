@@ -26,6 +26,7 @@
   "calculationMethod": "Hesaplama Metodu",
   "cancel": "İptal",
   "selectLocation": "Konum Seçin",
+  "sabah": "Sabah",
   "fajr": "İmsak",
   "sunrise": "Güneş",
   "timeRemainingHours": "⏳ {hours} sa {minutes} dk kaldı",

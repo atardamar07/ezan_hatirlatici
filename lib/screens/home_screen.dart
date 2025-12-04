@@ -34,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final loc = AppLocalizations.of(context)!;
 
     switch (name) {
+      case "Sabah":
+        return loc.sabah;
       case "Fajr":
         return loc.fajr;    // İmsak
       case "Dhuhr":
@@ -289,15 +291,38 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
+    final sabahTime = _calculateSabahTime(_todayTimes!);
+
     _filteredTodayTimes = {
-      "Fajr": _todayTimes!["Fajr"],
-      "Dhuhr": _todayTimes!["Dhuhr"],
-      "Asr": _todayTimes!["Asr"],
-      "Maghrib": _todayTimes!["Maghrib"],
-      "Isha": _todayTimes!["Isha"],
+      "Sabah": sabahTime ?? _todayTimes!["Fajr"] ?? "",
+      "Dhuhr": _todayTimes!["Dhuhr"] ?? "",
+      "Asr": _todayTimes!["Asr"] ?? "",
+      "Maghrib": _todayTimes!["Maghrib"] ?? "",
+      "Isha": _todayTimes!["Isha"] ?? "",
     };
 
-    _nextPrayer = _prayerApi.getNextPrayer(_todayTimes!);
+    _nextPrayer = _prayerApi.getNextPrayer(_filteredTodayTimes);
+  }
+
+  String? _calculateSabahTime(Map<String, dynamic> timings) {
+    final sunriseRaw = timings['Sunrise'];
+    if (sunriseRaw is! String) return null;
+
+    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(sunriseRaw);
+    if (match == null) return null;
+
+    final now = DateTime.now();
+    final sunriseHour = int.parse(match.group(1)!);
+    final sunriseMinute = int.parse(match.group(2)!);
+
+    final sunriseTime =
+    DateTime(now.year, now.month, now.day, sunriseHour, sunriseMinute);
+    final sabahTime = sunriseTime.subtract(const Duration(hours: 1));
+
+    final hour = sabahTime.hour.toString().padLeft(2, '0');
+    final minute = sabahTime.minute.toString().padLeft(2, '0');
+
+    return '$hour:$minute';
   }
 
   Future<void> _selectLocation() async {

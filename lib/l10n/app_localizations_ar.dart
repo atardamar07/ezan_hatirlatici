@@ -141,6 +141,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get selectLocation => 'اختر الموقع';
 
   @override
+  String get sabah => 'صباح';
+
+  @override
   String get fajr => 'الفجر';
 
   @override

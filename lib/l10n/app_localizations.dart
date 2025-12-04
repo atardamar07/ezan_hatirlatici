@@ -353,6 +353,12 @@ abstract class AppLocalizations {
   /// **'Select Location'**
   String get selectLocation;
 
+  /// No description provided for @sabah.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get sabah;
+
   /// No description provided for @fajr.
   ///
   /// In en, this message translates to:

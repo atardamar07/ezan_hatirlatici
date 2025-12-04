@@ -30,6 +30,7 @@
   "sunrise": "Sunrise",
   "dhuhr": "Dhuhr",
   "asr": "Asr",
+  "sabah": "Morning",
   "maghrib": "Maghrib",
   "isha": "Isha",
   "timeRemainingHours": "⏳ {hours}h {minutes}m left",

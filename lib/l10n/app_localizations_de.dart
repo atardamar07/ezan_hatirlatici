@@ -141,6 +141,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectLocation => 'Standort auswählen';
 
   @override
+  String get sabah => 'Morgen';
+
+  @override
   String get fajr => 'Fajr';
 
   @override

@@ -47,6 +47,8 @@ class _PrayerCardState extends State<PrayerCard> {
     final loc = AppLocalizations.of(context)!;
 
     switch (key.toLowerCase()) {
+      case "sabah":
+        return loc.sabah;
       case "fajr":
         return loc.fajr;
       case "dhuhr":

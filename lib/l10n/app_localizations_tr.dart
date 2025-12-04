@@ -141,6 +141,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get selectLocation => 'Konum Seçin';
 
   @override
+  String get sabah => 'Sabah';
+
+  @override
   String get fajr => 'İmsak';
 
   @override

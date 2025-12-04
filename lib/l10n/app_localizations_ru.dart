@@ -141,6 +141,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get selectLocation => 'Выберите местоположение';
 
   @override
+  String get sabah => 'Утро';
+
+  @override
   String get fajr => 'Фаджр';
 
   @override
