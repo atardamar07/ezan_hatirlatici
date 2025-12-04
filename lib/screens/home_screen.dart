@@ -714,14 +714,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           _buildActionChip(
-            label: loc.quickActionWeekly,
-            icon: Icons.date_range,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const WeeklyViewScreen()),
-            ),
-          ),
-          _buildActionChip(
             label: loc.quickActionNotifications,
             icon: Icons.notifications_active,
             onTap: () => Navigator.push(
