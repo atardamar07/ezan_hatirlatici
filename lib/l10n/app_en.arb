@@ -139,8 +139,8 @@
   "methodKarachiDescription": "Pakistan method",
   "methodUmmAlQuraName": "Umm Al-Qura",
   "methodUmmAlQuraDescription": "Saudi Arabia",
-  "methodMoonsightingName": "University of Islamic Sciences",
-  "methodMoonsightingDescription": "Jordan / University of Islamic Sciences",
+  "methodMoonsightingName": "Moonsighting Committee Worldwide",
+  "methodMoonsightingDescription": "Common in North America and the UK",
   "methodTehranName": "Institute of Geophysics, Tehran",
   "methodTehranDescription": "Iran method",
   "methodFranceName": "Union of Islamic Organisations",
@@ -199,5 +199,10 @@
   "lightTheme": "Light theme",
   "lightThemeSubtitle": "Daytime look",
   "darkTheme": "Dark theme",
-  "darkThemeSubtitle": "Nighttime look"
+  "darkThemeSubtitle": "Nighttime look",
+  "compassNotAvailable": "This device has no compass sensor.",
+  "compassCalibrationHint": "Magnetic interference detected. Move away from metal and electronics, then wave your phone in a figure 8 to calibrate.",
+  "methodIsnaName": "Islamic Society of North America (ISNA)",
+  "methodIsnaDescription": "USA and Canada",
+  "adPrivacyOptions": "Ad privacy options"
 }

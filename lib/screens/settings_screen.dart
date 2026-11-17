@@ -6,6 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
+import '../services/ad_service.dart';
+import '../services/notification_scheduler.dart';
+import '../services/prayer_times_api.dart';
 import '../settings/notification_model.dart';
 import '../settings/widgets/notification_tile.dart';
 import '../settings/widgets/status_badge.dart';
@@ -29,6 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<PrayerNotificationSetting> _prayerSettings = [];
   double _quietHoursDuration = 6;
   int _preAlertMinutes = 10;
+  int _method = PrayerTimesApi.diyanetMethodId;
+  bool _showAdPrivacyOptions = false;
   bool _locationReady = false;
   bool _internetReady = true;
 
@@ -37,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 'imsak':
         return loc.fajr;
       case 'sabah':
-        return loc.sunrise;
+        return loc.sabah; // ana sayfadaki "Sabah" (güneşten 1 saat önce)
       case 'ogle':
         return loc.dhuhr;
       case 'ikindi':
@@ -58,6 +63,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _prayerSettings = _defaultPrayerSettings();
     _loadSavedPreferences();
     _checkStatuses();
+    AdService().isPrivacyOptionsRequired().then((required) {
+      if (mounted && required) setState(() => _showAdPrivacyOptions = true);
+    });
   }
 
   Future<void> _loadSavedPreferences() async {
@@ -93,7 +101,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _prayerSettings = updatedSettings;
       _quietHoursDuration = savedQuietHours ?? _quietHoursDuration;
       _preAlertMinutes = savedPreAlert ?? _preAlertMinutes;
+      _method = prefs.getInt('calculationMethod') ?? _method;
     });
+  }
+
+  Future<void> _showCalculationMethods() async {
+    final loc = AppLocalizations.of(context)!;
+    final methods = PrayerTimesApi().getCalculationMethods(loc);
+
+    final selected = await showDialog<int>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(loc.calculationMethod),
+        children: [
+          for (final method in methods)
+            ListTile(
+              title: Text(method['name'] as String),
+              subtitle: Text(method['description'] as String),
+              trailing: method['id'] == _method ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.pop(context, method['id'] as int),
+            ),
+        ],
+      ),
+    );
+
+    if (selected == null || selected == _method) return;
+    setState(() => _method = selected);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('calculationMethod', selected);
+    NotificationScheduler().scheduleAllPrayerNotifications();
   }
 
   Future<void> _updateThemeMode(ThemeMode mode) async {
@@ -128,10 +164,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   List<PrayerNotificationSetting> _defaultPrayerSettings() {
     return [
+      // Varsayılan kapalı: yüksek enlemlerde imsak gece yarısına denk gelebiliyor
       PrayerNotificationSetting(
         key: 'imsak',
         title: 'İmsak',
-        isEnabled: true,
+        isEnabled: false,
         time: const TimeOfDay(hour: 5, minute: 30),
       ),
       PrayerNotificationSetting(
@@ -177,27 +214,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.setInt('preAlertMinutes', _preAlertMinutes);
   }
 
-  Future<void> _pickTime(int index) async {
-    final selected = await showTimePicker(
-      context: context,
-      initialTime: _prayerSettings[index].time,
-    );
-
-    if (selected != null) {
-      setState(() {
-        _prayerSettings[index] =
-            _prayerSettings[index].copyWith(time: selected);
-      });
-      await _saveNotificationPreferences();
-    }
-  }
-
   Future<void> _toggleNotification(int index, bool value) async {
     setState(() {
       _prayerSettings[index] =
           _prayerSettings[index].copyWith(isEnabled: value);
     });
     await _saveNotificationPreferences();
+    NotificationScheduler().scheduleAllPrayerNotifications();
   }
 
   Future<void> _updateQuietHours(double value) async {
@@ -209,6 +232,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (value == null) return;
     setState(() => _preAlertMinutes = value);
     await _saveNotificationPreferences();
+    NotificationScheduler().scheduleAllPrayerNotifications();
   }
 
   Widget _buildValueBadge(String label) {
@@ -279,6 +303,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              leading: const Icon(Icons.calculate_outlined),
+              title: Text(loc.calculationMethod),
+              subtitle: Text(
+                PrayerTimesApi()
+                    .getCalculationMethods(loc)
+                    .firstWhere(
+                      (m) => m['id'] == _method,
+                      orElse: () => {'name': '$_method'},
+                    )['name'] as String,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: _showCalculationMethods,
+            ),
+          ),
+          Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               children: [
                 ListTile(
@@ -299,7 +340,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   NotificationTile(
                     setting: _prayerSettings[i],
                     onToggle: (value) => _toggleNotification(i, value),
-                    onTimeTap: () => _pickTime(i),
                     enabledLabel: loc.notificationEnabled,
                     disabledLabel: loc.notificationDisabled,
                     titleOverride: _localizedPrayerTitle(
@@ -438,6 +478,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ),
+          // GDPR: onay gereken bölgelerde kullanıcı reklam onayını buradan değiştirebilmeli
+          if (_showAdPrivacyOptions)
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: Text(loc.adPrivacyOptions),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: AdService().showPrivacyOptions,
+              ),
+            ),
         ],
       ),
     );

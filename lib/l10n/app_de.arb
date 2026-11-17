@@ -180,11 +180,19 @@
   "methodKarachiDescription": "Pakistanische Methode",
   "methodUmmAlQuraName": "Umm Al-Qura",
   "methodUmmAlQuraDescription": "Saudi-Arabien",
-  "methodMoonsightingName": "Universität der Islamischen Wissenschaften",
-  "methodMoonsightingDescription": "Jordanien / Universität der Islamischen Wissenschaften",
+  "methodMoonsightingName": "Moonsighting Committee Worldwide",
+  "methodMoonsightingDescription": "Verbreitet in Nordamerika und Großbritannien",
   "methodTehranName": "Institut für Geophysik, Teheran",
   "methodTehranDescription": "Iranische Methode",
   "methodFranceName": "Union islamischer Organisationen",
-  "methodFranceDescription": "Französische Methode"
-
+  "methodFranceDescription": "Französische Methode",
+  "compassNotAvailable": "Dieses Gerät hat keinen Kompasssensor.",
+  "compassCalibrationHint": "Magnetische Störung erkannt. Entfernen Sie sich von Metall und Elektronik und bewegen Sie das Handy in Form einer 8, um es zu kalibrieren.",
+  "prayerNotificationTitle": "🕌 Gebetszeit",
+  "prayerNotificationBody": "{prayer}: Die Gebetszeit hat begonnen.",
+  "reminderNotificationTitle": "⏰ Gebetserinnerung",
+  "reminderNotificationBody": "{prayer} in {minutes} Minuten",
+  "methodIsnaName": "Islamic Society of North America (ISNA)",
+  "methodIsnaDescription": "USA und Kanada",
+  "adPrivacyOptions": "Datenschutzoptionen für Werbung"
 }

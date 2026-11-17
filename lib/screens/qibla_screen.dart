@@ -1,26 +1,71 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../services/location_service.dart';
 
+// Kâbe'nin koordinatları
+const double kaabaLatitude = 21.4225;
+const double kaabaLongitude = 39.8262;
+
+/// Telefonun üst kenarının manyetik kuzeye göre açısı (0-360, saat yönünde).
+/// Android'in SensorManager.getRotationMatrix + getOrientation hesabının aynısı:
+/// ivmeölçerle eğim düzeltilir, telefon eğik tutulsa da yön doğru kalır.
+/// Hesaplanamıyorsa (serbest düşüş, bozuk veri) null döner.
+double? compassHeading(
+  double ax, double ay, double az, // ivmeölçer (yerçekimi dahil, m/s²)
+  double mx, double my, double mz, // manyetometre (µT)
+) {
+  final hx = my * az - mz * ay;
+  final hy = mz * ax - mx * az;
+  final hz = mx * ay - my * ax;
+  final normH = math.sqrt(hx * hx + hy * hy + hz * hz);
+  final normA = math.sqrt(ax * ax + ay * ay + az * az);
+  if (normH < 0.1 || normA < 1) return null;
+  // atan2(H.y, (A×H).y); iki bileşen aynı ölçekte olsun diye H.y, |A| ile çarpılır
+  final deg = math.atan2(hy * normA, az * hx - ax * hz) * 180 / math.pi;
+  return (deg + 360) % 360;
+}
+
+/// Verilen konumdan Kâbe'ye, gerçek kuzeye göre başlangıç yönü (büyük daire, 0-360).
+double qiblaBearing(double lat, double lon) {
+  final lat1 = lat * math.pi / 180;
+  const lat2 = kaabaLatitude * math.pi / 180;
+  final deltaLon = (kaabaLongitude - lon) * math.pi / 180;
+
+  final y = math.sin(deltaLon) * math.cos(lat2);
+  final x = math.cos(lat1) * math.sin(lat2) -
+      math.sin(lat1) * math.cos(lat2) * math.cos(deltaLon);
+
+  return (math.atan2(y, x) * 180 / math.pi + 360) % 360;
+}
+
 class QiblaScreen extends StatefulWidget {
-  const QiblaScreen({Key? key}) : super(key: key);
+  const QiblaScreen({super.key});
 
   @override
-  _QiblaScreenState createState() => _QiblaScreenState();
+  State<QiblaScreen> createState() => _QiblaScreenState();
 }
 
 class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStateMixin {
-  double _currentHeading = 0.0;
+  static const _compassChannel = MethodChannel('ezan_hatirlatici/compass');
+
   double _smoothedHeading = 0.0;
   double _qiblaDirection = 0.0;
   double _distanceToQibla = 0.0;
+  double _declination = 0.0;
   bool _isQiblaFound = false;
   bool _isLoading = true;
-  StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
+  bool _locationFailed = false;
+  bool _sensorMissing = false;
+  bool _interference = false;
   bool _hasHeading = false;
+  AccelerometerEvent? _gravity;
+  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
+  StreamSubscription<MagnetometerEvent>? _magnetometerSubscription;
 
   // Update heading roughly 30 times per second for smoother compass motion
   static const Duration _headingUpdateInterval = Duration(milliseconds: 33);
@@ -31,10 +76,6 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
   late Animation<double> _pulseAnimation;
 
   final LocationService _locationService = LocationService();
-
-  // Kâbe'nin koordinatları
-  static const double _kaabaLatitude = 21.4225;
-  static const double _kaabaLongitude = 39.8262;
 
   @override
   void initState() {
@@ -55,90 +96,98 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
     _calculateQiblaDirection();
   }
 
-  Future<void> _initializeCompass() async {
-    try {
-      _magnetometerSubscription = magnetometerEvents.listen((MagnetometerEvent event) {
-        if (!mounted) return;
-        final now = DateTime.now();
-        final heading = _calculateHeading(event.x, event.y);
-
-        if (!_hasHeading) {
-          _lastHeadingUpdate = now;
-          setState(() {
-            _currentHeading = heading;
-            _smoothedHeading = heading;
-            _hasHeading = true;
-            _checkQiblaDirection();
-          });
-          return;
-        }
-
-        if (now.difference(_lastHeadingUpdate) < _headingUpdateInterval) {
-          return;
-        }
-        _lastHeadingUpdate = now;
-
-        setState(() {
-          _currentHeading = heading;
-          _smoothedHeading = _smoothHeading(_smoothedHeading, heading);
-          _checkQiblaDirection();
-        });
-      });
-    } catch (e) {
-      print('Compass initialization error: $e');
+  void _initializeCompass() {
+    void onSensorError(Object e) {
+      debugPrint('Compass sensor error: $e');
+      if (mounted) setState(() => _sensorMissing = true);
     }
+
+    _accelerometerSubscription =
+        accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
+            .listen((event) => _gravity = event, onError: onSensorError);
+    _magnetometerSubscription =
+        magnetometerEventStream(samplingPeriod: SensorInterval.gameInterval)
+            .listen(_onMagnetometer, onError: onSensorError);
   }
 
-  double _calculateHeading(double x, double y) {
-    double heading = math.atan2(y, x) * (180 / math.pi);
-    return heading < 0 ? heading + 360 : heading;
+  void _onMagnetometer(MagnetometerEvent event) {
+    final gravity = _gravity;
+    if (!mounted || gravity == null) return;
+
+    final magnetic = compassHeading(
+        gravity.x, gravity.y, gravity.z, event.x, event.y, event.z);
+    if (magnetic == null) return;
+
+    final now = DateTime.now();
+    if (_hasHeading && now.difference(_lastHeadingUpdate) < _headingUpdateInterval) {
+      return;
+    }
+    _lastHeadingUpdate = now;
+
+    // Manyetik kuzey → gerçek kuzey; kıble açısı gerçek kuzeye göre hesaplanıyor
+    final heading = _normalizeAngle(magnetic + _declination);
+    // Dünyanın manyetik alanı her yerde ~22-67 µT; dışındaysa parazit/kalibrasyon sorunu var
+    final strength =
+        math.sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+
+    setState(() {
+      _smoothedHeading =
+          _hasHeading ? _smoothHeading(_smoothedHeading, heading) : heading;
+      _hasHeading = true;
+      _interference = strength < 20 || strength > 75;
+    });
+    _checkQiblaDirection();
   }
 
   Future<void> _calculateQiblaDirection() async {
-    try {
-      final location = await _locationService.getCurrentLocation();
-      if (location != null) {
-        final qiblaAngle = _calculateBearing(
-          location.latitude!,
-          location.longitude!,
-          _kaabaLatitude,
-          _kaabaLongitude,
-        );
+    setState(() {
+      _isLoading = true;
+      _locationFailed = false;
+    });
 
-        final distance = _calculateDistance(
-          location.latitude!,
-          location.longitude!,
-          _kaabaLatitude,
-          _kaabaLongitude,
-        );
-
-        if (mounted) {
-          setState(() {
-            _qiblaDirection = qiblaAngle;
-            _distanceToQibla = distance;
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      print('Error calculating qibla direction: $e');
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    double? lat;
+    double? lon;
+    final position = await _locationService.getCurrentLocation();
+    if (position != null) {
+      lat = position.latitude;
+      lon = position.longitude;
+    } else {
+      // GPS yoksa ana sayfanın kaydettiği son konumu kullan
+      final prefs = await SharedPreferences.getInstance();
+      lat = prefs.getDouble('latitude');
+      lon = prefs.getDouble('longitude');
     }
-  }
 
-  double _calculateBearing(double lat1, double lon1, double lat2, double lon2) {
-    final lat1Rad = _degreesToRadians(lat1);
-    final lat2Rad = _degreesToRadians(lat2);
-    final deltaLon = _degreesToRadians(lon2 - lon1);
+    if (lat == null || lon == null) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _locationFailed = true;
+        });
+      }
+      return;
+    }
 
-    final y = math.sin(deltaLon) * math.cos(lat2Rad);
-    final x = math.cos(lat1Rad) * math.sin(lat2Rad) -
-        math.sin(lat1Rad) * math.cos(lat2Rad) * math.cos(deltaLon);
+    double declination = 0;
+    try {
+      declination = await _compassChannel
+              .invokeMethod<double>('declination', {'lat': lat, 'lon': lon}) ??
+          0;
+    } catch (e) {
+      // Android dışı platformlarda kanal yok; manyetik kuzeyle devam edilir
+      debugPrint('Declination unavailable: $e');
+    }
 
-    double bearing = math.atan2(y, x) * (180 / math.pi);
-    return (bearing + 360) % 360;
+    final bearing = qiblaBearing(lat, lon);
+    final distance = _calculateDistance(lat, lon, kaabaLatitude, kaabaLongitude);
+
+    if (!mounted) return;
+    setState(() {
+      _declination = declination;
+      _qiblaDirection = bearing;
+      _distanceToQibla = distance;
+      _isLoading = false;
+    });
   }
 
   double _smoothHeading(double current, double target) {
@@ -187,6 +236,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
       });
 
       if (isQibla) {
+        HapticFeedback.mediumImpact();
         _animationController.repeat(reverse: true);
       } else {
         _animationController.stop();
@@ -212,22 +262,45 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    _accelerometerSubscription?.cancel();
     _magnetometerSubscription?.cancel();
     _animationController.dispose();
     super.dispose();
+  }
+
+  Widget _buildMessage(String text, {VoidCallback? onRetry}) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(text, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+            if (onRetry != null) ...[
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: onRetry,
+                child: Text(AppLocalizations.of(context)!.retry),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: colors.surface,
         foregroundColor: colors.onSurface,
-        title: Text(AppLocalizations.of(context)!.qiblaCompass),
+        title: Text(loc.qiblaCompass),
       ),
       body: _isLoading
           ? Center(
@@ -235,6 +308,10 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
           color: colors.primary,
         ),
       )
+          : _locationFailed
+          ? _buildMessage(loc.locationError, onRetry: _calculateQiblaDirection)
+          : _sensorMissing
+          ? _buildMessage(loc.compassNotAvailable)
           : Stack(
         children: [
           Center(
@@ -272,15 +349,28 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                       // Yön Göstergeleri
                       ..._buildDirectionMarkers(colors),
 
-                      // Kıble Yönü İşareti
+                      // Kıble Yönü İşareti: merkezden Kâbe'ye uzanan ibre
                       Transform.rotate(
                         angle: _degreesToRadians(_qiblaDirection - _smoothedHeading),
-                        child: Container(
-                          width: 4,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: colors.secondary,
-                            borderRadius: BorderRadius.circular(2),
+                        child: SizedBox(
+                          width: 300,
+                          height: 300,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 66),
+                              const SizedBox(
+                                height: 36,
+                                child: Text('🕋', style: TextStyle(fontSize: 28)),
+                              ),
+                              Container(
+                                width: 4,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: colors.secondary,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -332,13 +422,25 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
                 // Mesafe Bilgisi
                 Text(
-                  AppLocalizations.of(context)!
-                      .distanceToKaaba(_distanceToQibla.toStringAsFixed(0)),
+                  loc.distanceToKaaba(_distanceToQibla.toStringAsFixed(0)),
                   style: TextStyle(
                     fontSize: 16,
                     color: colors.onSurface.withOpacity(0.7),
                   ),
                 ),
+
+                // Manyetik parazit / kalibrasyon uyarısı
+                if (_interference) ...[
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      loc.compassCalibrationHint,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: colors.error),
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: 40),
               ],
@@ -360,7 +462,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                     Icon(Icons.check_circle, color: colors.onPrimary, size: 30),
                     const SizedBox(width: 10),
                     Text(
-                      AppLocalizations.of(context)!.youAreFacingQibla,
+                      loc.youAreFacingQibla,
                       style: TextStyle(
                         color: colors.onPrimary,
                         fontSize: 18,

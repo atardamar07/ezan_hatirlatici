@@ -180,11 +180,19 @@
   "methodKarachiDescription": "Пакистанский метод",
   "methodUmmAlQuraName": "Умм аль-Кура",
   "methodUmmAlQuraDescription": "Саудовская Аравия",
-  "methodMoonsightingName": "Университет исламских наук",
-  "methodMoonsightingDescription": "Иордания / Университет исламских наук",
+  "methodMoonsightingName": "Moonsighting Committee Worldwide",
+  "methodMoonsightingDescription": "Распространён в Северной Америке и Великобритании",
   "methodTehranName": "Институт геофизики, Тегеран",
   "methodTehranDescription": "Иранский метод",
   "methodFranceName": "Союз исламских организаций",
-  "methodFranceDescription": "Французский метод"
-
+  "methodFranceDescription": "Французский метод",
+  "compassNotAvailable": "На этом устройстве нет датчика компаса.",
+  "compassCalibrationHint": "Обнаружены магнитные помехи. Отойдите от металла и электроники и откалибруйте телефон, описав им восьмёрку.",
+  "prayerNotificationTitle": "🕌 Время намаза",
+  "prayerNotificationBody": "{prayer}: наступило время намаза.",
+  "reminderNotificationTitle": "⏰ Напоминание о намазе",
+  "reminderNotificationBody": "{prayer} через {minutes} мин.",
+  "methodIsnaName": "Исламское общество Северной Америки (ISNA)",
+  "methodIsnaDescription": "США и Канада",
+  "adPrivacyOptions": "Настройки конфиденциальности рекламы"
 }

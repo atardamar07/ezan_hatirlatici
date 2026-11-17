@@ -14,6 +14,10 @@ class PrayerTimesApi {
   /// 🔥 Varsayılan hesaplama metodu
   int defaultMethod = diyanetMethodId;
 
+  /// Zayıf bağlantıda istek sonsuza dek asılı kalmasın; zaman aşımı mevcut catch'lere düşer
+  Future<http.Response> _get(Uri url) =>
+      http.get(url).timeout(const Duration(seconds: 15));
+
   /// 📌 SharedPreferences’ten kayıtlı metodu okur, yoksa Diyanet döner
   Future<int> getSavedMethodOrDefault() async {
     try {
@@ -33,7 +37,7 @@ class PrayerTimesApi {
     );
 
     try {
-      final res = await http.get(url);
+      final res = await _get(url);
 
       if (res.statusCode == 200) {
         final json = jsonDecode(res.body);
@@ -57,7 +61,7 @@ class PrayerTimesApi {
     );
 
     try {
-      final res = await http.get(url);
+      final res = await _get(url);
 
       if (res.statusCode == 200) {
         final json = jsonDecode(res.body);
@@ -85,7 +89,7 @@ class PrayerTimesApi {
         "$baseUrl/timings/$formatted?latitude=$lat&longitude=$lng&method=$method",
       );
 
-      final res = await http.get(url);
+      final res = await _get(url);
 
       if (res.statusCode == 200) {
         final json = jsonDecode(res.body);
@@ -125,7 +129,7 @@ class PrayerTimesApi {
     if (url == null) return null;
 
     try {
-      final res = await http.get(url);
+      final res = await _get(url);
 
       if (res.statusCode == 200) {
         final json = jsonDecode(res.body);
@@ -141,7 +145,7 @@ class PrayerTimesApi {
     return null;
   }
 
-  /// 🔥 Hesaplama metodları listesi
+  /// 🔥 Hesaplama metodları listesi (ID'ler: https://api.aladhan.com/v1/methods)
   List<Map<String, dynamic>> getCalculationMethods(AppLocalizations l10n) {
     return [
       {
@@ -150,27 +154,32 @@ class PrayerTimesApi {
         "description": l10n.methodDiyanetDescription
       },
       {
-        "id": 0,
+        "id": 3,
         "name": l10n.methodMwlName,
         "description": l10n.methodMwlDescription,
       },
       {
-        "id": 1,
+        "id": 2,
+        "name": l10n.methodIsnaName,
+        "description": l10n.methodIsnaDescription,
+      },
+      {
+        "id": 5,
         "name": l10n.methodEgyptianName,
         "description": l10n.methodEgyptianDescription,
       },
       {
-        "id": 2,
+        "id": 1,
         "name": l10n.methodKarachiName,
         "description": l10n.methodKarachiDescription,
       },
       {
-        "id": 3,
+        "id": 4,
         "name": l10n.methodUmmAlQuraName,
         "description": l10n.methodUmmAlQuraDescription,
       },
       {
-        "id": 5,
+        "id": 15,
         "name": l10n.methodMoonsightingName,
         "description": l10n.methodMoonsightingDescription,
       },
@@ -204,7 +213,7 @@ class PrayerTimesApi {
         final time = DateTime(now.year, now.month, now.day, hour, minute);
 
         if (time.isAfter(now)) {
-          if (next == null || time.isBefore(next!)) {
+          if (next == null || time.isBefore(next)) {
             next = time;
             nextName = entry.key;
           }
@@ -242,7 +251,7 @@ class PrayerTimesApi {
     if (url == null) return null;
 
     try {
-      final res = await http.get(url);
+      final res = await _get(url);
 
       if (res.statusCode == 200) {
         final json = jsonDecode(res.body);

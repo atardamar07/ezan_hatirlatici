@@ -1,11 +1,20 @@
+import 'dart:convert';
+import 'dart:ui' show Locale, PlatformDispatcher;
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
 import '../services/prayer_times_api.dart';
 import 'notification_service.dart';
 
 class NotificationScheduler {
   final PrayerTimesApi _prayerApi = PrayerTimesApi();
+
+  /// Uygulama birkaç gün açılmasa da bildirimler gelsin diye bu kadar gün ilerisi kurulur
+  static const _daysAhead = 7;
+
+  /// Aynı anda iki planlama birbirinin kurduğu bildirimleri silmesin diye sıraya alınır
+  static Future<void> _queue = Future.value();
 
   /// TEST MODE: Her 1 dakikada bir bildirim gönder
   Future<void> scheduleTestNotifications() async {
@@ -20,139 +29,168 @@ class NotificationScheduler {
     debugPrint('🧪 TEST MODE: Repeating notification scheduled (every 1 min)');
   }
 
-  /// Tüm namaz vakitleri için hatırlatıcı ve vakit bildirimlerini planlar
-  Future<void> scheduleAllPrayerNotifications() async {
-    await NotificationService.cancelAllNotifications();
-    debugPrint('🔔 Starting notification scheduling...');
+  /// Kayıtlı konum için önümüzdeki günlerin bildirimlerini Ayarlar'daki tercihlere göre kurar
+  Future<void> scheduleAllPrayerNotifications() {
+    return _queue = _queue.then((_) => _scheduleAll()).catchError((Object e) {
+      debugPrint('⚠️ Notification scheduling failed: $e');
+    });
+  }
 
+  Future<void> _scheduleAll() async {
     final prefs = await SharedPreferences.getInstance();
     final locationType = prefs.getString('locationType');
-
     if (locationType == null) {
       debugPrint('⚠️ No location type set, skipping notification scheduling');
       return;
     }
 
-    Map<String, dynamic>? timings;
-    if (locationType == 'location') {
-      final lat = prefs.getDouble('latitude');
-      final lng = prefs.getDouble('longitude');
-      if (lat != null && lng != null) {
-        timings = await _prayerApi.getPrayerTimesByLocation(
-            lat, lng, prefs.getInt('calculationMethod') ?? 0);
-      }
-    } else if (locationType == 'city') {
-      final city = prefs.getString('selectedCity');
-      final country = prefs.getString('selectedCountry');
-      if (city != null && country != null) {
-        timings = await _prayerApi.getPrayerTimesByCity(
-            city, country, prefs.getInt('calculationMethod') ?? 0);
-      }
-    }
+    final method = await _prayerApi.getSavedMethodOrDefault();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final lastDay = DateTime(now.year, now.month, now.day + _daysAhead - 1);
 
-    if (timings == null) {
-      debugPrint('⚠️ Failed to get prayer timings');
+    // Aylık takvim tek istekte gelir; aralık ay sonuna taşarsa sonraki ay da alınır
+    final days = <DateTime, Map<String, dynamic>>{};
+    for (final month in {
+      DateTime(today.year, today.month),
+      DateTime(lastDay.year, lastDay.month),
+    }) {
+      final data = await _prayerApi.getMonthlyPrayerTimes(
+        month: month.month,
+        year: month.year,
+        lat: locationType == 'location' ? prefs.getDouble('latitude') : null,
+        lng: locationType == 'location' ? prefs.getDouble('longitude') : null,
+        city: prefs.getString('selectedCity'),
+        country: prefs.getString('selectedCountry'),
+        method: method,
+      );
+      if (data != null) days.addAll(data);
+    }
+    // Takvim tüm ayı döndürür; yalnızca önümüzdeki günler kurulur (Android'de alarm sınırı ~500)
+    days.removeWhere((day, _) => day.isBefore(today) || day.isAfter(lastDay));
+
+    if (days.isEmpty) {
+      // İnternet yoksa eskileri silme; önceki planlama geçerli kalsın
+      debugPrint('⚠️ Failed to get prayer timings, keeping existing notifications');
       return;
     }
 
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final plan = planNotifications(
+      days: days,
+      enabled: _enabledPrayers(prefs),
+      minutesBefore: prefs.getInt('preAlertMinutes') ?? 10,
+      now: now,
+      loc: _localizations(),
+    );
 
-    // Kullanıcı ayarı: kaç dakika önce hatırlatılsın
-    final minutesBefore = prefs.getInt('notificationMinutesBefore') ?? 15;
-
-    // Özel Fajr zamanlaması için Sunrise (Güneş) vaktini al
-    final sunriseTimeStr = timings['Sunrise'] as String?;
-    DateTime? fajrNotificationTime;
-    
-    if (sunriseTimeStr != null) {
-      try {
-        final sunriseTime = _parseTime(sunriseTimeStr, today);
-        fajrNotificationTime = sunriseTime.subtract(const Duration(minutes: 60));
-        debugPrint('☀️ Fajr notification scheduled for: $fajrNotificationTime (60 min before Sunrise at $sunriseTime)');
-      } catch (e) {
-        debugPrint('⚠️ Failed to calculate Fajr notification time: $e');
-      }
+    await NotificationService.cancelAllNotifications();
+    for (final n in plan) {
+      await NotificationService.scheduleNotification(
+        title: n.title,
+        body: n.body,
+        scheduledTime: n.time,
+      );
     }
 
-    int scheduledCount = 0;
-    
-    for (final entry in timings.entries) {
-      if (entry.key == 'Sunrise') continue; // Güneş için bildirim yok
-
-      // Özel Fajr işleme
-      if (entry.key == 'Fajr' && fajrNotificationTime != null) {
-        if (fajrNotificationTime.isAfter(now)) {
-          await NotificationService.scheduleNotification(
-            title: '☀️ Sabah Namazı Hatırlatıcı',
-            body: 'Sabah namazı için 60 dakika kaldı (Güneş doğmadan önce)',
-            scheduledTime: fajrNotificationTime,
-          );
-          scheduledCount++;
-          debugPrint('✅ Scheduled Fajr notification at $fajrNotificationTime');
-        } else {
-          debugPrint('⏭️ Skipped Fajr notification (time already passed)');
-        }
-        continue; // Fajr için normal işlemeyi atla
-      }
-
-      try {
-        final prayerTime = _parseTime(entry.value as String, today);
-
-        // Hatırlatıcı bildirimi
-        final reminderTime =
-        prayerTime.subtract(Duration(minutes: minutesBefore));
-        if (reminderTime.isAfter(now) && minutesBefore > 0) {
-          await NotificationService.scheduleNotification(
-            title: '⏰ Namaz Hatırlatıcı',
-            body:
-            '${_getTurkishPrayerName(entry.key)} vakti $minutesBefore dakika sonra',
-            scheduledTime: reminderTime,
-          );
-          scheduledCount++;
-          debugPrint('✅ Scheduled ${entry.key} reminder at $reminderTime');
-        }
-
-        // Vakit girince bildirimi
-        if (prayerTime.isAfter(now)) {
-          await NotificationService.scheduleNotification(
-            title: '🕌 Namaz Vakti',
-            body:
-            '${_getTurkishPrayerName(entry.key)} vakti geldi. Haydi namaza!',
-            scheduledTime: prayerTime,
-          );
-          scheduledCount++;
-          debugPrint('✅ Scheduled ${entry.key} prayer time at $prayerTime');
-        }
-      } catch (e) {
-        debugPrint('⚠️ Notification scheduling skipped (${entry.key} → ${entry.value}): $e');
-      }
-    }
-    
-    debugPrint('🔔 Notification scheduling complete. Total scheduled: $scheduledCount');
+    debugPrint('🔔 Notification scheduling complete. Total scheduled: ${plan.length}');
   }
 
-  DateTime _parseTime(String timeStr, DateTime baseDate) {
-    final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(timeStr);
+  /// Ayarlar ekranındaki vakit anahtarları; varsayılanlar oradakiyle aynı olmalı
+  Map<String, bool> _enabledPrayers(SharedPreferences prefs) {
+    final enabled = {
+      'imsak': false,
+      'sabah': true,
+      'ogle': true,
+      'ikindi': true,
+      'aksam': true,
+      'yatsi': true,
+    };
+    final saved = prefs.getString('prayerNotificationSettings');
+    if (saved == null) return enabled;
 
-    if (match == null) {
-      throw FormatException('Invalid time format: $timeStr');
+    try {
+      for (final item in jsonDecode(saved) as List) {
+        enabled[item['key'] as String] = item['isEnabled'] == true;
+      }
+    } catch (e) {
+      debugPrint('⚠️ Invalid notification settings: $e');
     }
-
-    final hour = int.parse(match.group(1)!);
-    final minute = int.parse(match.group(2)!);
-
-    return DateTime(baseDate.year, baseDate.month, baseDate.day, hour, minute);
+    return enabled;
   }
 
-  String _getTurkishPrayerName(String key) {
-    switch (key) {
-      case 'Fajr': return 'İmsak';
-      case 'Dhuhr': return 'Öğle';
-      case 'Asr': return 'İkindi';
-      case 'Maghrib': return 'Akşam';
-      case 'Isha': return 'Yatsı';
-      default: return key;
+  /// Bildirim metni ekran dışında üretildiği için dil cihaz ayarından seçilir
+  AppLocalizations _localizations() {
+    final languageCode = PlatformDispatcher.instance.locale.languageCode;
+    final locale = AppLocalizations.supportedLocales.firstWhere(
+      (l) => l.languageCode == languageCode,
+      orElse: () => const Locale('en'),
+    );
+    return lookupAppLocalizations(locale);
+  }
+}
+
+/// Kurulacak bildirimler (saat sırasına göre). Ağdan ve eklentiden bağımsız; testte doğrudan çağrılır.
+/// [days]: gün (yerel gece yarısı) → API vakitleri; [enabled]: Ayarlar ekranındaki vakit anahtarları.
+List<({DateTime time, String title, String body})> planNotifications({
+  required Map<DateTime, Map<String, dynamic>> days,
+  required Map<String, bool> enabled,
+  required int minutesBefore,
+  required DateTime now,
+  required AppLocalizations loc,
+}) {
+  // Ayarlar anahtarı → (API anahtarı, bildirimde görünen ad)
+  final prayers = {
+    'imsak': ('Fajr', loc.fajr),
+    'ogle': ('Dhuhr', loc.dhuhr),
+    'ikindi': ('Asr', loc.asr),
+    'aksam': ('Maghrib', loc.maghrib),
+    'yatsi': ('Isha', loc.isha),
+  };
+
+  final plan = <({DateTime time, String title, String body})>[];
+  void add(DateTime? time, String title, String body) {
+    if (time != null && time.isAfter(now)) plan.add((time: time, title: title, body: body));
+  }
+
+  for (final MapEntry(key: day, value: timings) in days.entries) {
+    // Sabah: ana sayfadaki gibi güneş doğmadan 1 saat önce
+    if (enabled['sabah'] == true) {
+      add(
+        _parseTime(timings['Sunrise'], day)?.subtract(const Duration(hours: 1)),
+        loc.prayerNotificationTitle,
+        loc.prayerNotificationBody(loc.sabah),
+      );
+    }
+
+    for (final entry in prayers.entries) {
+      if (enabled[entry.key] != true) continue;
+      final (apiKey, name) = entry.value;
+      final time = _parseTime(timings[apiKey], day);
+
+      if (minutesBefore > 0) {
+        add(
+          time?.subtract(Duration(minutes: minutesBefore)),
+          loc.reminderNotificationTitle,
+          loc.reminderNotificationBody(minutesBefore, name),
+        );
+      }
+      add(time, loc.prayerNotificationTitle, loc.prayerNotificationBody(name));
     }
   }
+
+  return plan..sort((a, b) => a.time.compareTo(b.time));
+}
+
+/// "05:13" veya takvim API'sinin "05:13 (+03)" biçiminden o günün saatini üretir
+DateTime? _parseTime(Object? raw, DateTime day) {
+  final match = RegExp(r'(\d{1,2}):(\d{2})').firstMatch(raw is String ? raw : '');
+  if (match == null) return null;
+
+  return DateTime(
+    day.year,
+    day.month,
+    day.day,
+    int.parse(match.group(1)!),
+    int.parse(match.group(2)!),
+  );
 }

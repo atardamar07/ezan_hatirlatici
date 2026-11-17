@@ -87,61 +87,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get calculationMethod => 'Hesaplama Metodu';
 
   @override
-  String get methodDiyanetName => 'Diyanet İşleri Başkanlığı';
-
-  @override
-  String get methodDiyanetDescription => 'Türkiye için resmi yöntem';
-
-  @override
-  String get methodMwlName => 'Dünya Müslüman Birliği';
-
-  @override
-  String get methodMwlDescription => 'Genel uluslararası yöntem';
-
-  @override
-  String get methodEgyptianName => 'Mısır Genel Otoritesi';
-
-  @override
-  String get methodEgyptianDescription => 'Mısır yöntemi';
-
-  @override
-  String get methodKarachiName => 'Karaçi';
-
-  @override
-  String get methodKarachiDescription => 'Pakistan yöntemi';
-
-  @override
-  String get methodUmmAlQuraName => 'Umm Al-Qura';
-
-  @override
-  String get methodUmmAlQuraDescription => 'Suudi Arabistan';
-
-  @override
-  String get methodMoonsightingName => 'İslam Bilimleri Üniversitesi';
-
-  @override
-  String get methodMoonsightingDescription => 'Ürdün / İslam Bilimleri Üniversitesi';
-
-  @override
-  String get methodTehranName => 'Tahran Jeofizik Enstitüsü';
-
-  @override
-  String get methodTehranDescription => 'İran yöntemi';
-
-  @override
-  String get methodFranceName => 'Fransa İslam Organizasyonları Birliği';
-
-  @override
-  String get methodFranceDescription => 'Fransa yöntemi';
-
-  @override
   String get cancel => 'İptal';
 
   @override
   String get selectLocation => 'Konum Seçin';
-
-  @override
-  String get sabah => 'Sabah';
 
   @override
   String get fajr => 'İmsak';
@@ -154,6 +103,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get asr => 'İkindi';
+
+  @override
+  String get sabah => 'Sabah';
 
   @override
   String get maghrib => 'Akşam';
@@ -356,19 +308,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tapToIncrement => 'Tap to increase count';
 
   @override
-  String get prayerNotificationTitle => '🕌 Prayer Time';
+  String get prayerNotificationTitle => '🕌 Namaz Vakti';
 
   @override
   String prayerNotificationBody(Object prayer) {
-    return '$prayer time has arrived. Time to pray!';
+    return '$prayer vakti geldi. Haydi namaza!';
   }
 
   @override
-  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+  String get reminderNotificationTitle => '⏰ Namaz Hatırlatıcı';
 
   @override
   String reminderNotificationBody(Object minutes, Object prayer) {
-    return '$prayer in $minutes minutes';
+    return '$prayer vaktine $minutes dakika kaldı';
   }
 
   @override
@@ -459,6 +411,54 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weeklyViewTitle => 'Haftalık Görünüm';
+
+  @override
+  String get methodDiyanetName => 'Diyanet İşleri Başkanlığı';
+
+  @override
+  String get methodDiyanetDescription => 'Türkiye için resmi yöntem';
+
+  @override
+  String get methodMwlName => 'Dünya Müslüman Birliği';
+
+  @override
+  String get methodMwlDescription => 'Genel uluslararası yöntem';
+
+  @override
+  String get methodEgyptianName => 'Mısır Genel Otoritesi';
+
+  @override
+  String get methodEgyptianDescription => 'Mısır yöntemi';
+
+  @override
+  String get methodKarachiName => 'Karaçi';
+
+  @override
+  String get methodKarachiDescription => 'Pakistan yöntemi';
+
+  @override
+  String get methodUmmAlQuraName => 'Umm Al-Qura';
+
+  @override
+  String get methodUmmAlQuraDescription => 'Suudi Arabistan';
+
+  @override
+  String get methodMoonsightingName => 'Moonsighting Committee (Dünya Hilal Komitesi)';
+
+  @override
+  String get methodMoonsightingDescription => 'Kuzey Amerika ve İngiltere\'de yaygın';
+
+  @override
+  String get methodTehranName => 'Tahran Jeofizik Enstitüsü';
+
+  @override
+  String get methodTehranDescription => 'İran yöntemi';
+
+  @override
+  String get methodFranceName => 'Fransa İslam Organizasyonları Birliği';
+
+  @override
+  String get methodFranceDescription => 'Fransa yöntemi';
 
   @override
   String get refresh => 'Yenile';
@@ -621,4 +621,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get darkThemeSubtitle => 'Gece görünümü';
+
+  @override
+  String get compassNotAvailable => 'Bu cihazda pusula sensörü yok.';
+
+  @override
+  String get compassCalibrationHint => 'Manyetik parazit var. Metal ve elektronik eşyalardan uzaklaşın, telefonu havada 8 çizerek kalibre edin.';
+
+  @override
+  String get methodIsnaName => 'Kuzey Amerika İslam Birliği (ISNA)';
+
+  @override
+  String get methodIsnaDescription => 'ABD ve Kanada';
+
+  @override
+  String get adPrivacyOptions => 'Reklam gizlilik seçenekleri';
 }

@@ -180,10 +180,19 @@
   "methodKarachiDescription": "الطريقة الباكستانية",
   "methodUmmAlQuraName": "أم القرى",
   "methodUmmAlQuraDescription": "المملكة العربية السعودية",
-  "methodMoonsightingName": "جامعة العلوم الإسلامية",
-  "methodMoonsightingDescription": "الأردن / جامعة العلوم الإسلامية",
+  "methodMoonsightingName": "لجنة رؤية الهلال العالمية",
+  "methodMoonsightingDescription": "شائعة في أمريكا الشمالية والمملكة المتحدة",
   "methodTehranName": "معهد الجيوفيزياء، طهران",
   "methodTehranDescription": "الطريقة الإيرانية",
   "methodFranceName": "اتحاد المنظمات الإسلامية",
-  "methodFranceDescription": "الطريقة الفرنسية"
+  "methodFranceDescription": "الطريقة الفرنسية",
+  "compassNotAvailable": "لا يحتوي هذا الجهاز على مستشعر بوصلة.",
+  "compassCalibrationHint": "تم اكتشاف تداخل مغناطيسي. ابتعد عن المعادن والأجهزة الإلكترونية، ثم حرّك هاتفك على شكل الرقم 8 للمعايرة.",
+  "prayerNotificationTitle": "🕌 وقت الصلاة",
+  "prayerNotificationBody": "{prayer}: حان وقت الصلاة",
+  "reminderNotificationTitle": "⏰ تذكير بالصلاة",
+  "reminderNotificationBody": "{prayer}: بعد {minutes} دقيقة",
+  "methodIsnaName": "الجمعية الإسلامية لأمريكا الشمالية (ISNA)",
+  "methodIsnaDescription": "الولايات المتحدة وكندا",
+  "adPrivacyOptions": "خيارات خصوصية الإعلانات"
 }

@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../navigation/bottom_nav_bar.dart';
+import '../services/ad_service.dart';
 import '../services/geocoding_service.dart';
 import '../services/location_service.dart';
+import '../services/notification_scheduler.dart';
 import '../services/prayer_times_api.dart';
 
 /// Namaz vakitleri model sınıfı
@@ -177,11 +182,16 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   final List<CityPrayerTimes> _cities = [];
   final PrayerTimesRepository _prayerTimesRepository = ApiPrayerTimesRepository();
   final CityResolver _cityResolver = GeocodingCityResolver();
+  final GeocodingService _geocodingService = GeocodingService();
   final LocationService _locationService = LocationService();
   final TextEditingController _searchController = TextEditingController();
+  final Duration _searchDebounceDuration = const Duration(milliseconds: 300);
+  Timer? _searchDebounce;
   bool _isLoadingCurrent = false;
   bool _isSearching = false;
+  bool _isLoadingSuggestions = false;
   String? _error;
+  List<ResolvedCity> _suggestions = const [];
 
   void _showErrorMessage(String message) {
     if (!mounted) return;
@@ -199,11 +209,14 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   @override
   void initState() {
     super.initState();
-    _loadCurrentLocationPrayerTimes();
+    // Önce vakitler (konum izni), sonra reklam onayı; iki pencere üst üste binmesin
+    _loadCurrentLocationPrayerTimes().whenComplete(() => AdService().initialize());
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -216,57 +229,115 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
 
     try {
       final position = await _locationService.getCurrentLocation();
+      if (!mounted) return;
+      final loc = AppLocalizations.of(context)!;
 
-      if (position == null) {
-        _showErrorMessage('Konum alınamadı. Lütfen manuel olarak şehir seçin.');
+      ResolvedCity? city;
+      if (position != null) {
+        city = await _cityForPosition(position.latitude, position.longitude, loc.currentLocation);
+        await _savePrimaryLocation(city);
+      } else {
+        // GPS yoksa son kayıtlı konum (önceki GPS ya da elle seçilen şehir) kullanılır
+        final prefs = await SharedPreferences.getInstance();
+        final lat = prefs.getDouble('latitude');
+        final lon = prefs.getDouble('longitude');
+        if (lat != null && lon != null) {
+          city = ResolvedCity(
+            cityName: prefs.getString('currentLocation') ?? loc.currentLocation,
+            countryName: '',
+            lat: lat,
+            lon: lon,
+          );
+        }
+      }
+
+      if (city == null) {
+        _showErrorMessage(loc.locationNotDetected);
         return;
       }
 
-      final placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
+      final current = CityPrayerTimes(
+        cityName: city.cityName,
+        countryName: city.countryName,
+        times: await _prayerTimesRepository.getPrayerTimesForLocation(city.lat, city.lon),
+        isCurrentLocation: true,
       );
 
+      if (!mounted) return;
+      setState(() {
+        _cities
+          ..removeWhere((c) => c.isCurrentLocation)
+          ..insert(0, current);
+      });
+    } catch (e) {
+      debugPrint('Current location prayer times failed: $e');
+      if (mounted) setState(() => _error = AppLocalizations.of(context)!.prayerTimesLoadFailed);
+    } finally {
+      if (mounted) setState(() => _isLoadingCurrent = false);
+      // Her açılışta kayıtlı konumla yeniden kurulur; böylece planlı günler hep ileri kayar
+      NotificationScheduler().scheduleAllPrayerNotifications();
+    }
+  }
+
+  Future<ResolvedCity> _cityForPosition(double lat, double lon, String fallbackName) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(lat, lon);
       final place = placemarks.isNotEmpty ? placemarks.first : null;
       final cityName = place?.locality?.isNotEmpty == true
           ? place!.locality!
           : place?.administrativeArea?.isNotEmpty == true
           ? place!.administrativeArea!
-          : 'Mevcut Konum';
-      final countryName = place?.country?.isNotEmpty == true ? place!.country! : '';
-
-      final times = await _prayerTimesRepository.getPrayerTimesForLocation(
-        position.latitude,
-        position.longitude,
-      );
-
-      setState(() {
-        _cities
-          ..clear()
-          ..add(CityPrayerTimes(
-            cityName: cityName,
-            countryName: countryName,
-            times: times,
-            isCurrentLocation: true,
-          ));
-      });
+          : fallbackName;
+      return ResolvedCity(cityName: cityName, countryName: place?.country ?? '', lat: lat, lon: lon);
     } catch (e) {
-      setState(() => _error = 'Konum yüklenemedi: $e');
-    } finally {
-      setState(() => _isLoadingCurrent = false);
+      // Adres servisi çalışmasa da (ağ yok, cihazda Geocoder yok) vakitler gösterilsin
+      debugPrint('Reverse geocoding failed: $e');
+      return ResolvedCity(cityName: fallbackName, countryName: '', lat: lat, lon: lon);
     }
+  }
+
+  /// Bildirimler, takvim ve kıble pusulası bu kayıtlı konumu kullanır
+  Future<void> _savePrimaryLocation(ResolvedCity city) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locationType', 'location');
+    await prefs.setDouble('latitude', city.lat);
+    await prefs.setDouble('longitude', city.lon);
+    await prefs.setString('currentLocation',
+        [city.cityName, city.countryName].where((s) => s.isNotEmpty).join(', '));
   }
 
   Future<void> _addCityByName(String cityName) async {
     final query = cityName.trim();
     if (query.isEmpty) return;
 
-    // Duplicate kontrolü
-    final alreadyExists = _cities.any((c) => c.cityName.toLowerCase() == query.toLowerCase());
-    if (alreadyExists) {
-      _showErrorMessage('$query zaten listede');
+    setState(() => _error = null);
+
+    ResolvedCity? resolved;
+    try {
+      resolved = await _cityResolver.resolveCityByName(query);
+    } catch (e) {
+      // Geocoder sonuç bulamayınca da hata fırlatır
+      debugPrint('City search failed: $e');
+    }
+    if (!mounted) return;
+
+    if (resolved == null) {
+      _showErrorMessage(AppLocalizations.of(context)!.cityNotFound);
       return;
     }
+    await _addResolvedCity(resolved);
+  }
+
+  Future<void> _addResolvedCity(ResolvedCity city) async {
+    final alreadyExists =
+    _cities.any((c) => c.cityName.toLowerCase() == city.cityName.toLowerCase());
+    if (alreadyExists) {
+      _searchController.clear();
+      return;
+    }
+
+    // Konum izni yoksa ilk seçilen şehir ana konum olur (bildirim, takvim, kıble için)
+    final isPrimary = !_isLoadingCurrent && !_cities.any((c) => c.isCurrentLocation);
 
     setState(() {
       _isSearching = true;
@@ -274,31 +345,82 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     });
 
     try {
-      final resolved = await _cityResolver.resolveCityByName(query);
-      if (resolved == null) {
-        _showErrorMessage('Bu şehir bulunamadı, lütfen başka bir şehir deneyin.');
-        return;
-      }
-
-      final times = await _prayerTimesRepository.getPrayerTimesForCity(
-        resolved.cityName,
-        resolved.countryName,
+      final times = await _prayerTimesRepository.getPrayerTimesForLocation(
+        city.lat,
+        city.lon,
       );
+
+      if (isPrimary) {
+        await _savePrimaryLocation(city);
+        NotificationScheduler().scheduleAllPrayerNotifications();
+      }
 
       if (!mounted) return;
       setState(() {
         _cities.add(CityPrayerTimes(
-          cityName: resolved.cityName,
-          countryName: resolved.countryName,
+          cityName: city.cityName,
+          countryName: city.countryName,
           times: times,
+          isCurrentLocation: isPrimary,
         ));
         _searchController.clear();
+        _suggestions = const [];
       });
     } catch (e) {
-      _showErrorMessage('Şehir aranırken bir hata oluştu: $e');
+      debugPrint('Adding city failed: $e');
+      if (mounted) _showErrorMessage(AppLocalizations.of(context)!.prayerTimesLoadFailed);
     } finally {
+      if (mounted) setState(() => _isSearching = false);
+    }
+  }
+
+  void _onSearchChanged() {
+    _searchDebounce?.cancel();
+    final query = _searchController.text.trim();
+
+    if (query.isEmpty) {
+      setState(() {
+        _suggestions = const [];
+        _error = null;
+      });
+      return;
+    }
+
+    _searchDebounce = Timer(_searchDebounceDuration, () => _loadSuggestions(query));
+  }
+
+  Future<void> _loadSuggestions(String query) async {
+    setState(() {
+      _isLoadingSuggestions = true;
+      _error = null;
+    });
+
+    try {
+      final results = await _geocodingService.searchCities(query);
+      final mappedResults = results.take(3).map((city) {
+        final name = (city['name'] as String?)?.trim();
+        final country = (city['country'] as String?)?.trim() ?? '';
+        final lat = city['latitude'] as double?;
+        final lon = city['longitude'] as double?;
+
+        if (name == null || lat == null || lon == null) return null;
+
+        return ResolvedCity(
+          cityName: name,
+          countryName: country,
+          lat: lat,
+          lon: lon,
+        );
+      }).whereType<ResolvedCity>().toList();
+
       if (!mounted) return;
-      setState(() => _isSearching = false);
+      setState(() => _suggestions = mappedResults);
+    } catch (e) {
+      // Yazarken eşleşme olmaması normal; geocoder bunu hata olarak fırlatır, uyarı gösterme
+      debugPrint('City suggestions failed: $e');
+      if (mounted) setState(() => _suggestions = const []);
+    } finally {
+      if (mounted) setState(() => _isLoadingSuggestions = false);
     }
   }
 
@@ -310,31 +432,28 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   }
 
   Drawer _buildAppDrawer(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final navItems = [
-      _NavDestination(
-        icon: Icons.location_city,
-        label: 'Çoklu Şehir',
-        route: '/home',
-      ),
-      _NavDestination(icon: Icons.calendar_month, label: 'Takvim', route: '/calendar'),
-      _NavDestination(icon: Icons.explore, label: 'Kıble Pusulası', route: '/qibla'),
-      _NavDestination(icon: Icons.notifications, label: 'Bildirimler', route: '/notifications'),
-      _NavDestination(icon: Icons.accessibility, label: 'Zikirmatik', route: '/zikirmatik'),
-      _NavDestination(icon: Icons.settings, label: 'Ayarlar', route: '/settings'),
-      _NavDestination(icon: Icons.volunteer_activism, label: 'Destek Ol', route: '/donate'),
+      _NavDestination(icon: Icons.location_city, label: loc.home, route: '/home'),
+      _NavDestination(icon: Icons.calendar_month, label: loc.calendarTitle, route: '/calendar'),
+      _NavDestination(icon: Icons.explore, label: loc.qiblaCompass, route: '/qibla'),
+      _NavDestination(icon: Icons.notifications, label: loc.notificationsTitle, route: '/notifications'),
+      _NavDestination(icon: Icons.accessibility, label: loc.dhikrCounter, route: '/zikirmatik'),
+      _NavDestination(icon: Icons.settings, label: loc.settings, route: '/settings'),
+      _NavDestination(icon: Icons.volunteer_activism, label: loc.donate, route: '/donate'),
     ];
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Color(0xFF4A6375)),
+          DrawerHeader(
+            decoration: const BoxDecoration(color: Color(0xFF4A6375)),
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
-                'Ezan Hatırlatıcı',
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                loc.appTitle,
+                style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -344,7 +463,17 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
               onTap: () {
                 Navigator.pop(context);
                 if (ModalRoute.of(context)?.settings.name == item.route) return;
-                Navigator.pushNamed(context, item.route);
+                Navigator.pushNamed(context, item.route).then((_) async {
+                  if (!mounted) return;
+                  // Ayarlarda hesaplama yöntemi değişmiş olabilir
+                  if (item.route == '/settings') _loadCurrentLocationPrayerTimes();
+                  // AdMob politikası: geçiş reklamı yalnızca doğal geçiş anında (bir ekrandan
+                  // dönüşte), sıklık sınırıyla; destek ekranından dönen kullanıcıya gösterilmez
+                  final ads = AdService();
+                  if (item.route != '/donate' && await ads.shouldShowAd()) {
+                    ads.showInterstitialAd();
+                  }
+                });
               },
             ),
         ],
@@ -358,7 +487,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     return Scaffold(
       drawer: _buildAppDrawer(context),
       appBar: AppBar(
-        title: const Text('Ezan Hatırlatıcı'),
+        title: Text(loc.appTitle),
       ),
       bottomNavigationBar: const MainBottomNavBar(
         currentTab: NavigationTab.home,
@@ -374,9 +503,9 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
                     controller: _searchController,
                     textInputAction: TextInputAction.search,
                     onSubmitted: _addCityByName,
-                    decoration: const InputDecoration(
-                      hintText: 'Şehir ara (örn. Tokyo)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintText: loc.searchCity,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ),
@@ -406,6 +535,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
               ),
             ),
           ),
+          _buildSearchSuggestions(),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -431,6 +561,40 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
               },
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchSuggestions() {
+    if (_searchController.text.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    if (_isLoadingSuggestions) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: LinearProgressIndicator(),
+      );
+    }
+
+    if (_suggestions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Column(
+        children: [
+          for (final suggestion in _suggestions)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.location_searching),
+                title: Text(suggestion.cityName),
+                subtitle: Text(suggestion.countryName),
+                onTap: () => _addResolvedCity(suggestion),
+              ),
+            ),
         ],
       ),
     );
@@ -477,6 +641,7 @@ class _PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final formatter = DateFormat('HH:mm');
     final times = city.times;
 
@@ -494,14 +659,14 @@ class _PrayerCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${city.cityName}, ${city.countryName}',
+                        [city.cityName, city.countryName].where((s) => s.isNotEmpty).join(', '),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       if (city.isCurrentLocation)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
                           child: Chip(
-                            label: Text('Şu anki konum'),
+                            label: Text(loc.currentLocation),
                             visualDensity: VisualDensity.compact,
                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -517,11 +682,11 @@ class _PrayerCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            _PrayerRow(label: 'Sabah', time: formatter.format(times.sabah)),
-            _PrayerRow(label: 'Öğle', time: formatter.format(times.ogle)),
-            _PrayerRow(label: 'İkindi', time: formatter.format(times.ikindi)),
-            _PrayerRow(label: 'Akşam', time: formatter.format(times.aksam)),
-            _PrayerRow(label: 'Yatsı', time: formatter.format(times.yatsi)),
+            _PrayerRow(label: loc.sabah, time: formatter.format(times.sabah)),
+            _PrayerRow(label: loc.dhuhr, time: formatter.format(times.ogle)),
+            _PrayerRow(label: loc.asr, time: formatter.format(times.ikindi)),
+            _PrayerRow(label: loc.maghrib, time: formatter.format(times.aksam)),
+            _PrayerRow(label: loc.isha, time: formatter.format(times.yatsi)),
           ],
         ),
       ),

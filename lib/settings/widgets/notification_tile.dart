@@ -5,7 +5,6 @@ import '../notification_model.dart';
 class NotificationTile extends StatelessWidget {
   final PrayerNotificationSetting setting;
   final ValueChanged<bool> onToggle;
-  final VoidCallback onTimeTap;
   final String enabledLabel;
   final String disabledLabel;
   final String? titleOverride;
@@ -14,17 +13,10 @@ class NotificationTile extends StatelessWidget {
     super.key,
     required this.setting,
     required this.onToggle,
-    required this.onTimeTap,
     required this.enabledLabel,
     required this.disabledLabel,
     this.titleOverride,
   });
-
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,35 +45,10 @@ class NotificationTile extends StatelessWidget {
               ],
             ),
           ),
-          Wrap(
-            spacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              FilledButton.tonal(
-                onPressed: onTimeTap,
-                style: FilledButton.styleFrom(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  visualDensity: VisualDensity.compact,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.access_time, size: 18),
-                    const SizedBox(width: 6),
-                    Text(
-                      _formatTime(setting.time),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-              Switch(
-                value: setting.isEnabled,
-                onChanged: onToggle,
-                activeColor: colorScheme.primary,
-              ),
-            ],
+          Switch(
+            value: setting.isEnabled,
+            onChanged: onToggle,
+            activeColor: colorScheme.primary,
           ),
         ],
       ),

@@ -24,4 +24,10 @@ class AdServicePlatform implements AdServiceBase {
 
   @override
   void dispose() {}
+
+  @override
+  Future<bool> isPrivacyOptionsRequired() async => false;
+
+  @override
+  Future<void> showPrivacyOptions() async {}
 }

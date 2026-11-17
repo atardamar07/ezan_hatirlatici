@@ -46,3 +46,7 @@ app.*.map.json
 
 # Signing key
 /android/key.properties
+# Android imza anahtarı ve şifreleri (asla repoya girmemeli)
+*.jks
+*.keystore
+key.properties

@@ -33,8 +33,22 @@ class AdServicePlatform implements AdServiceBase {
         : AdIds.androidInterstitialAdUnitId;
   }
 
+  Future<void>? _initFuture;
+
+  /// Tekil servis: ana sayfa yeniden kurulsa da onay + SDK başlatma bir kez yapılır
   @override
-  Future<void> initialize({bool loadAds = true}) async {
+  Future<void> initialize({bool loadAds = true}) =>
+      _initFuture ??= _initialize(loadAds);
+
+  Future<void> _initialize(bool loadAds) async {
+    // AB/İngiltere'de (GDPR) Google onaylı onay formu zorunlu; onay yoksa reklam istenmez
+    await _gatherConsent();
+    if (!await ConsentInformation.instance.canRequestAds()) {
+      debugPrint('Ads disabled: consent not given');
+      _canLoadAds = false;
+      return;
+    }
+
     try {
       // Add timeout protection to prevent indefinite hanging
       await MobileAds.instance.initialize().timeout(
@@ -139,6 +153,35 @@ class AdServicePlatform implements AdServiceBase {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt("lastAdTime", DateTime.now().millisecondsSinceEpoch);
   }
+
+  /// Gerekliyse (yalnızca onay gereken bölgelerde) Google'ın onay formunu gösterir
+  Future<void> _gatherConsent() {
+    final done = Completer<void>();
+    ConsentInformation.instance.requestConsentInfoUpdate(
+      ConsentRequestParameters(),
+      () => ConsentForm.loadAndShowConsentFormIfRequired((error) {
+        if (error != null) debugPrint('Consent form error: ${error.message}');
+      })
+          .catchError((Object e) => debugPrint('Consent form failed: $e'))
+          .whenComplete(done.complete),
+      (error) {
+        debugPrint('Consent info update failed: ${error.message}');
+        done.complete();
+      },
+    );
+    return done.future;
+  }
+
+  @override
+  Future<bool> isPrivacyOptionsRequired() async =>
+      await ConsentInformation.instance.getPrivacyOptionsRequirementStatus() ==
+      PrivacyOptionsRequirementStatus.required;
+
+  @override
+  Future<void> showPrivacyOptions() =>
+      ConsentForm.showPrivacyOptionsForm((error) {
+        if (error != null) debugPrint('Privacy options error: ${error.message}');
+      });
 
   void _retryLoadInterstitial() {
     Future.delayed(_retryDelay, () {

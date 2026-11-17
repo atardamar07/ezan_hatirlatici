@@ -1,7 +1,7 @@
 name: ezan_hatirlatici
 description: "Prayer Times & Reminder App"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+4
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -15,8 +15,6 @@ dependencies:
 
   # Core
   flutter_local_notifications: ^19.5.0
-  flutter_native_splash: ^2.3.5
-  audioplayers: ^6.5.1
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   shared_preferences: ^2.2.2
@@ -24,14 +22,11 @@ dependencies:
   google_mobile_ads: ^6.0.0
   in_app_purchase: ^3.1.5
   provider: ^6.1.1
-  flutter_svg: ^2.0.9
-  animations: ^2.0.8
 
   # HTTP & Utils
   http: ^1.2.2
   intl: ^0.20.2
   timezone: ^0.10.1
-  permission_handler: ^11.3.1
 
   # UI
   cupertino_icons: ^1.0.8
@@ -47,10 +42,8 @@ flutter:
   uses-material-design: true
   generate: true
 
-  assets:
-    - assets/images/
-    - assets/icons/
-    - assets/sounds/ezan.mp3
+  # assets/ klasörü uygulamada kullanılmıyor (ezan sesi android/app/src/main/res/raw'dan çalınır);
+  # eskiden ~10 MB'ı boşuna pakete giriyordu.
 
   fonts:
     - family: Poppins

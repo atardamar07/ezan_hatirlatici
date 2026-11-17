@@ -32,8 +32,7 @@ class NotificationService {
     // ✅ Timezone ayarlarını yap
     tz.initializeTimeZones();
     try {
-      final dynamic timeZoneResult = await FlutterTimezone.getLocalTimezone();
-      final String timeZoneName = _normalizeTimezoneName(timeZoneResult);
+      final timeZoneName = (await FlutterTimezone.getLocalTimezone()).identifier;
 
       tz.setLocalLocation(tz.getLocation(timeZoneName));
       debugPrint('🌍 Local Timezone set to: $timeZoneName');
@@ -58,17 +57,20 @@ class NotificationService {
 
       await androidPlugin.createNotificationChannel(androidChannel);
       debugPrint('📢 Notification channel created: $_androidChannelId');
+    }
+  }
 
-      await androidPlugin.requestNotificationsPermission();
+  /// Bildirim ve kesin alarm izinlerini ister. Kesin alarm isteği sistem ayarlarını
+  /// açtığı için yalnızca ilk açılışta çağrılır (main.dart).
+  static Future<void> requestPermissions() async {
+    final androidPlugin = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin == null) return;
 
-      final canScheduleExact =
-          await androidPlugin.canScheduleExactNotifications();
-
-      if (canScheduleExact != true) {
-        await androidPlugin.requestExactAlarmsPermission();
-      }
-
-      debugPrint('📢 Notification permissions requested');
+    await androidPlugin.requestNotificationsPermission();
+    if (await androidPlugin.canScheduleExactNotifications() != true) {
+      await androidPlugin.requestExactAlarmsPermission();
     }
   }
 
@@ -108,13 +110,23 @@ class NotificationService {
 
     final details = _buildNotificationDetails();
 
+    // Android 14+ kesin alarm iznini varsayılan olarak vermiyor; izin yoksa
+    // exact mod hata fırlatır ve hiç bildirim kurulmaz. O durumda esnek alarma düş.
+    final canScheduleExact = await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.canScheduleExactNotifications() ??
+        true;
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       scheduledTime.millisecondsSinceEpoch ~/ 10000,
       title,
       body,
       tzScheduledTime,
       details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: canScheduleExact
+          ? AndroidScheduleMode.exactAllowWhileIdle
+          : AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 
@@ -195,20 +207,6 @@ class NotificationService {
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
-  }
-
-  /// Normalizes timezone strings to a format accepted by the `timezone` package.
-  ///
-  /// Some platforms return a wrapped string like
-  /// `TimezoneInfo(Europe/Istanbul, (locale: tr_TR, name: GMT+03:00))`.
-  /// This method extracts the actual timezone name (e.g. `Europe/Istanbul`).
-  static String _normalizeTimezoneName(dynamic timeZoneResult) {
-    final raw = timeZoneResult.toString().trim();
-    final match = RegExp(r'TimezoneInfo\(([^,]+)').firstMatch(raw);
-    if (match != null) {
-      return match.group(1)!;
-    }
-    return raw;
   }
 }
 

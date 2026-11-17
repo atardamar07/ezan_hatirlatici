@@ -87,61 +87,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calculationMethod => 'Метод расчета';
 
   @override
-  String get methodDiyanetName => 'Управление по делам религии';
-
-  @override
-  String get methodDiyanetDescription => 'Официальный метод для Турции';
-
-  @override
-  String get methodMwlName => 'Мусульманская Всемирная Лига';
-
-  @override
-  String get methodMwlDescription => 'Общий международный метод';
-
-  @override
-  String get methodEgyptianName => 'Египетское Главное Управление';
-
-  @override
-  String get methodEgyptianDescription => 'Египетский метод';
-
-  @override
-  String get methodKarachiName => 'Карачи';
-
-  @override
-  String get methodKarachiDescription => 'Пакистанский метод';
-
-  @override
-  String get methodUmmAlQuraName => 'Умм аль-Кура';
-
-  @override
-  String get methodUmmAlQuraDescription => 'Саудовская Аравия';
-
-  @override
-  String get methodMoonsightingName => 'Университет исламских наук';
-
-  @override
-  String get methodMoonsightingDescription => 'Иордания / Университет исламских наук';
-
-  @override
-  String get methodTehranName => 'Институт геофизики, Тегеран';
-
-  @override
-  String get methodTehranDescription => 'Иранский метод';
-
-  @override
-  String get methodFranceName => 'Союз исламских организаций';
-
-  @override
-  String get methodFranceDescription => 'Французский метод';
-
-  @override
   String get cancel => 'Отмена';
 
   @override
   String get selectLocation => 'Выберите местоположение';
-
-  @override
-  String get sabah => 'Утро';
 
   @override
   String get fajr => 'Фаджр';
@@ -154,6 +103,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get asr => 'Аср';
+
+  @override
+  String get sabah => 'Утро';
 
   @override
   String get maghrib => 'Магриб';
@@ -356,19 +308,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tapToIncrement => 'Tap to increase count';
 
   @override
-  String get prayerNotificationTitle => '🕌 Prayer Time';
+  String get prayerNotificationTitle => '🕌 Время намаза';
 
   @override
   String prayerNotificationBody(Object prayer) {
-    return '$prayer time has arrived. Time to pray!';
+    return '$prayer: наступило время намаза.';
   }
 
   @override
-  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+  String get reminderNotificationTitle => '⏰ Напоминание о намазе';
 
   @override
   String reminderNotificationBody(Object minutes, Object prayer) {
-    return '$prayer in $minutes minutes';
+    return '$prayer через $minutes мин.';
   }
 
   @override
@@ -459,6 +411,54 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get weeklyViewTitle => 'Недельный вид';
+
+  @override
+  String get methodDiyanetName => 'Управление по делам религии';
+
+  @override
+  String get methodDiyanetDescription => 'Официальный метод для Турции';
+
+  @override
+  String get methodMwlName => 'Мусульманская Всемирная Лига';
+
+  @override
+  String get methodMwlDescription => 'Общий международный метод';
+
+  @override
+  String get methodEgyptianName => 'Египетское Главное Управление';
+
+  @override
+  String get methodEgyptianDescription => 'Египетский метод';
+
+  @override
+  String get methodKarachiName => 'Карачи';
+
+  @override
+  String get methodKarachiDescription => 'Пакистанский метод';
+
+  @override
+  String get methodUmmAlQuraName => 'Умм аль-Кура';
+
+  @override
+  String get methodUmmAlQuraDescription => 'Саудовская Аравия';
+
+  @override
+  String get methodMoonsightingName => 'Moonsighting Committee Worldwide';
+
+  @override
+  String get methodMoonsightingDescription => 'Распространён в Северной Америке и Великобритании';
+
+  @override
+  String get methodTehranName => 'Институт геофизики, Тегеран';
+
+  @override
+  String get methodTehranDescription => 'Иранский метод';
+
+  @override
+  String get methodFranceName => 'Союз исламских организаций';
+
+  @override
+  String get methodFranceDescription => 'Французский метод';
 
   @override
   String get refresh => 'Обновить';
@@ -621,4 +621,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get darkThemeSubtitle => 'Ночной вид';
+
+  @override
+  String get compassNotAvailable => 'На этом устройстве нет датчика компаса.';
+
+  @override
+  String get compassCalibrationHint => 'Обнаружены магнитные помехи. Отойдите от металла и электроники и откалибруйте телефон, описав им восьмёрку.';
+
+  @override
+  String get methodIsnaName => 'Исламское общество Северной Америки (ISNA)';
+
+  @override
+  String get methodIsnaDescription => 'США и Канада';
+
+  @override
+  String get adPrivacyOptions => 'Настройки конфиденциальности рекламы';
 }

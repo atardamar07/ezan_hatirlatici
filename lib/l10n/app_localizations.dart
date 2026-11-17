@@ -224,7 +224,7 @@ abstract class AppLocalizations {
   /// No description provided for @donate.
   ///
   /// In en, this message translates to:
-  /// **'Donate'**
+  /// **'Support'**
   String get donate;
 
   /// No description provided for @retry.
@@ -245,102 +245,6 @@ abstract class AppLocalizations {
   /// **'Calculation Method'**
   String get calculationMethod;
 
-  /// No description provided for @methodDiyanetName.
-  ///
-  /// In en, this message translates to:
-  /// **'Presidency of Religious Affairs'**
-  String get methodDiyanetName;
-
-  /// No description provided for @methodDiyanetDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Official method for Türkiye'**
-  String get methodDiyanetDescription;
-
-  /// No description provided for @methodMwlName.
-  ///
-  /// In en, this message translates to:
-  /// **'Muslim World League'**
-  String get methodMwlName;
-
-  /// No description provided for @methodMwlDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'General international method'**
-  String get methodMwlDescription;
-
-  /// No description provided for @methodEgyptianName.
-  ///
-  /// In en, this message translates to:
-  /// **'Egyptian General Authority'**
-  String get methodEgyptianName;
-
-  /// No description provided for @methodEgyptianDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Egyptian method'**
-  String get methodEgyptianDescription;
-
-  /// No description provided for @methodKarachiName.
-  ///
-  /// In en, this message translates to:
-  /// **'Karachi'**
-  String get methodKarachiName;
-
-  /// No description provided for @methodKarachiDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Pakistan method'**
-  String get methodKarachiDescription;
-
-  /// No description provided for @methodUmmAlQuraName.
-  ///
-  /// In en, this message translates to:
-  /// **'Umm Al-Qura'**
-  String get methodUmmAlQuraName;
-
-  /// No description provided for @methodUmmAlQuraDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Saudi Arabia'**
-  String get methodUmmAlQuraDescription;
-
-  /// No description provided for @methodMoonsightingName.
-  ///
-  /// In en, this message translates to:
-  /// **'University of Islamic Sciences'**
-  String get methodMoonsightingName;
-
-  /// No description provided for @methodMoonsightingDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Jordan / University of Islamic Sciences'**
-  String get methodMoonsightingDescription;
-
-  /// No description provided for @methodTehranName.
-  ///
-  /// In en, this message translates to:
-  /// **'Institute of Geophysics, Tehran'**
-  String get methodTehranName;
-
-  /// No description provided for @methodTehranDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Iran method'**
-  String get methodTehranDescription;
-
-  /// No description provided for @methodFranceName.
-  ///
-  /// In en, this message translates to:
-  /// **'Union of Islamic Organisations'**
-  String get methodFranceName;
-
-  /// No description provided for @methodFranceDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'France method'**
-  String get methodFranceDescription;
-
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -352,12 +256,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Location'**
   String get selectLocation;
-
-  /// No description provided for @sabah.
-  ///
-  /// In en, this message translates to:
-  /// **'Morning'**
-  String get sabah;
 
   /// No description provided for @fajr.
   ///
@@ -382,6 +280,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Asr'**
   String get asr;
+
+  /// No description provided for @sabah.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get sabah;
 
   /// No description provided for @maghrib.
   ///
@@ -614,7 +518,7 @@ abstract class AppLocalizations {
   /// No description provided for @donationInfoText.
   ///
   /// In en, this message translates to:
-  /// **'Tips are processed via Google Play Billing and help cover development and server costs.'**
+  /// **'Tips are processed via Google Play Billing and are used for development costs.'**
   String get donationInfoText;
 
   /// No description provided for @coffeeDonation.
@@ -941,6 +845,102 @@ abstract class AppLocalizations {
   /// **'Weekly View'**
   String get weeklyViewTitle;
 
+  /// No description provided for @methodDiyanetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Presidency of Religious Affairs'**
+  String get methodDiyanetName;
+
+  /// No description provided for @methodDiyanetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Official method for Türkiye'**
+  String get methodDiyanetDescription;
+
+  /// No description provided for @methodMwlName.
+  ///
+  /// In en, this message translates to:
+  /// **'Muslim World League'**
+  String get methodMwlName;
+
+  /// No description provided for @methodMwlDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'General international method'**
+  String get methodMwlDescription;
+
+  /// No description provided for @methodEgyptianName.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian General Authority'**
+  String get methodEgyptianName;
+
+  /// No description provided for @methodEgyptianDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian method'**
+  String get methodEgyptianDescription;
+
+  /// No description provided for @methodKarachiName.
+  ///
+  /// In en, this message translates to:
+  /// **'Karachi'**
+  String get methodKarachiName;
+
+  /// No description provided for @methodKarachiDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pakistan method'**
+  String get methodKarachiDescription;
+
+  /// No description provided for @methodUmmAlQuraName.
+  ///
+  /// In en, this message translates to:
+  /// **'Umm Al-Qura'**
+  String get methodUmmAlQuraName;
+
+  /// No description provided for @methodUmmAlQuraDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Saudi Arabia'**
+  String get methodUmmAlQuraDescription;
+
+  /// No description provided for @methodMoonsightingName.
+  ///
+  /// In en, this message translates to:
+  /// **'Moonsighting Committee Worldwide'**
+  String get methodMoonsightingName;
+
+  /// No description provided for @methodMoonsightingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Common in North America and the UK'**
+  String get methodMoonsightingDescription;
+
+  /// No description provided for @methodTehranName.
+  ///
+  /// In en, this message translates to:
+  /// **'Institute of Geophysics, Tehran'**
+  String get methodTehranName;
+
+  /// No description provided for @methodTehranDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Iran method'**
+  String get methodTehranDescription;
+
+  /// No description provided for @methodFranceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Union of Islamic Organisations'**
+  String get methodFranceName;
+
+  /// No description provided for @methodFranceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'France method'**
+  String get methodFranceDescription;
+
   /// No description provided for @refresh.
   ///
   /// In en, this message translates to:
@@ -1252,6 +1252,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nighttime look'**
   String get darkThemeSubtitle;
+
+  /// No description provided for @compassNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no compass sensor.'**
+  String get compassNotAvailable;
+
+  /// No description provided for @compassCalibrationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic interference detected. Move away from metal and electronics, then wave your phone in a figure 8 to calibrate.'**
+  String get compassCalibrationHint;
+
+  /// No description provided for @methodIsnaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Society of North America (ISNA)'**
+  String get methodIsnaName;
+
+  /// No description provided for @methodIsnaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'USA and Canada'**
+  String get methodIsnaDescription;
+
+  /// No description provided for @adPrivacyOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy options'**
+  String get adPrivacyOptions;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

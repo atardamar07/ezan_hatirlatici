@@ -30,15 +30,23 @@ class LocationService {
     }
   }
 
-  /// Konumu al
+  /// Konumu al. Namaz vakti ve kıble için şehir düzeyi doğruluk yeterli;
+  /// GPS'i beklemek kapalı alanda dakikalarca sürebileceği için süre sınırı var.
   Future<Position?> getCurrentLocation() async {
     try {
       final hasPermission = await requestPermission();
       if (!hasPermission) return null;
 
-      return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-      );
+      try {
+        return await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 15),
+          ),
+        );
+      } on TimeoutException {
+        return await Geolocator.getLastKnownPosition();
+      }
     } catch (e) {
       debugPrint('Error getting location: $e');
       return null;

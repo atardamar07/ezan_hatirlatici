@@ -87,61 +87,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calculationMethod => 'Berechnungsmethode';
 
   @override
-  String get methodDiyanetName => 'Präsidium für Religionsangelegenheiten';
-
-  @override
-  String get methodDiyanetDescription => 'Offizielle Methode für die Türkei';
-
-  @override
-  String get methodMwlName => 'Muslim World League';
-
-  @override
-  String get methodMwlDescription => 'Allgemeine internationale Methode';
-
-  @override
-  String get methodEgyptianName => 'Ägyptische Generalbehörde';
-
-  @override
-  String get methodEgyptianDescription => 'Ägyptische Methode';
-
-  @override
-  String get methodKarachiName => 'Karachi';
-
-  @override
-  String get methodKarachiDescription => 'Pakistanische Methode';
-
-  @override
-  String get methodUmmAlQuraName => 'Umm Al-Qura';
-
-  @override
-  String get methodUmmAlQuraDescription => 'Saudi-Arabien';
-
-  @override
-  String get methodMoonsightingName => 'Universität der Islamischen Wissenschaften';
-
-  @override
-  String get methodMoonsightingDescription => 'Jordanien / Universität der Islamischen Wissenschaften';
-
-  @override
-  String get methodTehranName => 'Institut für Geophysik, Teheran';
-
-  @override
-  String get methodTehranDescription => 'Iranische Methode';
-
-  @override
-  String get methodFranceName => 'Union islamischer Organisationen';
-
-  @override
-  String get methodFranceDescription => 'Französische Methode';
-
-  @override
   String get cancel => 'Abbrechen';
 
   @override
   String get selectLocation => 'Standort auswählen';
-
-  @override
-  String get sabah => 'Morgen';
 
   @override
   String get fajr => 'Fajr';
@@ -154,6 +103,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get asr => 'Asr';
+
+  @override
+  String get sabah => 'Morgen';
 
   @override
   String get maghrib => 'Maghrib';
@@ -356,19 +308,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tapToIncrement => 'Tap to increase count';
 
   @override
-  String get prayerNotificationTitle => '🕌 Prayer Time';
+  String get prayerNotificationTitle => '🕌 Gebetszeit';
 
   @override
   String prayerNotificationBody(Object prayer) {
-    return '$prayer time has arrived. Time to pray!';
+    return '$prayer: Die Gebetszeit hat begonnen.';
   }
 
   @override
-  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+  String get reminderNotificationTitle => '⏰ Gebetserinnerung';
 
   @override
   String reminderNotificationBody(Object minutes, Object prayer) {
-    return '$prayer in $minutes minutes';
+    return '$prayer in $minutes Minuten';
   }
 
   @override
@@ -459,6 +411,54 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get weeklyViewTitle => 'Wochenansicht';
+
+  @override
+  String get methodDiyanetName => 'Präsidium für Religionsangelegenheiten';
+
+  @override
+  String get methodDiyanetDescription => 'Offizielle Methode für die Türkei';
+
+  @override
+  String get methodMwlName => 'Muslim World League';
+
+  @override
+  String get methodMwlDescription => 'Allgemeine internationale Methode';
+
+  @override
+  String get methodEgyptianName => 'Ägyptische Generalbehörde';
+
+  @override
+  String get methodEgyptianDescription => 'Ägyptische Methode';
+
+  @override
+  String get methodKarachiName => 'Karachi';
+
+  @override
+  String get methodKarachiDescription => 'Pakistanische Methode';
+
+  @override
+  String get methodUmmAlQuraName => 'Umm Al-Qura';
+
+  @override
+  String get methodUmmAlQuraDescription => 'Saudi-Arabien';
+
+  @override
+  String get methodMoonsightingName => 'Moonsighting Committee Worldwide';
+
+  @override
+  String get methodMoonsightingDescription => 'Verbreitet in Nordamerika und Großbritannien';
+
+  @override
+  String get methodTehranName => 'Institut für Geophysik, Teheran';
+
+  @override
+  String get methodTehranDescription => 'Iranische Methode';
+
+  @override
+  String get methodFranceName => 'Union islamischer Organisationen';
+
+  @override
+  String get methodFranceDescription => 'Französische Methode';
 
   @override
   String get refresh => 'Aktualisieren';
@@ -621,4 +621,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get darkThemeSubtitle => 'Nachtansicht';
+
+  @override
+  String get compassNotAvailable => 'Dieses Gerät hat keinen Kompasssensor.';
+
+  @override
+  String get compassCalibrationHint => 'Magnetische Störung erkannt. Entfernen Sie sich von Metall und Elektronik und bewegen Sie das Handy in Form einer 8, um es zu kalibrieren.';
+
+  @override
+  String get methodIsnaName => 'Islamic Society of North America (ISNA)';
+
+  @override
+  String get methodIsnaDescription => 'USA und Kanada';
+
+  @override
+  String get adPrivacyOptions => 'Datenschutzoptionen für Werbung';
 }

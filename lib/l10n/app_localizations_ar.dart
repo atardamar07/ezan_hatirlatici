@@ -87,61 +87,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calculationMethod => 'طريقة الحساب';
 
   @override
-  String get methodDiyanetName => 'رئاسة الشؤون الدينية';
-
-  @override
-  String get methodDiyanetDescription => 'الطريقة الرسمية لتركيا';
-
-  @override
-  String get methodMwlName => 'رابطة العالم الإسلامي';
-
-  @override
-  String get methodMwlDescription => 'طريقة دولية عامة';
-
-  @override
-  String get methodEgyptianName => 'الهيئة العامة المصرية';
-
-  @override
-  String get methodEgyptianDescription => 'الطريقة المصرية';
-
-  @override
-  String get methodKarachiName => 'كراتشي';
-
-  @override
-  String get methodKarachiDescription => 'الطريقة الباكستانية';
-
-  @override
-  String get methodUmmAlQuraName => 'أم القرى';
-
-  @override
-  String get methodUmmAlQuraDescription => 'المملكة العربية السعودية';
-
-  @override
-  String get methodMoonsightingName => 'جامعة العلوم الإسلامية';
-
-  @override
-  String get methodMoonsightingDescription => 'الأردن / جامعة العلوم الإسلامية';
-
-  @override
-  String get methodTehranName => 'معهد الجيوفيزياء، طهران';
-
-  @override
-  String get methodTehranDescription => 'الطريقة الإيرانية';
-
-  @override
-  String get methodFranceName => 'اتحاد المنظمات الإسلامية';
-
-  @override
-  String get methodFranceDescription => 'الطريقة الفرنسية';
-
-  @override
   String get cancel => 'إلغاء';
 
   @override
   String get selectLocation => 'اختر الموقع';
-
-  @override
-  String get sabah => 'صباح';
 
   @override
   String get fajr => 'الفجر';
@@ -154,6 +103,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get asr => 'العصر';
+
+  @override
+  String get sabah => 'صباح';
 
   @override
   String get maghrib => 'المغرب';
@@ -356,19 +308,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tapToIncrement => 'Tap to increase count';
 
   @override
-  String get prayerNotificationTitle => '🕌 Prayer Time';
+  String get prayerNotificationTitle => '🕌 وقت الصلاة';
 
   @override
   String prayerNotificationBody(Object prayer) {
-    return '$prayer time has arrived. Time to pray!';
+    return '$prayer: حان وقت الصلاة';
   }
 
   @override
-  String get reminderNotificationTitle => '⏰ Prayer Reminder';
+  String get reminderNotificationTitle => '⏰ تذكير بالصلاة';
 
   @override
   String reminderNotificationBody(Object minutes, Object prayer) {
-    return '$prayer in $minutes minutes';
+    return '$prayer: بعد $minutes دقيقة';
   }
 
   @override
@@ -459,6 +411,54 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weeklyViewTitle => 'عرض أسبوعي';
+
+  @override
+  String get methodDiyanetName => 'رئاسة الشؤون الدينية';
+
+  @override
+  String get methodDiyanetDescription => 'الطريقة الرسمية لتركيا';
+
+  @override
+  String get methodMwlName => 'رابطة العالم الإسلامي';
+
+  @override
+  String get methodMwlDescription => 'طريقة دولية عامة';
+
+  @override
+  String get methodEgyptianName => 'الهيئة العامة المصرية';
+
+  @override
+  String get methodEgyptianDescription => 'الطريقة المصرية';
+
+  @override
+  String get methodKarachiName => 'كراتشي';
+
+  @override
+  String get methodKarachiDescription => 'الطريقة الباكستانية';
+
+  @override
+  String get methodUmmAlQuraName => 'أم القرى';
+
+  @override
+  String get methodUmmAlQuraDescription => 'المملكة العربية السعودية';
+
+  @override
+  String get methodMoonsightingName => 'لجنة رؤية الهلال العالمية';
+
+  @override
+  String get methodMoonsightingDescription => 'شائعة في أمريكا الشمالية والمملكة المتحدة';
+
+  @override
+  String get methodTehranName => 'معهد الجيوفيزياء، طهران';
+
+  @override
+  String get methodTehranDescription => 'الطريقة الإيرانية';
+
+  @override
+  String get methodFranceName => 'اتحاد المنظمات الإسلامية';
+
+  @override
+  String get methodFranceDescription => 'الطريقة الفرنسية';
 
   @override
   String get refresh => 'تحديث';
@@ -621,4 +621,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get darkThemeSubtitle => 'مظهر الليل';
+
+  @override
+  String get compassNotAvailable => 'لا يحتوي هذا الجهاز على مستشعر بوصلة.';
+
+  @override
+  String get compassCalibrationHint => 'تم اكتشاف تداخل مغناطيسي. ابتعد عن المعادن والأجهزة الإلكترونية، ثم حرّك هاتفك على شكل الرقم 8 للمعايرة.';
+
+  @override
+  String get methodIsnaName => 'الجمعية الإسلامية لأمريكا الشمالية (ISNA)';
+
+  @override
+  String get methodIsnaDescription => 'الولايات المتحدة وكندا';
+
+  @override
+  String get adPrivacyOptions => 'خيارات خصوصية الإعلانات';
 }

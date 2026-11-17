@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'ad_service_base.dart';
 
 // KOŞULLU IMPORT
@@ -28,4 +26,8 @@ _impl.initialize(loadAds: loadAds);
 Future<AdStatus> getStatus() => _impl.getStatus();
 
 void dispose() => _impl.dispose();
+
+  Future<bool> isPrivacyOptionsRequired() => _impl.isPrivacyOptionsRequired();
+
+  Future<void> showPrivacyOptions() => _impl.showPrivacyOptions();
 }

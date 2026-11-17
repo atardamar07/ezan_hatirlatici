@@ -5,6 +5,10 @@ abstract class AdServiceBase {
   Future<bool> shouldShowAd();
   Future<AdStatus> getStatus();
   void dispose();
+
+  /// GDPR bölgesinde kullanıcının reklam onayını değiştirebileceği giriş noktası gerekli mi
+  Future<bool> isPrivacyOptionsRequired();
+  Future<void> showPrivacyOptions();
 }
 
 class AdStatus {

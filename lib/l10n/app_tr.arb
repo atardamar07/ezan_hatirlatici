@@ -189,10 +189,19 @@
   "methodKarachiDescription": "Pakistan yöntemi",
   "methodUmmAlQuraName": "Umm Al-Qura",
   "methodUmmAlQuraDescription": "Suudi Arabistan",
-  "methodMoonsightingName": "İslam Bilimleri Üniversitesi",
-  "methodMoonsightingDescription": "Ürdün / İslam Bilimleri Üniversitesi",
+  "methodMoonsightingName": "Moonsighting Committee (Dünya Hilal Komitesi)",
+  "methodMoonsightingDescription": "Kuzey Amerika ve İngiltere'de yaygın",
   "methodTehranName": "Tahran Jeofizik Enstitüsü",
   "methodTehranDescription": "İran yöntemi",
   "methodFranceName": "Fransa İslam Organizasyonları Birliği",
-  "methodFranceDescription": "Fransa yöntemi"
+  "methodFranceDescription": "Fransa yöntemi",
+  "compassNotAvailable": "Bu cihazda pusula sensörü yok.",
+  "compassCalibrationHint": "Manyetik parazit var. Metal ve elektronik eşyalardan uzaklaşın, telefonu havada 8 çizerek kalibre edin.",
+  "prayerNotificationTitle": "🕌 Namaz Vakti",
+  "prayerNotificationBody": "{prayer} vakti geldi. Haydi namaza!",
+  "reminderNotificationTitle": "⏰ Namaz Hatırlatıcı",
+  "reminderNotificationBody": "{prayer} vaktine {minutes} dakika kaldı",
+  "methodIsnaName": "Kuzey Amerika İslam Birliği (ISNA)",
+  "methodIsnaDescription": "ABD ve Kanada",
+  "adPrivacyOptions": "Reklam gizlilik seçenekleri"
 }
