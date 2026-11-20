@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,8 +19,11 @@ class DonationService {
   /// Bağış sistemini başlat (DonationScreen içinden çağırıyorsun)
   Future<void> initialize() => _impl.initialize();
 
-  /// Seçilen ürünü satın al
-  Future<void> makeDonation(String productId) => _impl.makeDonation(productId);
+  /// Seçilen ürünü satın al; ödeme tamamlanınca true
+  Future<bool> makeDonation(String productId) => _impl.makeDonation(productId);
+
+  /// Mağazadan gelen, kullanıcının para biriminde fiyat
+  String? priceOf(String productId) => _impl.priceOf(productId);
 
   void dispose() => _impl.dispose();
 
@@ -41,7 +43,8 @@ class DonationService {
     };
   }
 
-  /// Ekranda göstereceğimiz destek/bahşiş seçenekleri
+  /// Ekranda göstereceğimiz destek/bahşiş seçenekleri. Fiyat burada yazılmaz:
+  /// Google Play her ülkede kendi fiyatını ve para birimini kullanır (bkz. [priceOf]).
   static List<Map<String, dynamic>> getDonationProducts(AppLocalizations loc) {
     // Buradaki id'ler, mobilde tanımladığımız IAP id'leriyle eşleşiyor
     return [
@@ -49,21 +52,18 @@ class DonationService {
         'id': 'support_tip_small',
         'title': loc.coffeeDonation,
         'description': loc.coffeeDescription,
-        'price': '₺20',
         'icon': Icons.local_cafe,
       },
       {
         'id': 'support_tip_standard',
         'title': loc.mealDonation,
         'description': loc.mealDescription,
-        'price': '₺50',
         'icon': Icons.fastfood,
       },
       {
         'id': 'support_tip_plus',
         'title': loc.generousDonation,
         'description': loc.generousDescription,
-        'price': '₺200',
         'icon': Icons.diamond,
       },
     ];

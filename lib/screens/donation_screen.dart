@@ -46,14 +46,15 @@ class _DonationScreenState extends State<DonationScreen> {
     if (kIsWeb) return;
     setState(() => _isProcessing = true);
     try {
-      await _donationService.makeDonation(productId);
+      // Ödeme gerçekten bitince true döner; iptal/beklemede ise teşekkür gösterilmez
+      final completed = await _donationService.makeDonation(productId);
       final donationInfo = await DonationService.getDonationInfo();
       if (mounted) {
         setState(() {
           _donationInfo = donationInfo;
           _isProcessing = false;
         });
-        _showSuccessDialog();
+        if (completed) _showSuccessDialog();
       }
     } catch (e) {
       if (mounted) {
@@ -303,7 +304,7 @@ class _DonationScreenState extends State<DonationScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(product['price'],
+                    Text(_donationService.priceOf(product['id']) ?? '',
                         style: theme.textTheme.titleMedium?.copyWith(
                             color: colors.secondary,
                             fontSize: 20,

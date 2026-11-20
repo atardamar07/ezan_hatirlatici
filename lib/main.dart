@@ -12,6 +12,7 @@ import 'screens/city_selection_screen.dart';
 import 'theme/app_theme.dart';
 import 'screens/notification_status_screen.dart';
 import 'screens/calendar_screen.dart';
+import 'services/donation_service.dart';
 import 'services/notification_service.dart';
 import 'screens/multi_city_prayer_times_page.dart';
 
@@ -37,6 +38,11 @@ Future<void> main() async {
   }
   
   runApp(const MyApp());
+
+  // Satın alma dinleyicisi açılışta kurulmalı: sonradan tamamlanan ödemeler kaçmasın
+  DonationService().initialize().catchError((Object e) {
+    debugPrint('Donation service init failed: $e');
+  });
 }
 
 class MyApp extends StatefulWidget {

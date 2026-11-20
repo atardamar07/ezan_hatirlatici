@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'donation_service_base.dart';
@@ -19,23 +21,36 @@ class PlatformDonationService implements DonationServiceBase {
 
   bool _isAvailable = false;
   List<ProductDetails> _products = [];
+  Future<void>? _initFuture;
 
+  /// Ekranda başlatılan satın almanın sonucu (true = ödeme tamamlandı)
+  Completer<bool>? _purchaseResult;
+  String? _purchasingProductId;
+
+  /// Uygulama açılışında bir kez çağrılır (main.dart); ekran tekrar çağırırsa aynı sonucu bekler
   @override
-  Future<void> initialize() async {
-    _isAvailable = await _iap.isAvailable();
-    if (!_isAvailable) {
-      debugPrint('IAP kullanılabilir değil');
-      return;
-    }
+  Future<void> initialize() => _initFuture ??= _initialize().catchError((Object e) {
+        _initFuture = null; // bir sonraki çağrıda yeniden denensin
+        throw e;
+      });
 
-    // Satın alma akışını dinle
-    _subscription = _iap.purchaseStream.listen(
+  Future<void> _initialize() async {
+    // Dinleme açılışta başlamalı: "beklemede" kalıp sonradan tamamlanan ödemeler de
+    // işlensin. Google, onaylanmayan satın almayı 3 gün sonra iade eder.
+    _subscription ??= _iap.purchaseStream.listen(
       _onPurchaseUpdated,
       onDone: () => _subscription?.cancel(),
       onError: (Object e) {
         debugPrint('Purchase stream error: $e');
       },
     );
+
+    _isAvailable = await _iap.isAvailable();
+    if (!_isAvailable) {
+      debugPrint('IAP kullanılabilir değil');
+      _initFuture = null; // mağaza sonra hazır olursa tekrar denensin
+      return;
+    }
 
     // Ürünleri sorgula
     const ids = {coffeeId, mealId, generousId};
@@ -46,6 +61,9 @@ class PlatformDonationService implements DonationServiceBase {
     }
 
     _products = response.productDetails;
+
+    // Uygulama kapalıyken tamamlanmış, henüz onaylanmamış satın almaları getir
+    await _iap.restorePurchases();
   }
 
   Future<void> _onPurchaseUpdated(List<PurchaseDetails> purchases) async {
@@ -54,15 +72,27 @@ class PlatformDonationService implements DonationServiceBase {
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
           await _handleSuccessfulPurchase(purchase);
-          break;
         case PurchaseStatus.error:
           debugPrint('Purchase error: ${purchase.error}');
-          break;
         case PurchaseStatus.pending:
         case PurchaseStatus.canceled:
-        // işlem iptal/pending, bir şey yapmıyoruz
+          // Beklemedeki ödemede Google Play kullanıcıyı kendisi bilgilendirir
           break;
       }
+      _reportResult(purchase);
+    }
+  }
+
+  /// Ekranda bekleyen satın almaya sonucunu bildirir; teşekkür yalnızca gerçek ödemede gösterilir
+  void _reportResult(PurchaseDetails purchase) {
+    final result = _purchaseResult;
+    if (result == null || result.isCompleted || purchase.productID != _purchasingProductId) {
+      return;
+    }
+    if (purchase.status == PurchaseStatus.error) {
+      result.completeError(Exception(purchase.error?.message ?? 'Purchase error'));
+    } else {
+      result.complete(purchase.status == PurchaseStatus.purchased);
     }
   }
 
@@ -75,36 +105,47 @@ class PlatformDonationService implements DonationServiceBase {
     // 30 gün reklam yok varsayımı için flag
     await prefs.setBool('isAdFree', true);
 
-    // İşlemi tamamla
-    if (purchase.pendingCompletePurchase) {
+    if (Platform.isAndroid && purchase.status == PurchaseStatus.restored) {
+      // Önceki oturumdan gelen bahşiş otomatik tüketilmez; tüketilmezse aynısı bir daha alınamaz
+      await _iap
+          .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>()
+          .consumePurchase(purchase);
+    } else if (purchase.pendingCompletePurchase) {
+      // İşlemi tamamla
       await _iap.completePurchase(purchase);
     }
   }
 
   @override
-  Future<void> makeDonation(String productId) async {
+  Future<bool> makeDonation(String productId) async {
+    await initialize();
     if (!_isAvailable) {
-      debugPrint('IAP kullanılabilir değil, makeDonation çalışmıyor');
-      return;
+      throw Exception('Google Play Billing kullanılamıyor');
     }
 
-    try {
-      final product = _products.firstWhere(
-            (p) => p.id == productId,
-        orElse: () {
-          throw Exception('Ürün bulunamadı: $productId');
-        },
-      );
+    final product = _products.firstWhere(
+      (p) => p.id == productId,
+      orElse: () => throw Exception('Ürün bulunamadı: $productId'),
+    );
 
-      final purchaseParam = PurchaseParam(productDetails: product);
-      await _iap.buyConsumable(
-        purchaseParam: purchaseParam,
-        autoConsume: true,
-      );
-    } catch (e) {
-      debugPrint('makeDonation hata: $e');
-      rethrow;
+    _purchasingProductId = productId;
+    final result = _purchaseResult = Completer<bool>();
+    // buyConsumable ödeme ekranı açılınca döner; asıl sonuç _onPurchaseUpdated'dan gelir
+    final started = await _iap.buyConsumable(
+      purchaseParam: PurchaseParam(productDetails: product),
+    );
+    if (!started) {
+      throw Exception('Satın alma başlatılamadı');
     }
+    return result.future;
+  }
+
+  @override
+  String? priceOf(String productId) {
+    for (final product in _products) {
+      if (product.id == productId) return product.price;
+    }
+    return null;
   }
 
   @override

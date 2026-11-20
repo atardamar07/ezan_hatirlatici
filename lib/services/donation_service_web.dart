@@ -8,9 +8,10 @@ class PlatformDonationService implements DonationServiceBase {
   }
 
   @override
-  Future<void> makeDonation(String productId) async {
-    // Web'de bağış yok, hiçbir şey yapmıyoruz.
-  }
+  Future<bool> makeDonation(String productId) async => false; // Web'de bağış yok
+
+  @override
+  String? priceOf(String productId) => null;
 
   @override
   void dispose() {

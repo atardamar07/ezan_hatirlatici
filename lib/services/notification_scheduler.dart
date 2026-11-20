@@ -10,8 +10,15 @@ import 'notification_service.dart';
 class NotificationScheduler {
   final PrayerTimesApi _prayerApi = PrayerTimesApi();
 
-  /// Uygulama birkaç gün açılmasa da bildirimler gelsin diye bu kadar gün ilerisi kurulur
-  static const _daysAhead = 7;
+  /// Uygulama açılmasa da bildirimler gelsin diye bu kadar gün ilerisi kurulur.
+  /// shortcut: eklenti her bildirimde kayıtlı listenin tamamını yeniden yazar (iş, bildirim
+  /// sayısının karesiyle büyür; 14 gün ≈ en çok 154 bildirim). Daha uzun süre gerekirse
+  /// günlük arka plan yenilemesi (WorkManager) ekleyin.
+  static const _daysAhead = 14;
+
+  /// Bu süreçte kurulan son planın imzası: aynı gün aynı ayarlarla yeniden kurmaya gerek yok.
+  /// Süreç yeniden başlayınca (ör. "zorla durdur" alarmları sildiyse) plan yine baştan kurulur.
+  static String? _lastSignature;
 
   /// Aynı anda iki planlama birbirinin kurduğu bildirimleri silmesin diye sıraya alınır
   static Future<void> _queue = Future.value();
@@ -45,9 +52,22 @@ class NotificationScheduler {
     }
 
     final method = await _prayerApi.getSavedMethodOrDefault();
+    final lat = locationType == 'location' ? prefs.getDouble('latitude') : null;
+    final lng = locationType == 'location' ? prefs.getDouble('longitude') : null;
+    final enabled = _enabledPrayers(prefs);
+    final minutesBefore = prefs.getInt('preAlertMinutes') ?? 10;
+    final loc = _localizations();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final lastDay = DateTime(now.year, now.month, now.day + _daysAhead - 1);
+
+    // Konum ~1 km'ye yuvarlanır: GPS her açılışta biraz oynar ama vakitler değişmez
+    final signature = [
+      locationType, lat?.toStringAsFixed(2), lng?.toStringAsFixed(2),
+      prefs.getString('selectedCity'), prefs.getString('selectedCountry'),
+      method, enabled, minutesBefore, loc.localeName, today,
+    ].join('|');
+    if (signature == _lastSignature) return;
 
     // Aylık takvim tek istekte gelir; aralık ay sonuna taşarsa sonraki ay da alınır
     final days = <DateTime, Map<String, dynamic>>{};
@@ -58,8 +78,8 @@ class NotificationScheduler {
       final data = await _prayerApi.getMonthlyPrayerTimes(
         month: month.month,
         year: month.year,
-        lat: locationType == 'location' ? prefs.getDouble('latitude') : null,
-        lng: locationType == 'location' ? prefs.getDouble('longitude') : null,
+        lat: lat,
+        lng: lng,
         city: prefs.getString('selectedCity'),
         country: prefs.getString('selectedCountry'),
         method: method,
@@ -77,10 +97,10 @@ class NotificationScheduler {
 
     final plan = planNotifications(
       days: days,
-      enabled: _enabledPrayers(prefs),
-      minutesBefore: prefs.getInt('preAlertMinutes') ?? 10,
+      enabled: enabled,
+      minutesBefore: minutesBefore,
       now: now,
-      loc: _localizations(),
+      loc: loc,
     );
 
     await NotificationService.cancelAllNotifications();
@@ -91,6 +111,7 @@ class NotificationScheduler {
         scheduledTime: n.time,
       );
     }
+    _lastSignature = signature;
 
     debugPrint('🔔 Notification scheduling complete. Total scheduled: ${plan.length}');
   }

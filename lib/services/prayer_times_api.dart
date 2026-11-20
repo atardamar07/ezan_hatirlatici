@@ -275,8 +275,11 @@ class PrayerTimesApi {
             final normalizedDate =
             DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
 
-            results[normalizedDate] =
-            Map<String, dynamic>.from(day["timings"] ?? {});
+            // Takvim ucu saati "12:53 (+03)" biçiminde verir; ek atılır, her yer "12:53" görür
+            results[normalizedDate] = {
+              for (final entry in (day["timings"] as Map? ?? {}).entries)
+                entry.key as String: entry.value.toString().split(' ').first,
+            };
           }
         }
 
