@@ -13,6 +13,12 @@ class NotificationService {
   static const _androidChannelDescription =
       'Namaz vakitleri ve hatırlatıcıları';
 
+  // Android 8+ sesi bildirim değil kanal belirler: ön uyarı normal sesle çalsın diye ayrı kanal
+  static const _reminderChannelId = 'prayer_reminder_channel_v1';
+  static const _reminderChannelName = 'Namaz Hatırlatıcıları';
+  static const _reminderChannelDescription =
+      'Vakitten önceki hatırlatmalar (normal bildirim sesi)';
+
   static Future<void> initialize() async {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -56,7 +62,13 @@ class NotificationService {
       );
 
       await androidPlugin.createNotificationChannel(androidChannel);
-      debugPrint('📢 Notification channel created: $_androidChannelId');
+      await androidPlugin.createNotificationChannel(const AndroidNotificationChannel(
+        _reminderChannelId,
+        _reminderChannelName,
+        description: _reminderChannelDescription,
+        importance: Importance.high,
+      ));
+      debugPrint('📢 Notification channels created: $_androidChannelId, $_reminderChannelId');
     }
   }
 
@@ -97,6 +109,7 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledTime,
+    bool adhan = true, // false: vakitten önceki hatırlatma, normal bildirim sesi
   }) async {
     if (kIsWeb) {
       debugPrint('Web scheduled notification: $title - $body at $scheduledTime');
@@ -105,10 +118,10 @@ class NotificationService {
 
     final tz.TZDateTime tzScheduledTime =
         tz.TZDateTime.from(scheduledTime, tz.local);
-    
+
     debugPrint('🔔 Scheduling for: $tzScheduledTime (Local: ${tz.local.name})');
 
-    final details = _buildNotificationDetails();
+    final details = _buildNotificationDetails(adhan: adhan);
 
     // Android 14+ kesin alarm iznini varsayılan olarak vermiyor; izin yoksa
     // exact mod hata fırlatır ve hiç bildirim kurulmaz. O durumda esnek alarma düş.
@@ -160,7 +173,25 @@ class NotificationService {
     );
   }
 
-  static NotificationDetails _buildNotificationDetails() {
+  static NotificationDetails _buildNotificationDetails({bool adhan = true}) {
+    if (!adhan) {
+      return const NotificationDetails(
+        android: AndroidNotificationDetails(
+          _reminderChannelId,
+          _reminderChannelName,
+          channelDescription: _reminderChannelDescription,
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      );
+    }
+
     const androidDetails = AndroidNotificationDetails(
       _androidChannelId,
       _androidChannelName,

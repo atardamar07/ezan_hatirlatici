@@ -11,22 +11,27 @@ import '../services/location_service.dart';
 const double kaabaLatitude = 21.4225;
 const double kaabaLongitude = 39.8262;
 
-/// Telefonun üst kenarının manyetik kuzeye göre açısı (0-360, saat yönünde).
-/// Android'in SensorManager.getRotationMatrix + getOrientation hesabının aynısı:
-/// ivmeölçerle eğim düzeltilir, telefon eğik tutulsa da yön doğru kalır.
+/// Telefonun baktığı yönün manyetik kuzeye göre açısı (0-360, saat yönünde).
+/// Baktığı yön: düz tutulunca üst kenar, dik tutulunca arka kamera, arada ikisinin
+/// ortası (cihaz ekseninde y - z). Sadece üst kenar kullanılırsa telefon dik
+/// tutulunca yatay izdüşümü kaybolur, yön donar ya da 180° ters döner.
+/// Doğu/kuzey vektörleri Android'in SensorManager.getRotationMatrix'i ile aynı.
 /// Hesaplanamıyorsa (serbest düşüş, bozuk veri) null döner.
 double? compassHeading(
   double ax, double ay, double az, // ivmeölçer (yerçekimi dahil, m/s²)
   double mx, double my, double mz, // manyetometre (µT)
 ) {
+  // Doğu = M × A
   final hx = my * az - mz * ay;
   final hy = mz * ax - mx * az;
   final hz = mx * ay - my * ax;
   final normH = math.sqrt(hx * hx + hy * hy + hz * hz);
   final normA = math.sqrt(ax * ax + ay * ay + az * az);
   if (normH < 0.1 || normA < 1) return null;
-  // atan2(H.y, (A×H).y); iki bileşen aynı ölçekte olsun diye H.y, |A| ile çarpılır
-  final deg = math.atan2(hy * normA, az * hx - ax * hz) * 180 / math.pi;
+  // Kuzey = A × Doğu; iki bileşen aynı ölçekte olsun diye doğu tarafı |A| ile çarpılır
+  final ny = az * hx - ax * hz;
+  final nz = ax * hy - ay * hx;
+  final deg = math.atan2((hy - hz) * normA, ny - nz) * 180 / math.pi;
   return (deg + 360) % 360;
 }
 
@@ -451,6 +456,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
           if (_isQiblaFound)
             Center(
               child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: colors.primary,
@@ -461,12 +467,15 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                   children: [
                     Icon(Icons.check_circle, color: colors.onPrimary, size: 30),
                     const SizedBox(width: 10),
-                    Text(
-                      loc.youAreFacingQibla,
-                      style: TextStyle(
-                        color: colors.onPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    // Dar ekranda uzun çeviri taşmasın, alt satıra geçsin
+                    Flexible(
+                      child: Text(
+                        loc.youAreFacingQibla,
+                        style: TextStyle(
+                          color: colors.onPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

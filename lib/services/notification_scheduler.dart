@@ -109,6 +109,7 @@ class NotificationScheduler {
         title: n.title,
         body: n.body,
         scheduledTime: n.time,
+        adhan: n.adhan,
       );
     }
     _lastSignature = signature;
@@ -152,7 +153,8 @@ class NotificationScheduler {
 
 /// Kurulacak bildirimler (saat sırasına göre). Ağdan ve eklentiden bağımsız; testte doğrudan çağrılır.
 /// [days]: gün (yerel gece yarısı) → API vakitleri; [enabled]: Ayarlar ekranındaki vakit anahtarları.
-List<({DateTime time, String title, String body})> planNotifications({
+/// `adhan`: vakit girince ezan sesi, ön uyarıda normal bildirim sesi.
+List<({DateTime time, String title, String body, bool adhan})> planNotifications({
   required Map<DateTime, Map<String, dynamic>> days,
   required Map<String, bool> enabled,
   required int minutesBefore,
@@ -168,9 +170,11 @@ List<({DateTime time, String title, String body})> planNotifications({
     'yatsi': ('Isha', loc.isha),
   };
 
-  final plan = <({DateTime time, String title, String body})>[];
-  void add(DateTime? time, String title, String body) {
-    if (time != null && time.isAfter(now)) plan.add((time: time, title: title, body: body));
+  final plan = <({DateTime time, String title, String body, bool adhan})>[];
+  void add(DateTime? time, String title, String body, {bool adhan = true}) {
+    if (time != null && time.isAfter(now)) {
+      plan.add((time: time, title: title, body: body, adhan: adhan));
+    }
   }
 
   for (final MapEntry(key: day, value: timings) in days.entries) {
@@ -193,6 +197,7 @@ List<({DateTime time, String title, String body})> planNotifications({
           time?.subtract(Duration(minutes: minutesBefore)),
           loc.reminderNotificationTitle,
           loc.reminderNotificationBody(minutesBefore, name),
+          adhan: false,
         );
       }
       add(time, loc.prayerNotificationTitle, loc.prayerNotificationBody(name));

@@ -15,9 +15,7 @@ class LocationService {
         return false;
       }
     } else {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return false;
-
+      // Konum kapalıysa da devam: getCurrentPosition Google'ın "konumu aç" penceresini gösterir
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();

@@ -23,9 +23,10 @@ double angleDiff(double a, double b) {
 }
 
 void main() {
-  test('pusula, telefon düz veya eğikken gerçek yönü verir', () {
+  test('pusula, telefon düz, eğik veya dik tutulunca gerçek yönü verir', () {
     for (final heading in [0.0, 45, 90, 151.6, 180, 270, 300]) {
-      for (final pitch in [0.0, 30, 60]) {
+      // 90 = telefon tam dik (ekran kullanıcıya dönük), 100 = dikeyi biraz geçmiş
+      for (final pitch in [0.0, 30, 60, 75, 85, 90, 100]) {
         final s = sensorsFor(heading.toDouble(), pitch.toDouble());
         final result = compassHeading(s[0], s[1], s[2], s[3], s[4], s[5])!;
         expect(angleDiff(result, heading.toDouble()), lessThan(0.01),

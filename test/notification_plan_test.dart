@@ -41,7 +41,9 @@ void main() {
     expect(plan, hasLength(17));
     expect(plan.first.time, DateTime(2026, 3, 10, 12, 50));
     expect(plan.first.body, 'Öğle vaktine 10 dakika kaldı');
+    expect(plan.first.adhan, isFalse, reason: 'ön uyarı normal bildirim sesiyle çalmalı');
     expect(plan[1].body, 'Öğle vakti geldi. Haydi namaza!');
+    expect(plan[1].adhan, isTrue, reason: 'vakit girince ezan okunmalı');
     // Yarının ilki: güneşten 1 saat önce "Sabah"
     expect(plan[8].time, DateTime(2026, 3, 11, 6, 0));
     expect(plan[8].body, 'Sabah vakti geldi. Haydi namaza!');

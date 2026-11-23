@@ -488,6 +488,14 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
       drawer: _buildAppDrawer(context),
       appBar: AppBar(
         title: Text(loc.appTitle),
+        actions: [
+          // Konum alınamadığında kart hiç oluşmuyor; yenileme bu yüzden kartta değil burada
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            tooltip: loc.refresh,
+            onPressed: _isLoadingCurrent ? null : _loadCurrentLocationPrayerTimes,
+          ),
+        ],
       ),
       bottomNavigationBar: const MainBottomNavBar(
         currentTab: NavigationTab.home,
