@@ -204,5 +204,17 @@
   "compassCalibrationHint": "Magnetic interference detected. Move away from metal and electronics, then wave your phone in a figure 8 to calibrate.",
   "methodIsnaName": "Islamic Society of North America (ISNA)",
   "methodIsnaDescription": "USA and Canada",
-  "adPrivacyOptions": "Ad privacy options"
+  "adPrivacyOptions": "Ad privacy options",
+  "adFreeTitle": "Go Ad-Free",
+  "adFreeIntro": "The app is completely free. You can support us by watching ads, or remove ads for good.",
+  "watchAdsTitle": "Watch 4 ads, get 12 hours ad-free",
+  "watchAdsProgress": "{count}/4 ads watched",
+  "watchAdButton": "Watch ad",
+  "adNotReady": "The ad isn't ready yet, please try again shortly.",
+  "adFreeActiveFor": "Ad-free: {hours}h {minutes}m left",
+  "lifetimeTitle": "Lifetime ad-free",
+  "lifetimeDescription": "One-time payment. Works on all your devices with the same Google account.",
+  "buyButton": "Buy",
+  "lifetimeActive": "Your lifetime license is active. Thank you for your support!",
+  "qiblaTab": "Qibla"
 }

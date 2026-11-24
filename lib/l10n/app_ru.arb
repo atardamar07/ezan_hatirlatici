@@ -194,5 +194,17 @@
   "reminderNotificationBody": "{prayer} через {minutes} мин.",
   "methodIsnaName": "Исламское общество Северной Америки (ISNA)",
   "methodIsnaDescription": "США и Канада",
-  "adPrivacyOptions": "Настройки конфиденциальности рекламы"
+  "adPrivacyOptions": "Настройки конфиденциальности рекламы",
+  "adFreeTitle": "Без рекламы",
+  "adFreeIntro": "Приложение полностью бесплатное. Поддержите нас просмотром рекламы или отключите рекламу навсегда.",
+  "watchAdsTitle": "4 рекламы — 12 часов без рекламы",
+  "watchAdsProgress": "Просмотрено: {count}/4",
+  "watchAdButton": "Смотреть рекламу",
+  "adNotReady": "Реклама пока не готова, попробуйте чуть позже.",
+  "adFreeActiveFor": "Без рекламы: осталось {hours} ч {minutes} мин",
+  "lifetimeTitle": "Навсегда без рекламы",
+  "lifetimeDescription": "Единоразовый платёж. Действует на всех ваших устройствах с тем же аккаунтом Google.",
+  "buyButton": "Купить",
+  "lifetimeActive": "Пожизненная лицензия активна. Спасибо за поддержку!",
+  "qiblaTab": "Кибла"
 }

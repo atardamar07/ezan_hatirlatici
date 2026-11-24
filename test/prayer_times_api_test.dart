@@ -12,7 +12,10 @@ void main() {
           jsonEncode({
             'data': [
               {
-                'date': {'gregorian': {'date': '01-11-2026'}},
+                'date': {
+                  'gregorian': {'date': '01-11-2026'},
+                  'hijri': {'day': '22', 'month': {'number': 5}, 'year': '1448'},
+                },
                 'timings': {'Sunrise': '06:58 (+03)', 'Dhuhr': '12:53 (+03)'},
               },
               {
@@ -31,6 +34,13 @@ void main() {
     );
 
     expect(result!.keys, [DateTime(2026, 11, 1), DateTime(2026, 11, 2)]);
-    expect(result[DateTime(2026, 11, 1)], {'Sunrise': '06:58', 'Dhuhr': '12:53'});
+    expect(result[DateTime(2026, 11, 1)], {
+      'Sunrise': '06:58',
+      'Dhuhr': '12:53',
+      'HijriDay': 22,
+      'HijriMonth': 5,
+      'HijriYear': 1448,
+    });
+    expect(result[DateTime(2026, 11, 2)]!.containsKey('HijriDay'), isFalse);
   });
 }

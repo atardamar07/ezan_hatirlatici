@@ -194,5 +194,17 @@
   "reminderNotificationBody": "{prayer}: بعد {minutes} دقيقة",
   "methodIsnaName": "الجمعية الإسلامية لأمريكا الشمالية (ISNA)",
   "methodIsnaDescription": "الولايات المتحدة وكندا",
-  "adPrivacyOptions": "خيارات خصوصية الإعلانات"
+  "adPrivacyOptions": "خيارات خصوصية الإعلانات",
+  "adFreeTitle": "بدون إعلانات",
+  "adFreeIntro": "التطبيق مجاني تمامًا. يمكنك دعمنا بمشاهدة الإعلانات أو إزالة الإعلانات نهائيًا.",
+  "watchAdsTitle": "شاهد 4 إعلانات واحصل على 12 ساعة بدون إعلانات",
+  "watchAdsProgress": "تمت مشاهدة {count}/4",
+  "watchAdButton": "شاهد إعلانًا",
+  "adNotReady": "الإعلان غير جاهز بعد، يرجى المحاولة بعد قليل.",
+  "adFreeActiveFor": "بدون إعلانات: متبقٍ {hours} س {minutes} د",
+  "lifetimeTitle": "بدون إعلانات مدى الحياة",
+  "lifetimeDescription": "دفعة واحدة. صالحة على جميع أجهزتك بنفس حساب Google.",
+  "buyButton": "شراء",
+  "lifetimeActive": "ترخيصك مدى الحياة مفعّل. شكرًا لدعمك!",
+  "qiblaTab": "القبلة"
 }

@@ -1,21 +1,17 @@
 class AdIds {
-  // Uygulamayı store'a yüklerken yalnızca bu ID'leri güncellemeniz yeterli.
-  static const androidAppId = 'ca-app-pub-1498129057551982~3865121210';
-  static const iosAppId = 'ca-app-pub-1498129057551982~3865121210';
-
-  static const androidBannerAdUnitId = 'ca-app-pub-1498129057551982/8216263913';
+  // AdMob → Prayer Reminder → Reklam birimleri. Uygulama kimliği build.gradle.kts'de.
   static const androidInterstitialAdUnitId =
-      'ca-app-pub-1498129057551982/8216263913';
+      'ca-app-pub-1498129057551982/7457475037'; // "Gecis Reklami"
+  static const androidRewardedAdUnitId =
+      'ca-app-pub-1498129057551982/5358051615'; // "Reklamsiz Sure Odullu"
 
-  static const iosBannerAdUnitId = 'ca-app-pub-1498129057551982/8216263913';
-  static const iosInterstitialAdUnitId = 'ca-app-pub-1498129057551982/8216263913';
-
-  // Google recommended test IDs to avoid load errors on emulators/devices.
-  static const androidTestBannerAdUnitId =
-      'ca-app-pub-3940256099942544/6300978111';
+  // Google'ın test birimleri: debug derlemede ve iOS'ta (iOS için birim açılmadı)
   static const androidTestInterstitialAdUnitId =
       'ca-app-pub-3940256099942544/1033173712';
-  static const iosTestBannerAdUnitId = 'ca-app-pub-3940256099942544/2934735716';
+  static const androidTestRewardedAdUnitId =
+      'ca-app-pub-3940256099942544/5224354917';
   static const iosTestInterstitialAdUnitId =
       'ca-app-pub-3940256099942544/4411468910';
+  static const iosTestRewardedAdUnitId =
+      'ca-app-pub-3940256099942544/1712485313';
 }

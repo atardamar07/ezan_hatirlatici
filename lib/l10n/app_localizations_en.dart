@@ -636,4 +636,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adPrivacyOptions => 'Ad privacy options';
+
+  @override
+  String get adFreeTitle => 'Go Ad-Free';
+
+  @override
+  String get adFreeIntro => 'The app is completely free. You can support us by watching ads, or remove ads for good.';
+
+  @override
+  String get watchAdsTitle => 'Watch 4 ads, get 12 hours ad-free';
+
+  @override
+  String watchAdsProgress(Object count) {
+    return '$count/4 ads watched';
+  }
+
+  @override
+  String get watchAdButton => 'Watch ad';
+
+  @override
+  String get adNotReady => 'The ad isn\'t ready yet, please try again shortly.';
+
+  @override
+  String adFreeActiveFor(Object hours, Object minutes) {
+    return 'Ad-free: ${hours}h ${minutes}m left';
+  }
+
+  @override
+  String get lifetimeTitle => 'Lifetime ad-free';
+
+  @override
+  String get lifetimeDescription => 'One-time payment. Works on all your devices with the same Google account.';
+
+  @override
+  String get buyButton => 'Buy';
+
+  @override
+  String get lifetimeActive => 'Your lifetime license is active. Thank you for your support!';
+
+  @override
+  String get qiblaTab => 'Qibla';
 }

@@ -21,6 +21,8 @@ _impl.initialize(loadAds: loadAds);
 
   void showInterstitialAd() => _impl.showInterstitialAd();
 
+  Future<bool?> showRewardedAd() => _impl.showRewardedAd();
+
   Future<bool> shouldShowAd() => _impl.shouldShowAd();
 
 Future<AdStatus> getStatus() => _impl.getStatus();

@@ -2,6 +2,10 @@ abstract class AdServiceBase {
   Future<void> initialize({bool loadAds = true});
   Future<void> loadInterstitialAd();
   void showInterstitialAd();
+
+  /// Ödüllü reklamı gösterir: true = ödül kazanıldı, false = reklam ödülsüz kapandı,
+  /// null = reklam henüz hazır değil (yükleme başlatılır).
+  Future<bool?> showRewardedAd();
   Future<bool> shouldShowAd();
   Future<AdStatus> getStatus();
   void dispose();

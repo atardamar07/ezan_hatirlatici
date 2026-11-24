@@ -1282,6 +1282,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ad privacy options'**
   String get adPrivacyOptions;
+
+  /// No description provided for @adFreeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Ad-Free'**
+  String get adFreeTitle;
+
+  /// No description provided for @adFreeIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The app is completely free. You can support us by watching ads, or remove ads for good.'**
+  String get adFreeIntro;
+
+  /// No description provided for @watchAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch 4 ads, get 12 hours ad-free'**
+  String get watchAdsTitle;
+
+  /// No description provided for @watchAdsProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/4 ads watched'**
+  String watchAdsProgress(Object count);
+
+  /// No description provided for @watchAdButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ad'**
+  String get watchAdButton;
+
+  /// No description provided for @adNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The ad isn\'t ready yet, please try again shortly.'**
+  String get adNotReady;
+
+  /// No description provided for @adFreeActiveFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad-free: {hours}h {minutes}m left'**
+  String adFreeActiveFor(Object hours, Object minutes);
+
+  /// No description provided for @lifetimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime ad-free'**
+  String get lifetimeTitle;
+
+  /// No description provided for @lifetimeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time payment. Works on all your devices with the same Google account.'**
+  String get lifetimeDescription;
+
+  /// No description provided for @buyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buyButton;
+
+  /// No description provided for @lifetimeActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Your lifetime license is active. Thank you for your support!'**
+  String get lifetimeActive;
+
+  /// No description provided for @qiblaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Qibla'**
+  String get qiblaTab;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

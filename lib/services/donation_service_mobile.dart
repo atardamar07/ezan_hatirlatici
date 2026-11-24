@@ -1,20 +1,16 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ad_free.dart';
 import 'donation_service_base.dart';
 
-/// Mobil (Android / iOS) için bağış servisi
+/// Mobil (Android / iOS) için ömür boyu reklamsız lisans satışı
 class PlatformDonationService implements DonationServiceBase {
-  // Ürün ID'leri (Google Play / App Store'da tanımladığın ID'lerle aynı olmalı)
-  // Google Play Billing / App Store ürün kimlikleri (tek seferlik destek)
-  static const String coffeeId = 'support_tip_small';
-  static const String mealId = 'support_tip_standard';
-  static const String generousId = 'support_tip_plus';
+  /// Play Console → Tek seferlik ürünler → "Lifetime Ad-Free" (tüketilmez; yeniden kurulumda geri gelir)
+  static const String lifetimeId = 'lifetime_ad_free';
 
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
@@ -52,9 +48,7 @@ class PlatformDonationService implements DonationServiceBase {
       return;
     }
 
-    // Ürünleri sorgula
-    const ids = {coffeeId, mealId, generousId};
-    final response = await _iap.queryProductDetails(ids);
+    final response = await _iap.queryProductDetails({lifetimeId});
 
     if (response.notFoundIDs.isNotEmpty) {
       debugPrint('Bulunamayan ürünler: ${response.notFoundIDs}');
@@ -97,21 +91,11 @@ class PlatformDonationService implements DonationServiceBase {
   }
 
   Future<void> _handleSuccessfulPurchase(PurchaseDetails purchase) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('hasDonated', true);
-    await prefs.setString('donationDate', DateTime.now().toIso8601String());
-    await prefs.setString('lastDonationProductId', purchase.productID);
-
-    // 30 gün reklam yok varsayımı için flag
-    await prefs.setBool('isAdFree', true);
-
-    if (Platform.isAndroid && purchase.status == PurchaseStatus.restored) {
-      // Önceki oturumdan gelen bahşiş otomatik tüketilmez; tüketilmezse aynısı bir daha alınamaz
-      await _iap
-          .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>()
-          .consumePurchase(purchase);
-    } else if (purchase.pendingCompletePurchase) {
-      // İşlemi tamamla
+    if (purchase.productID == lifetimeId) {
+      await AdFree.grantLifetime(await SharedPreferences.getInstance());
+    }
+    // Onaylanmayan satın almayı Google 3 gün sonra iade eder; ürün tüketilmez, kalıcıdır
+    if (purchase.pendingCompletePurchase) {
       await _iap.completePurchase(purchase);
     }
   }
@@ -130,8 +114,8 @@ class PlatformDonationService implements DonationServiceBase {
 
     _purchasingProductId = productId;
     final result = _purchaseResult = Completer<bool>();
-    // buyConsumable ödeme ekranı açılınca döner; asıl sonuç _onPurchaseUpdated'dan gelir
-    final started = await _iap.buyConsumable(
+    // Ödeme ekranı açılınca döner; asıl sonuç _onPurchaseUpdated'dan gelir
+    final started = await _iap.buyNonConsumable(
       purchaseParam: PurchaseParam(productDetails: product),
     );
     if (!started) {
@@ -151,14 +135,5 @@ class PlatformDonationService implements DonationServiceBase {
   @override
   void dispose() {
     _subscription?.cancel();
-  }
-
-  /// Bağış geçmişini sıfırlamak istersen kullanabilirsin.
-  static Future<void> clearHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('hasDonated');
-    await prefs.remove('donationDate');
-    await prefs.remove('lastDonationProductId');
-    await prefs.setBool('isAdFree', false);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ad_free.dart';
 import 'ad_ids.dart';
 
 import 'ad_service_base.dart';
@@ -14,24 +15,26 @@ class AdServicePlatform implements AdServiceBase {
   static const _retryDelay = Duration(minutes: 1);
 
   InterstitialAd? _interstitial;
+  RewardedAd? _rewarded;
   bool _isInterstitialShowing = false;
   bool _initialized = false;
   bool _canLoadAds = true;
   bool _isLoadingInterstitial = false;
-  final bool _useTestAds = kDebugMode;
+  bool _isLoadingRewarded = false;
+  // Debug derlemede ve iOS'ta (iOS için birim yok) Google'ın test reklamları
+  final bool _useTestAds = kDebugMode || Platform.isIOS;
 
-
-  String get _interstitialAdUnitId {
-    if (_useTestAds) {
-      return Platform.isIOS
+  String get _interstitialAdUnitId => !_useTestAds
+      ? AdIds.androidInterstitialAdUnitId
+      : Platform.isIOS
           ? AdIds.iosTestInterstitialAdUnitId
           : AdIds.androidTestInterstitialAdUnitId;
-    }
 
-    return Platform.isIOS
-        ? AdIds.iosInterstitialAdUnitId
-        : AdIds.androidInterstitialAdUnitId;
-  }
+  String get _rewardedAdUnitId => !_useTestAds
+      ? AdIds.androidRewardedAdUnitId
+      : Platform.isIOS
+          ? AdIds.iosTestRewardedAdUnitId
+          : AdIds.androidTestRewardedAdUnitId;
 
   Future<void>? _initFuture;
 
@@ -70,6 +73,53 @@ class AdServicePlatform implements AdServiceBase {
     if (!loadAds) return;
 
     await loadInterstitialAd();
+    _loadRewardedAd();
+  }
+
+  void _loadRewardedAd() {
+    if (!_initialized || !_canLoadAds || _isLoadingRewarded || _rewarded != null) return;
+    _isLoadingRewarded = true;
+    RewardedAd.load(
+      adUnitId: _rewardedAdUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _isLoadingRewarded = false;
+          _rewarded = ad;
+        },
+        onAdFailedToLoad: (error) {
+          debugPrint('Rewarded failed to load: ${error.message}');
+          _isLoadingRewarded = false;
+        },
+      ),
+    );
+  }
+
+  @override
+  Future<bool?> showRewardedAd() async {
+    final ad = _rewarded;
+    if (ad == null) {
+      _loadRewardedAd();
+      return null;
+    }
+    _rewarded = null;
+
+    var earned = false;
+    final closed = Completer<bool>();
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _loadRewardedAd();
+        if (!closed.isCompleted) closed.complete(earned);
+      },
+      onAdFailedToShowFullScreenContent: (ad, _) {
+        ad.dispose();
+        _loadRewardedAd();
+        if (!closed.isCompleted) closed.complete(false);
+      },
+    );
+    await ad.show(onUserEarnedReward: (_, __) => earned = true);
+    return closed.future;
   }
 
   @override
@@ -125,8 +175,10 @@ class AdServicePlatform implements AdServiceBase {
   @override
   Future<bool> shouldShowAd() async {
     final prefs = await SharedPreferences.getInstance();
-    final isAdFree = prefs.getBool('isAdFree') ?? false;
-    if (isAdFree || _isInterstitialShowing || _interstitial == null) {
+    // Ömür boyu lisans ya da ödüllü reklamla kazanılmış süre varsa geçiş reklamı yok
+    if (AdFree.isActive(prefs, DateTime.now()) ||
+        _isInterstitialShowing ||
+        _interstitial == null) {
       return false;
     }
 
@@ -148,6 +200,7 @@ class AdServicePlatform implements AdServiceBase {
   @override
   void dispose() {
     _interstitial?.dispose();
+    _rewarded?.dispose();
   }
   Future<void> _updateLastAdTime() async {
     final prefs = await SharedPreferences.getInstance();

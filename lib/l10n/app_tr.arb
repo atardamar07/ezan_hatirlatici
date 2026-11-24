@@ -203,5 +203,17 @@
   "reminderNotificationBody": "{prayer} vaktine {minutes} dakika kaldı",
   "methodIsnaName": "Kuzey Amerika İslam Birliği (ISNA)",
   "methodIsnaDescription": "ABD ve Kanada",
-  "adPrivacyOptions": "Reklam gizlilik seçenekleri"
+  "adPrivacyOptions": "Reklam gizlilik seçenekleri",
+  "adFreeTitle": "Reklamsız Kullan",
+  "adFreeIntro": "Uygulama tamamen ücretsiz. İstersen reklam izleyerek destek olabilir ya da reklamları kalıcı olarak kaldırabilirsin.",
+  "watchAdsTitle": "4 reklam izle, 12 saat reklamsız",
+  "watchAdsProgress": "{count}/4 reklam izlendi",
+  "watchAdButton": "Reklam izle",
+  "adNotReady": "Reklam henüz hazır değil, birazdan tekrar deneyin.",
+  "adFreeActiveFor": "Reklamsız: {hours} sa {minutes} dk kaldı",
+  "lifetimeTitle": "Ömür boyu reklamsız",
+  "lifetimeDescription": "Tek seferlik ödeme. Aynı Google hesabıyla tüm cihazlarında geçerli.",
+  "buyButton": "Satın al",
+  "lifetimeActive": "Ömür boyu lisansın aktif. Desteğin için teşekkürler!",
+  "qiblaTab": "Kıble"
 }

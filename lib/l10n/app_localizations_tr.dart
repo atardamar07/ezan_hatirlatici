@@ -636,4 +636,44 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adPrivacyOptions => 'Reklam gizlilik seçenekleri';
+
+  @override
+  String get adFreeTitle => 'Reklamsız Kullan';
+
+  @override
+  String get adFreeIntro => 'Uygulama tamamen ücretsiz. İstersen reklam izleyerek destek olabilir ya da reklamları kalıcı olarak kaldırabilirsin.';
+
+  @override
+  String get watchAdsTitle => '4 reklam izle, 12 saat reklamsız';
+
+  @override
+  String watchAdsProgress(Object count) {
+    return '$count/4 reklam izlendi';
+  }
+
+  @override
+  String get watchAdButton => 'Reklam izle';
+
+  @override
+  String get adNotReady => 'Reklam henüz hazır değil, birazdan tekrar deneyin.';
+
+  @override
+  String adFreeActiveFor(Object hours, Object minutes) {
+    return 'Reklamsız: $hours sa $minutes dk kaldı';
+  }
+
+  @override
+  String get lifetimeTitle => 'Ömür boyu reklamsız';
+
+  @override
+  String get lifetimeDescription => 'Tek seferlik ödeme. Aynı Google hesabıyla tüm cihazlarında geçerli.';
+
+  @override
+  String get buyButton => 'Satın al';
+
+  @override
+  String get lifetimeActive => 'Ömür boyu lisansın aktif. Desteğin için teşekkürler!';
+
+  @override
+  String get qiblaTab => 'Kıble';
 }

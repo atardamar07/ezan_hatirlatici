@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
+import '../navigation/bottom_nav_bar.dart';
 import '../services/location_service.dart';
 
 // Kâbe'nin koordinatları
@@ -302,11 +303,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: colors.surface,
-        foregroundColor: colors.onSurface,
-        title: Text(loc.qiblaCompass),
-      ),
+      appBar: AppBar(title: Text(loc.qiblaCompass)),
+      bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.qibla),
       body: _isLoading
           ? Center(
         child: CircularProgressIndicator(
@@ -323,8 +321,8 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Pusula Göstergesi
-                SizedBox(
+                // Pusula Göstergesi: kısa ekranda (alt sekmeler + parazit uyarısı) taşmak yerine küçülür
+                Flexible(child: FittedBox(child: SizedBox(
                   width: 300,
                   height: 300,
                   child: Stack(
@@ -409,7 +407,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                         ),
                     ],
                   ),
-                ),
+                ))),
 
                 const SizedBox(height: 40),
 
@@ -447,7 +445,7 @@ class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStat
                   ),
                 ],
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 16),
               ],
             ),
           ),

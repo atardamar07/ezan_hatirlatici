@@ -636,4 +636,44 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adPrivacyOptions => 'Datenschutzoptionen für Werbung';
+
+  @override
+  String get adFreeTitle => 'Werbefrei nutzen';
+
+  @override
+  String get adFreeIntro => 'Die App ist komplett kostenlos. Du kannst uns mit Werbung unterstützen oder die Werbung dauerhaft entfernen.';
+
+  @override
+  String get watchAdsTitle => '4 Werbungen ansehen, 12 Stunden werbefrei';
+
+  @override
+  String watchAdsProgress(Object count) {
+    return '$count/4 Werbungen angesehen';
+  }
+
+  @override
+  String get watchAdButton => 'Werbung ansehen';
+
+  @override
+  String get adNotReady => 'Die Werbung ist noch nicht bereit, bitte versuche es gleich erneut.';
+
+  @override
+  String adFreeActiveFor(Object hours, Object minutes) {
+    return 'Werbefrei: noch $hours Std. $minutes Min.';
+  }
+
+  @override
+  String get lifetimeTitle => 'Lebenslang werbefrei';
+
+  @override
+  String get lifetimeDescription => 'Einmalige Zahlung. Gilt auf all deinen Geräten mit demselben Google-Konto.';
+
+  @override
+  String get buyButton => 'Kaufen';
+
+  @override
+  String get lifetimeActive => 'Deine lebenslange Lizenz ist aktiv. Danke für deine Unterstützung!';
+
+  @override
+  String get qiblaTab => 'Qibla';
 }

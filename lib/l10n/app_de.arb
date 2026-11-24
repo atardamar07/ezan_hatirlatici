@@ -194,5 +194,17 @@
   "reminderNotificationBody": "{prayer} in {minutes} Minuten",
   "methodIsnaName": "Islamic Society of North America (ISNA)",
   "methodIsnaDescription": "USA und Kanada",
-  "adPrivacyOptions": "Datenschutzoptionen für Werbung"
+  "adPrivacyOptions": "Datenschutzoptionen für Werbung",
+  "adFreeTitle": "Werbefrei nutzen",
+  "adFreeIntro": "Die App ist komplett kostenlos. Du kannst uns mit Werbung unterstützen oder die Werbung dauerhaft entfernen.",
+  "watchAdsTitle": "4 Werbungen ansehen, 12 Stunden werbefrei",
+  "watchAdsProgress": "{count}/4 Werbungen angesehen",
+  "watchAdButton": "Werbung ansehen",
+  "adNotReady": "Die Werbung ist noch nicht bereit, bitte versuche es gleich erneut.",
+  "adFreeActiveFor": "Werbefrei: noch {hours} Std. {minutes} Min.",
+  "lifetimeTitle": "Lebenslang werbefrei",
+  "lifetimeDescription": "Einmalige Zahlung. Gilt auf all deinen Geräten mit demselben Google-Konto.",
+  "buyButton": "Kaufen",
+  "lifetimeActive": "Deine lebenslange Lizenz ist aktiv. Danke für deine Unterstützung!",
+  "qiblaTab": "Qibla"
 }

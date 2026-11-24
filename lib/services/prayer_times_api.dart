@@ -237,14 +237,16 @@ class PrayerTimesApi {
     required int method,
   }) async {
     Uri? url;
+    // Diyanet yönteminde Hicri tarih de Diyanet takvimine göre (varsayılanı 1 gün kayabiliyor)
+    final hijri = method == diyanetMethodId ? '&calendarMethod=DIYANET' : '';
 
     if (lat != null && lng != null) {
       url = Uri.parse(
-        "$baseUrl/calendar?latitude=$lat&longitude=$lng&method=$method&month=$month&year=$year",
+        "$baseUrl/calendar?latitude=$lat&longitude=$lng&method=$method&month=$month&year=$year$hijri",
       );
     } else if (city != null && country != null) {
       url = Uri.parse(
-        "$baseUrl/calendarByCity?city=$city&country=$country&method=$method&month=$month&year=$year",
+        "$baseUrl/calendarByCity?city=$city&country=$country&method=$method&month=$month&year=$year$hijri",
       );
     }
 
@@ -276,9 +278,16 @@ class PrayerTimesApi {
             DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
 
             // Takvim ucu saati "12:53 (+03)" biçiminde verir; ek atılır, her yer "12:53" görür
+            final hijri = day["date"]?["hijri"];
             results[normalizedDate] = {
               for (final entry in (day["timings"] as Map? ?? {}).entries)
                 entry.key as String: entry.value.toString().split(' ').first,
+              // Takvim ekranındaki Hicri tarih için; bildirim planı bu anahtarları okumaz
+              if (hijri is Map) ...{
+                'HijriDay': int.tryParse('${hijri["day"]}'),
+                'HijriMonth': hijri["month"]?["number"],
+                'HijriYear': int.tryParse('${hijri["year"]}'),
+              },
             };
           }
         }

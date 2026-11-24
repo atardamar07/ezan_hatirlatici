@@ -1,334 +1,214 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../l10n/app_localizations.dart';
+import '../services/ad_free.dart';
+import '../services/ad_service.dart';
 import '../services/donation_service.dart';
 
+/// Reklamsız kullanım: ödüllü reklam (4 reklam = 12 saat) veya ömür boyu lisans
 class DonationScreen extends StatefulWidget {
-  const DonationScreen({Key? key}) : super(key: key);
+  const DonationScreen({super.key});
 
   @override
-  _DonationScreenState createState() => _DonationScreenState();
+  State<DonationScreen> createState() => _DonationScreenState();
 }
 
 class _DonationScreenState extends State<DonationScreen> {
-  final DonationService _donationService = DonationService();
-  Map<String, dynamic>? _donationInfo;
-  bool _isLoading = true;
-  bool _isProcessing = false;
+  final _donations = DonationService();
+  final _ads = AdService();
+  SharedPreferences? _prefs;
+  Timer? _ticker;
+  bool _busy = false;
 
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((p) {
+      if (mounted) setState(() => _prefs = p);
+    });
     if (!kIsWeb) {
-      _initializeDonationService();
-    } else {
-      setState(() => _isLoading = false);
+      _ads.initialize(); // tekil servis: başlatıldıysa aynı sonucu döndürür
+      _donations.initialize().then(
+        (_) {
+          if (mounted) setState(() {}); // mağaza fiyatı geldi
+        },
+        onError: (Object e) => debugPrint('IAP init failed: $e'),
+      );
     }
+    // Kalan reklamsız süre ekranda dakikada bir güncellensin
+    _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
-  Future<void> _initializeDonationService() async {
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  void _snack(String text) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
+      );
+
+  Future<void> _watchAd() async {
+    setState(() => _busy = true);
+    final earned = await _ads.showRewardedAd();
+    if (earned == true) await AdFree.recordRewardedAd(_prefs!, DateTime.now());
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (earned == null) _snack(AppLocalizations.of(context)!.adNotReady);
+  }
+
+  Future<void> _buyLifetime() async {
+    setState(() => _busy = true);
     try {
-      await _donationService.initialize();
-      final donationInfo = await DonationService.getDonationInfo();
-      if (mounted) {
-        setState(() {
-          _donationInfo = donationInfo;
-          _isLoading = false;
-        });
-      }
+      final completed = await _donations.makeDonation(DonationService.lifetimeProductId);
+      if (completed && mounted) _snack(AppLocalizations.of(context)!.lifetimeActive);
     } catch (e) {
-      print('Donation service initialization error: $e');
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) _snack(AppLocalizations.of(context)!.donationFailed('$e'));
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _makeDonation(String productId) async {
-    if (kIsWeb) return;
-    setState(() => _isProcessing = true);
-    try {
-      // Ödeme gerçekten bitince true döner; iptal/beklemede ise teşekkür gösterilmez
-      final completed = await _donationService.makeDonation(productId);
-      final donationInfo = await DonationService.getDonationInfo();
-      if (mounted) {
-        setState(() {
-          _donationInfo = donationInfo;
-          _isProcessing = false;
-        });
-        if (completed) _showSuccessDialog();
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isProcessing = false);
-        _showErrorDialog(AppLocalizations.of(context)!.donationFailed('$e'));
-      }
-    }
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: Row(children: [
-          Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 8),
-          Text(AppLocalizations.of(context)!.thankYou),
-        ]),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary, size: 64),
-          const SizedBox(height: 16),
-          Text(AppLocalizations.of(context)!.donationSuccess,
-              textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 8),
-          Text(AppLocalizations.of(context)!.noAds,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
-        ]),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: Text(AppLocalizations.of(context)!.continueText),
-          ),
-        ],
-      ),
-    );
-  }
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Row(children: [
-          Icon(Icons.error, color: Theme.of(context).colorScheme.error),
-          const SizedBox(width: 8),
-          Text(AppLocalizations.of(context)!.errorTitle),
-        ]),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.continueText)),
-        ],
-      ),
-    );
-  }
-
-  /* ---------- BUILD ---------- */
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) return _webBody();
-
-    final products = DonationService.getDonationProducts(AppLocalizations.of(context)!);
-    return _mobileBody(products);
-  }
-  /* ---------- WEB UYARISI ---------- */
-  Widget _webBody() {
+    final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+    final scheme = theme.colorScheme;
+    final prefs = _prefs;
+
+    if (prefs == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(loc.adFreeTitle)),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final now = DateTime.now();
+    final lifetime = AdFree.hasLifetime(prefs);
+    final until = AdFree.until(prefs);
+    final remaining = until != null && until.isAfter(now) ? until.difference(now) : null;
+    final watched = AdFree.watchedCount(prefs);
+    final price = _donations.priceOf(DonationService.lifetimeProductId);
+    final active = lifetime || remaining != null;
+
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: colors.surface,
-        foregroundColor: colors.onSurface,
-        title: Text(AppLocalizations.of(context)!.donationTitle),
-      ),
-      body: Center(
-        child: Card(
-          color: colors.surface,
-          margin: const EdgeInsets.all(20),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.mobile_friendly, color: colors.primary, size: 48),
-              const SizedBox(height: 16),
-              Text(AppLocalizations.of(context)!.donationsForWeb,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                      color: colors.onSurface,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text(
-                      AppLocalizations.of(context)!.donateInfo,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colors.onSurface.withOpacity(0.7))),
-            ]),
+      appBar: AppBar(title: Text(loc.adFreeTitle)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Card(
+            color: active ? scheme.primaryContainer : null,
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: Icon(
+                lifetime
+                    ? Icons.workspace_premium
+                    : remaining != null
+                        ? Icons.timer_outlined
+                        : Icons.favorite_outline,
+                color: scheme.primary,
+              ),
+              title: Text(
+                lifetime
+                    ? loc.lifetimeActive
+                    : remaining != null
+                        ? loc.adFreeActiveFor(remaining.inHours, remaining.inMinutes % 60)
+                        : loc.adFreeIntro,
+              ),
+            ),
           ),
-        ),
-      ),
-    );
-  }
-  /* ---------- MOBIL EKRAN ---------- */
-  Widget _mobileBody(List<Map<String, dynamic>> products) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: colors.surface,
-        foregroundColor: colors.onSurface,
-        title: Text(AppLocalizations.of(context)!.donationTitle),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: colors.primary))
-          : SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (_donationInfo != null) _statusCard(),
-            const SizedBox(height: 20),
-            Text(AppLocalizations.of(context)!.supportApp,
-                style: theme.textTheme.titleLarge?.copyWith(
-                    color: colors.onSurface,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            for (final product in products) _donationCard(product),
-            const SizedBox(height: 20),
-            _infoCard(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusCard() {
-    final colors = Theme.of(context).colorScheme;
-    return Card(
-      color: _donationInfo!['hasDonated'] ? colors.primary.withOpacity(0.15) : colors.surface,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(
-              _donationInfo!['hasDonated'] ? Icons.favorite : Icons.favorite_border,
-              color: _donationInfo!['hasDonated'] ? colors.primary : colors.onSurface.withOpacity(0.6),
-              size: 48,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _donationInfo!['hasDonated']
-                  ? AppLocalizations.of(context)!.hasDonatedThanks
-                  : AppLocalizations.of(context)!.supportApp,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colors.onSurface, fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            if (_donationInfo!['hasDonated'] && _donationInfo!['isActive'])
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(AppLocalizations.of(context)!.adFreeExperience,
-                    style: TextStyle(color: colors.primary)),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _infoCard() {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Card(
-      color: colors.surface,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(Icons.info, color: colors.primary),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.supportOptionalText,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colors.onSurface.withOpacity(0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.donationInfoText,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colors.onSurface.withOpacity(0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _donationCard(Map<String, dynamic> product) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Card(
-        color: colors.surface,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: _isProcessing ? null : () => _makeDonation(product['id']),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+          if (!lifetime) ...[
+            const SizedBox(height: 12),
+            _OptionCard(
+              icon: Icons.ondemand_video,
+              title: loc.watchAdsTitle,
               children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: colors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(product['icon'], size: 30, color: colors.onPrimary),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(product['title'],
-                          style: theme.textTheme.titleMedium?.copyWith(
-                              color: colors.onSurface,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text(product['description'],
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colors.onSurface.withOpacity(0.7), fontSize: 14)),
-                    ],
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: watched / AdFree.adsPerReward,
+                    minHeight: 10,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(_donationService.priceOf(product['id']) ?? '',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                            color: colors.secondary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
-                    _isProcessing
-                        ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child:
-                        CircularProgressIndicator(strokeWidth: 2))
-                        : ElevatedButton(
-                      onPressed: () => _makeDonation(product['id']),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: colors.primary,
-                          minimumSize: const Size(80, 32)),
-                      child: Text(AppLocalizations.of(context)!.donateButton,
-                          style: TextStyle(fontSize: 12, color: colors.onPrimary)),
-                    ),
-                  ],
+                const SizedBox(height: 8),
+                Text(loc.watchAdsProgress(watched), style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: _busy || kIsWeb ? null : _watchAd,
+                  icon: const Icon(Icons.play_arrow),
+                  label: Text(loc.watchAdButton),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 12),
+            _OptionCard(
+              icon: Icons.workspace_premium,
+              title: loc.lifetimeTitle,
+              trailing: price == null
+                  ? null
+                  : Text(
+                      price,
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(color: scheme.primary, fontWeight: FontWeight.bold),
+                    ),
+              children: [
+                Text(loc.lifetimeDescription, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 16),
+                // Fiyat mağazadan gelmeden (mağaza yok/ürün yüklenmedi) satın alma açılmaz
+                FilledButton.tonalIcon(
+                  onPressed: _busy || price == null ? null : _buyLifetime,
+                  icon: const Icon(Icons.shopping_bag_outlined),
+                  label: Text(loc.buyButton),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _OptionCard extends StatelessWidget {
+  const _OptionCard({
+    required this.icon,
+    required this.title,
+    required this.children,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: theme.colorScheme.primary),
+                const SizedBox(width: 12),
+                Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
+                if (trailing != null) trailing!,
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...children,
+          ],
         ),
       ),
     );

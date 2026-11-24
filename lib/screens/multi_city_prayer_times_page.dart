@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
@@ -12,6 +13,7 @@ import '../services/geocoding_service.dart';
 import '../services/location_service.dart';
 import '../services/notification_scheduler.dart';
 import '../services/prayer_times_api.dart';
+import '../widgets/prayer_times_list.dart';
 
 /// Namaz vakitleri model sınıfı
 class PrayerTimes {
@@ -190,6 +192,8 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   bool _isLoadingCurrent = false;
   bool _isSearching = false;
   bool _isLoadingSuggestions = false;
+  bool _showSearch = false; // şehir arama yalnızca "+" ile açılır; ana sayfada öz önde
+  Timer? _ticker;
   String? _error;
   List<ResolvedCity> _suggestions = const [];
 
@@ -212,13 +216,55 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
     // Önce vakitler (konum izni), sonra reklam onayı; iki pencere üst üste binmesin
     _loadCurrentLocationPrayerTimes().whenComplete(() => AdService().initialize());
     _searchController.addListener(_onSearchChanged);
+    // "Sıradaki vakte kalan süre" dakikada bir güncellensin
+    _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _ticker?.cancel();
     _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  static const _cacheKey = 'homeCache';
+
+  /// Son konumun bugünkü vakitleri: açılışta GPS ve internet beklenmeden anında gösterilir
+  Future<CityPrayerTimes?> _readCache() async {
+    final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
+    if (raw == null) return null;
+    try {
+      final json = jsonDecode(raw) as Map<String, dynamic>;
+      if (json['date'] != DateFormat('yyyy-MM-dd').format(DateTime.now())) return null;
+      final t = [for (final s in json['times'] as List) DateTime.parse(s as String)];
+      return CityPrayerTimes(
+        cityName: json['city'] as String,
+        countryName: json['country'] as String,
+        isCurrentLocation: true,
+        times: PrayerTimes(imsak: t[0], gunes: t[1], ogle: t[2], ikindi: t[3], aksam: t[4], yatsi: t[5]),
+      );
+    } catch (e) {
+      debugPrint('Home cache unreadable: $e');
+      return null;
+    }
+  }
+
+  Future<void> _saveCache(CityPrayerTimes city) async {
+    final t = city.times;
+    await (await SharedPreferences.getInstance()).setString(
+      _cacheKey,
+      jsonEncode({
+        'date': DateFormat('yyyy-MM-dd').format(t.ogle),
+        'city': city.cityName,
+        'country': city.countryName,
+        'times': [
+          for (final d in [t.imsak, t.gunes, t.ogle, t.ikindi, t.aksam, t.yatsi]) d.toIso8601String(),
+        ],
+      }),
+    );
   }
 
   Future<void> _loadCurrentLocationPrayerTimes() async {
@@ -226,6 +272,11 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
       _isLoadingCurrent = true;
       _error = null;
     });
+
+    if (!_cities.any((c) => c.isCurrentLocation)) {
+      final cached = await _readCache();
+      if (cached != null && mounted) setState(() => _cities.insert(0, cached));
+    }
 
     try {
       final position = await _locationService.getCurrentLocation();
@@ -263,6 +314,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         isCurrentLocation: true,
       );
 
+      unawaited(_saveCache(current));
       if (!mounted) return;
       setState(() {
         _cities
@@ -365,6 +417,7 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         ));
         _searchController.clear();
         _suggestions = const [];
+        _showSearch = false;
       });
     } catch (e) {
       debugPrint('Adding city failed: $e');
@@ -433,14 +486,13 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
 
   Drawer _buildAppDrawer(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    // Vakitler, kıble ve takvim alt sekmelerde; menüde yalnızca ekstralar kalır
     final navItems = [
-      _NavDestination(icon: Icons.location_city, label: loc.home, route: '/home'),
-      _NavDestination(icon: Icons.calendar_month, label: loc.calendarTitle, route: '/calendar'),
-      _NavDestination(icon: Icons.explore, label: loc.qiblaCompass, route: '/qibla'),
-      _NavDestination(icon: Icons.notifications, label: loc.notificationsTitle, route: '/notifications'),
-      _NavDestination(icon: Icons.accessibility, label: loc.dhikrCounter, route: '/zikirmatik'),
-      _NavDestination(icon: Icons.settings, label: loc.settings, route: '/settings'),
-      _NavDestination(icon: Icons.volunteer_activism, label: loc.donate, route: '/donate'),
+      _NavDestination(icon: Icons.notifications_outlined, label: loc.notificationsTitle, route: '/notifications'),
+      _NavDestination(icon: Icons.touch_app_outlined, label: loc.dhikrCounter, route: '/zikirmatik'),
+      _NavDestination(icon: Icons.settings_outlined, label: loc.settings, route: '/settings'),
+      _NavDestination(icon: Icons.workspace_premium_outlined, label: loc.adFreeTitle, route: '/donate'),
     ];
 
     return Drawer(
@@ -448,12 +500,14 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(color: Color(0xFF4A6375)),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [scheme.primary, scheme.tertiary]),
+            ),
             child: Align(
-              alignment: Alignment.bottomLeft,
+              alignment: AlignmentDirectional.bottomStart,
               child: Text(
                 loc.appTitle,
-                style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(color: scheme.onPrimary, fontSize: 22, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -462,13 +516,12 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
               destination: item,
               onTap: () {
                 Navigator.pop(context);
-                if (ModalRoute.of(context)?.settings.name == item.route) return;
                 Navigator.pushNamed(context, item.route).then((_) async {
                   if (!mounted) return;
                   // Ayarlarda hesaplama yöntemi değişmiş olabilir
                   if (item.route == '/settings') _loadCurrentLocationPrayerTimes();
                   // AdMob politikası: geçiş reklamı yalnızca doğal geçiş anında (bir ekrandan
-                  // dönüşte), sıklık sınırıyla; destek ekranından dönen kullanıcıya gösterilmez
+                  // dönüşte), sıklık sınırıyla; reklamsız ekranından dönen kullanıcıya gösterilmez
                   final ads = AdService();
                   if (item.route != '/donate' && await ads.shouldShowAd()) {
                     ads.showInterstitialAd();
@@ -484,11 +537,23 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    // Ne konum ne şehir varsa arama kendiliğinden açık (konum izni vermeyenler için)
+    final searchVisible = _showSearch || (_cities.isEmpty && !_isLoadingCurrent);
+
     return Scaffold(
       drawer: _buildAppDrawer(context),
       appBar: AppBar(
         title: Text(loc.appTitle),
         actions: [
+          IconButton(
+            icon: Icon(_showSearch ? Icons.close : Icons.add_location_alt_outlined),
+            tooltip: loc.selectCity,
+            onPressed: () {
+              if (_showSearch) _searchController.clear();
+              setState(() => _showSearch = !_showSearch);
+            },
+          ),
           // Konum alınamadığında kart hiç oluşmuyor; yenileme bu yüzden kartta değil burada
           IconButton(
             icon: const Icon(Icons.my_location),
@@ -497,76 +562,56 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const MainBottomNavBar(
-        currentTab: NavigationTab.home,
-      ),
+      bottomNavigationBar: const MainBottomNavBar(currentTab: NavigationTab.home),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
+          // İnce çubuk: önbellekteki vakitler görünürken arkada yenileniyor
+          if (_isLoadingCurrent) const LinearProgressIndicator(minHeight: 2),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               children: [
-                Expanded(
-                  child: TextField(
+                if (searchVisible) ...[
+                  TextField(
                     controller: _searchController,
+                    autofocus: _showSearch,
                     textInputAction: TextInputAction.search,
                     onSubmitted: _addCityByName,
                     decoration: InputDecoration(
                       hintText: loc.searchCity,
-                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _isSearching
+                          ? const Padding(
+                              padding: EdgeInsets.all(14),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            )
+                          : null,
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: _isSearching
-                      ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                      : const Icon(Icons.search),
-                  onPressed: _isSearching
-                      ? null
-                      : () => _addCityByName(_searchController.text),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 6, 4, 0),
+                    child: Text(loc.searchLanguageInfo, style: theme.textTheme.bodySmall),
+                  ),
+                  _buildSearchSuggestions(),
+                  const SizedBox(height: 12),
+                ],
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(_error!, style: TextStyle(color: theme.colorScheme.error)),
+                  ),
+                for (final city in _cities)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: city.isCurrentLocation
+                        ? _CurrentLocationCard(city: city)
+                        : _PrayerCard(city: city, onRemove: () => _removeCity(city)),
+                  ),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                loc.searchLanguageInfo,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ),
-          ),
-          _buildSearchSuggestions(),
-          if (_error != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                _error!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          if (_isLoadingCurrent)
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: CircularProgressIndicator(),
-            ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _cities.length,
-              itemBuilder: (context, index) {
-                final city = _cities[index];
-                return _PrayerCard(
-                  city: city,
-                  onRemove: city.isCurrentLocation ? null : () => _removeCity(city),
-                );
-              },
             ),
           ),
         ],
@@ -575,31 +620,28 @@ class _MultiCityPrayerTimesPageState extends State<MultiCityPrayerTimesPage> {
   }
 
   Widget _buildSearchSuggestions() {
-    if (_searchController.text.trim().isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (_searchController.text.trim().isEmpty) return const SizedBox.shrink();
 
     if (_isLoadingSuggestions) {
       return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: 8),
         child: LinearProgressIndicator(),
       );
     }
 
-    if (_suggestions.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (_suggestions.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.only(top: 8),
       child: Column(
         children: [
           for (final suggestion in _suggestions)
             Card(
+              margin: const EdgeInsets.only(bottom: 6),
               child: ListTile(
-                leading: const Icon(Icons.location_searching),
+                leading: const Icon(Icons.location_on_outlined),
                 title: Text(suggestion.cityName),
-                subtitle: Text(suggestion.countryName),
+                subtitle: suggestion.countryName.isEmpty ? null : Text(suggestion.countryName),
                 onTap: () => _addResolvedCity(suggestion),
               ),
             ),
@@ -638,92 +680,145 @@ class _NavigationTile extends StatelessWidget {
   }
 }
 
-class _PrayerCard extends StatelessWidget {
-  const _PrayerCard({
-    required this.city,
-    this.onRemove,
-  });
+String _placeName(CityPrayerTimes city) =>
+    [city.cityName, city.countryName].where((s) => s.isNotEmpty).join(', ');
+
+/// Ekrandaki beş vakit (ad, saat); Sabah = güneş - 1 saat
+List<(String, DateTime)> _fivePrayers(AppLocalizations loc, PrayerTimes t) => [
+      (loc.sabah, t.sabah),
+      (loc.dhuhr, t.ogle),
+      (loc.asr, t.ikindi),
+      (loc.maghrib, t.aksam),
+      (loc.isha, t.yatsi),
+    ];
+
+/// Mevcut konum: sıradaki vakit ve kalan süre büyük kartta, altında günün vakitleri
+class _CurrentLocationCard extends StatelessWidget {
+  const _CurrentLocationCard({required this.city});
 
   final CityPrayerTimes city;
-  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final formatter = DateFormat('HH:mm');
-    final times = city.times;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final onHero = scheme.onPrimary;
+    final fmt = DateFormat('HH:mm');
+    final prayers = _fivePrayers(loc, city.times);
+
+    final now = DateTime.now();
+    final next = prayers.indexWhere((p) => p.$2.isAfter(now));
+    // Hepsi geçtiyse sıradaki yarının sabahı (bugünkü saatle yaklaşık)
+    final (nextName, nextTime) =
+        next == -1 ? (prayers.first.$1, prayers.first.$2.add(const Duration(days: 1))) : prayers[next];
+    final left = nextTime.difference(now);
+    final heroStyle = theme.textTheme.headlineMedium?.copyWith(color: onHero, fontWeight: FontWeight.w700);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              colors: [scheme.primary, scheme.tertiary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.location_on, size: 18, color: onHero),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      _placeName(city),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleSmall?.copyWith(color: onHero),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                loc.nextPrayerSimple,
+                style: theme.textTheme.bodyMedium?.copyWith(color: onHero.withValues(alpha: 0.8)),
+              ),
+              Row(
+                children: [
+                  Expanded(child: Text(nextName, style: heroStyle)),
+                  Text(fmt.format(nextTime), style: heroStyle),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                loc.timeRemainingHours(left.inHours, left.inMinutes % 60),
+                style: theme.textTheme.bodyLarge?.copyWith(color: onHero),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: PrayerTimesList(
+              rows: [for (final p in prayers) (p.$1, fmt.format(p.$2))],
+              highlight: next == -1 ? null : next,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Eklenen diğer şehirler (o şehrin yerel saatiyle; cihaz saatine göre vurgu yapılmaz)
+class _PrayerCard extends StatelessWidget {
+  const _PrayerCard({required this.city, required this.onRemove});
+
+  final CityPrayerTimes city;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final fmt = DateFormat('HH:mm');
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        [city.cityName, city.countryName].where((s) => s.isNotEmpty).join(', '),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      if (city.isCurrentLocation)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Chip(
-                            label: Text(loc.currentLocation),
-                            visualDensity: VisualDensity.compact,
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                        ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 12),
+                    child: Text(_placeName(city), style: Theme.of(context).textTheme.titleMedium),
                   ),
                 ),
-                if (onRemove != null)
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: onRemove,
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                  onPressed: onRemove,
+                ),
               ],
             ),
-            const SizedBox(height: 8),
-            _PrayerRow(label: loc.sabah, time: formatter.format(times.sabah)),
-            _PrayerRow(label: loc.dhuhr, time: formatter.format(times.ogle)),
-            _PrayerRow(label: loc.asr, time: formatter.format(times.ikindi)),
-            _PrayerRow(label: loc.maghrib, time: formatter.format(times.aksam)),
-            _PrayerRow(label: loc.isha, time: formatter.format(times.yatsi)),
+            PrayerTimesList(
+              rows: [for (final p in _fivePrayers(loc, city.times)) (p.$1, fmt.format(p.$2))],
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _PrayerRow extends StatelessWidget {
-  const _PrayerRow({
-    required this.label,
-    required this.time,
-  });
-
-  final String label;
-  final String time;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label),
-          Text(
-            time,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
       ),
     );
   }

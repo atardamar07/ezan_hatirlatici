@@ -636,4 +636,44 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adPrivacyOptions => 'خيارات خصوصية الإعلانات';
+
+  @override
+  String get adFreeTitle => 'بدون إعلانات';
+
+  @override
+  String get adFreeIntro => 'التطبيق مجاني تمامًا. يمكنك دعمنا بمشاهدة الإعلانات أو إزالة الإعلانات نهائيًا.';
+
+  @override
+  String get watchAdsTitle => 'شاهد 4 إعلانات واحصل على 12 ساعة بدون إعلانات';
+
+  @override
+  String watchAdsProgress(Object count) {
+    return 'تمت مشاهدة $count/4';
+  }
+
+  @override
+  String get watchAdButton => 'شاهد إعلانًا';
+
+  @override
+  String get adNotReady => 'الإعلان غير جاهز بعد، يرجى المحاولة بعد قليل.';
+
+  @override
+  String adFreeActiveFor(Object hours, Object minutes) {
+    return 'بدون إعلانات: متبقٍ $hours س $minutes د';
+  }
+
+  @override
+  String get lifetimeTitle => 'بدون إعلانات مدى الحياة';
+
+  @override
+  String get lifetimeDescription => 'دفعة واحدة. صالحة على جميع أجهزتك بنفس حساب Google.';
+
+  @override
+  String get buyButton => 'شراء';
+
+  @override
+  String get lifetimeActive => 'ترخيصك مدى الحياة مفعّل. شكرًا لدعمك!';
+
+  @override
+  String get qiblaTab => 'القبلة';
 }

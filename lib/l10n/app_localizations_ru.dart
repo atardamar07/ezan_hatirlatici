@@ -636,4 +636,44 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adPrivacyOptions => 'Настройки конфиденциальности рекламы';
+
+  @override
+  String get adFreeTitle => 'Без рекламы';
+
+  @override
+  String get adFreeIntro => 'Приложение полностью бесплатное. Поддержите нас просмотром рекламы или отключите рекламу навсегда.';
+
+  @override
+  String get watchAdsTitle => '4 рекламы — 12 часов без рекламы';
+
+  @override
+  String watchAdsProgress(Object count) {
+    return 'Просмотрено: $count/4';
+  }
+
+  @override
+  String get watchAdButton => 'Смотреть рекламу';
+
+  @override
+  String get adNotReady => 'Реклама пока не готова, попробуйте чуть позже.';
+
+  @override
+  String adFreeActiveFor(Object hours, Object minutes) {
+    return 'Без рекламы: осталось $hours ч $minutes мин';
+  }
+
+  @override
+  String get lifetimeTitle => 'Навсегда без рекламы';
+
+  @override
+  String get lifetimeDescription => 'Единоразовый платёж. Действует на всех ваших устройствах с тем же аккаунтом Google.';
+
+  @override
+  String get buyButton => 'Купить';
+
+  @override
+  String get lifetimeActive => 'Пожизненная лицензия активна. Спасибо за поддержку!';
+
+  @override
+  String get qiblaTab => 'Кибла';
 }
