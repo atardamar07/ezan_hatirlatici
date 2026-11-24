@@ -70,7 +70,9 @@ if (keystorePropertiesFile.exists()) {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
+            // Play "DEX kodu optimizasyonu / kod karartma" uyarısı için R8 açık (kurallar proguard-rules.pro'da)
+            isMinifyEnabled = true
+            // Kapalı: raw/ezan yalnızca adıyla çağrılıyor, kaynak küçültme onu silerdi
             isShrinkResources = false
         }
     }

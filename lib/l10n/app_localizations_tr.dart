@@ -9,7 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'Ezan Hatırlatıcısı';
+  String get appTitle => 'Ezan Hatırlatıcı';
 
   @override
   String get selectCity => 'Şehir Seçin';

@@ -50,3 +50,7 @@ app.*.map.json
 *.jks
 *.keystore
 key.properties
+
+# Gradle derleme raporları ve logcat dökümleri: imza şifresi gibi gizli bilgiler içerebiliyor
+android/build/
+logcat*.txt
