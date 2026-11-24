@@ -638,6 +638,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adPrivacyOptions => 'Reklam gizlilik seçenekleri';
 
   @override
+  String get privacyPolicy => 'Gizlilik politikası';
+
+  @override
   String get adFreeTitle => 'Reklamsız Kullan';
 
   @override

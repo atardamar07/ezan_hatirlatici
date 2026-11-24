@@ -57,7 +57,7 @@ class QiblaScreen extends StatefulWidget {
 }
 
 class _QiblaScreenState extends State<QiblaScreen> with SingleTickerProviderStateMixin {
-  static const _compassChannel = MethodChannel('ezan_hatirlatici/compass');
+  static const _compassChannel = MethodChannel('ezan_hatirlatici/platform');
 
   double _smoothedHeading = 0.0;
   double _qiblaDirection = 0.0;

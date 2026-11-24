@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,6 +37,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _showAdPrivacyOptions = false;
   bool _locationReady = false;
   bool _internetReady = true;
+
+  static const _privacyPolicyUrl = 'https://atardamar07.github.io/ezan_hatirlatici/privacy-policy';
+
+  /// Play, gizlilik politikasına uygulama içinden de bağlantı ister
+  Future<void> _openPrivacyPolicy() async {
+    bool opened = false;
+    try {
+      opened = await const MethodChannel('ezan_hatirlatici/platform')
+              .invokeMethod<bool>('openUrl', {'url': _privacyPolicyUrl}) ??
+          false;
+    } catch (e) {
+      debugPrint('Privacy policy could not be opened: $e');
+    }
+    // Tarayıcı yoksa adres yine de görünsün
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: SelectableText(_privacyPolicyUrl)));
+    }
+  }
 
   String _localizedPrayerTitle(AppLocalizations loc, String key) {
     switch (key) {
@@ -489,6 +508,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: AdService().showPrivacyOptions,
               ),
             ),
+          Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              leading: const Icon(Icons.policy_outlined),
+              title: Text(loc.privacyPolicy),
+              trailing: const Icon(Icons.open_in_new),
+              onTap: _openPrivacyPolicy,
+            ),
+          ),
         ],
       ),
     );

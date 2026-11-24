@@ -638,6 +638,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get adPrivacyOptions => 'Datenschutzoptionen für Werbung';
 
   @override
+  String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
   String get adFreeTitle => 'Werbefrei nutzen';
 
   @override

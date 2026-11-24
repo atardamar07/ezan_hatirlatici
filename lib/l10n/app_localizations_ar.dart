@@ -638,6 +638,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adPrivacyOptions => 'خيارات خصوصية الإعلانات';
 
   @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
   String get adFreeTitle => 'بدون إعلانات';
 
   @override

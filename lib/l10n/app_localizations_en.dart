@@ -638,6 +638,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adPrivacyOptions => 'Ad privacy options';
 
   @override
+  String get privacyPolicy => 'Privacy policy';
+
+  @override
   String get adFreeTitle => 'Go Ad-Free';
 
   @override
